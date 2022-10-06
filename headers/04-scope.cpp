@@ -6,12 +6,12 @@ using namespace std;
 int alice_height_m;
 
 void victorian_england() {
-    size_t alice_height_m{1};
+    size_t alice_height_m{ 1 };
     cout << "In \"victorian_england()\", alice_height_m is " << alice_height_m << ".\n";
 }
 
 void wonderland() {
-    double alice_height_m{0.15};
+    double alice_height_m{ 0.15 };
     cout << "In \"wonderland()\", alice_height_m is " << alice_height_m << ".\n";
 }
 

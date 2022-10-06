@@ -14,7 +14,7 @@ void print_ints(span<int> s) {
 int main() {
     int c_array[] = { 1, 2, 3 };
     vector vec = { 2, 6, 4, 3 };
-    array<int,4> std_array = { 3, 2, 1 };
+    array<int,4> std_array = { 7, 6, 5 };
 
     print_ints(c_array);
     print_ints(vec);

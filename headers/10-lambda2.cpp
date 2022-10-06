@@ -5,7 +5,7 @@
 using namespace std;
 
 int main() {
-	auto l = [](string_view s){ cout << "Lambda says " << s << '\n'; };
-	
-	l("Hola");
+    auto l = [](string_view s){ cout << "Lambda says " << s << '\n'; };
+    
+    l("Hola");
 }

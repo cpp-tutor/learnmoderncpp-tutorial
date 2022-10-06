@@ -11,7 +11,7 @@ int main(int argc, const char *argv[]) {
     ifstream infile{ argv[1] };
     
     int c = infile.get();
-    while (c != EOF) {
+    while (c != ifstream::traits_type::eof()) {
         cout << static_cast<char>(c);
         c = infile.get();
     }

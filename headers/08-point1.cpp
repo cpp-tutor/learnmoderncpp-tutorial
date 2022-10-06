@@ -13,7 +13,7 @@ ostream& operator<< (ostream& os, const Point& p) {
 }
 
 int main() {
-    Point p{ -1, -2 };
+    Point p{ 1, 2 };
     cout << p << '\n';
     cout << Point{ 3, 4 } << '\n';
 }

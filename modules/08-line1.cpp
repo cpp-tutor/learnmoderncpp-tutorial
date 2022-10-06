@@ -5,7 +5,7 @@ using namespace std;
 
 int main() {
     cout << "Please enter your full name:\n";
-    char line[256];
+    char line[32];
     cin.getline(line, size(line));
     cout << "You entered: \'" << line << "\'\n";
 }

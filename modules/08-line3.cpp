@@ -4,13 +4,13 @@ import std.core;
 using namespace std;
 
 int main(int argc, const char *argv[]) {
-	if (argc != 2) {
-		cerr << "Syntax: " << argv[0] << " <text file name>\n";
-		return 1;
-	}
-	ifstream infile{argv[1]};
+    if (argc != 2) {
+        cerr << "Syntax: " << argv[0] << " <text file name>\n";
+        return 1;
+    }
+    ifstream infile{argv[1]};
 
-	string s;
-	getline(infile, s, '\0');
-	cout << s;
+    string s;
+    getline(infile, s, '\0');
+    cout << s;
 }

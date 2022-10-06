@@ -24,7 +24,7 @@ istream& operator>> (istream& is, Point& p) {
 }
 
 int main() {
-	cout << "Please enter Points in form \'(2,-3)\'\n";
+    cout << "Please enter Points, in the form \'(2,-3)\'\n";
     Point p;
     while (!cin.eof()) {
         cin >> p;

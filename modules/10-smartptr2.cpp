@@ -4,17 +4,17 @@ import std.core;
 using namespace std;
 
 int main(int argc, const char *argv[]) {
-	if (argc != 2) {
-		cerr << "Syntax: " << argv[0] << " <filename>\n";
-		return 1;
-	}
+    if (argc != 2) {
+        cerr << "Syntax: " << argv[0] << " <filename>\n";
+        return 1;
+    }
 
-	unique_ptr<FILE,decltype(&fclose)> fp{ fopen(argv[1], "rb"), fclose };
+    unique_ptr<FILE,decltype(&fclose)> fp{ fopen(argv[1], "rb"), fclose };
 
-	if (fp) {
-		int c;
-		while ((c = fgetc(fp.get())) != EOF) {
-			putchar(c);
-		}
-	}
+    if (fp) {
+        int c;
+        while ((c = fgetc(fp.get())) != EOF) {
+            putchar(c);
+        }
+    }
 }

@@ -20,7 +20,7 @@ int main() {
         ++iter;                     // note: must "keep up"
     }
 
-    list<string> lst(begin(fwd), end(fwd));
+    list<string> lst(begin(fwd), end(fwd)); // copy fwd into lst
     lst.sort();
     for (const auto& e : lst) {
         cout << "- " << e << '\n';

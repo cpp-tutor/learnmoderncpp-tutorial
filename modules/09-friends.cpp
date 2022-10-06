@@ -23,7 +23,7 @@ private:
 
 void A::a(B& other)
 {
-	cout << "a():" << other.m_b << '\n';
+    cout << "a():" << other.m_b << '\n';
 }
 
 int main() {

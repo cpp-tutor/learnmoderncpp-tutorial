@@ -4,7 +4,7 @@ import std.core;
 using namespace std;
 
 int main() {
-	auto l = []{ cout << "Lambda says Hi!\n"; };
-	
-	l();
+    auto l = []{ cout << "Lambda says Hi!\n"; };
+    
+    l();
 }
