@@ -4,18 +4,18 @@ Complete, working programs from the C++ tutorial hosted at:
 
 https://learnmoderncpp.com/course-details/
 
-## Usage
+## Contents
 
-The "headers" subdirectory contains C++ programs with legacy header `#includes`, whilst the "modules" subdirectory contains the same programs but using the `import` keyword instead. See https://learnmoderncpp.com/2020/09/05/where-are-c-modules/ for more details about C++ compilers which have support for modules.
+The "headers" subdirectory contains C++ programs with legacy header `#includes`, whilst the "modules" subdirectory contains the same programs using the `import` keyword instead. See https://learnmoderncpp.com/2020/09/05/where-are-c-modules/ for more details about C++ compilers which have support for modules.
 
 ## Compiling under Windows
 
-All programs compile successfully under Windows with Visual Studio 2019 (v16.8 or later).
+All programs compile successfully under Windows with Visual Studio 2022 (v17.x or later).
 
-The supplied batch scripts `build-vs2019-headers.bat` and
-`build-vs2019-modules.bat` can be used to compile all of the programs within a Visual Studio command prompt, simply run:
+The supplied batch scripts `build-vs2022-headers.bat` and
+`build-vs2022-modules.bat` can be used to compile all of the programs within a Visual Studio command prompt, simply run:
 
-```C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars32.bat```
+```C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat```
 
 or similar in a command window, or create a desktop link, and then run either of the build scripts.
 

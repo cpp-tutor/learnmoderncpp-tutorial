@@ -1,4 +1,4 @@
-// 03-calc.cpp : simple calculator with four funnctions
+// 03-calc.cpp : simple calculator with four functions
 
 #include <iostream>
 using namespace std;
