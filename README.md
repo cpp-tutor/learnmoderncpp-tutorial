@@ -1,12 +1,12 @@
 # learnmoderncpp-tutorial
 
-Complete, working programs from the C++ tutorial hosted at:
-
-https://learnmoderncpp.com/course-details/
-
 ## Contents
 
+All of the source Markdown pages for the Modern C++ Tutorial on https://learnmoderncpp.com/ plus complete, working programs from the course text.
+
 The "headers" subdirectory contains C++ programs with legacy header `#includes`, whilst the "modules" subdirectory contains the same programs using the `import` keyword instead. See https://learnmoderncpp.com/2020/09/05/where-are-c-modules/ for more details about C++ compilers which have support for modules.
+
+The "scripts" subdirectory contains a C++ program which extracts all programs from the Markdown source to the above two folders.
 
 ## Compiling under Windows
 
