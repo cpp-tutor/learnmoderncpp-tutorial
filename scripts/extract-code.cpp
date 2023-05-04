@@ -1,7 +1,11 @@
 // extract-code.cpp : Scan a Markdown file for C++ programs
 
-import std.core;
-import std.regex;
+#include <string>
+#include <sstream>
+#include <regex>
+#include <vector>
+#include <iostream>
+#include <fstream>
 using namespace std;
 
 int main(const int argc, const char **argv) {
@@ -41,7 +45,7 @@ int main(const int argc, const char **argv) {
             while (line != "```") {
                 header << line << '\n';
                 if (line == "using namespace std;") {
-                    module << "import std.core;\n";
+                    module << "import std;\n";
                 }
                 if (line.substr(0, 8) != "#include") {
                     module << line << '\n';
