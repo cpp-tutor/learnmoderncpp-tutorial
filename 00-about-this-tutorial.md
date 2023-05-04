@@ -40,7 +40,7 @@ Note: Different options are used with the different compilers and when using `im
 
 Successful compilation produces an *executable binary* called `01-hellow.exe` (under Windows) or `01-hellow` (MacOS or Linux). This can be run by typing `01-hellow.exe` (or just `01-hellow`) into a Windows console (see graphic below), or by typing `./01-hellow` into a MacOS or Linux Terminal (both assuming that the executable is located in the current directory). I don't recommend running the program by double-clicking it in an Explorer or File Manager window as any output may be lost as the program exits, so your program may not actually appear to do anything! 
 
-![Output from running the above program under Windows 10](https://learnmoderncpp.files.wordpress.com/2020/10/helloworld.png)
+![Output from running the above program under Windows 10](https://learnmoderncpp.files.wordpress.com/2023/02/compile-console.png)
 
 [^1]: https://stroustrup.com
 [^2]: https://github.com/cpp-tutor/learnmoderncpp-examples/
