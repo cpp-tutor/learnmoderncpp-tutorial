@@ -1,6 +1,6 @@
 // 05-for.cpp : output an array using for
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

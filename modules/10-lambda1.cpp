@@ -1,6 +1,6 @@
 // 10-lambda1.cpp : simple lambda which produces output
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

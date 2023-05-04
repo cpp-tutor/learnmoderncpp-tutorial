@@ -1,6 +1,6 @@
 // 07-reversed.cpp : output different "string" types using a string_view
 
-import std.core;
+import std;
 using namespace std;
 
 void print_reversed(string_view sv) {

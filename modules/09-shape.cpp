@@ -1,6 +1,6 @@
 // 09-shape.cpp : Shape class hierarchy demonstrating polymorphism
 
-import std.core;
+import std;
 using namespace std;
 
 class Shape {

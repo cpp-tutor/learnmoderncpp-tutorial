@@ -1,6 +1,6 @@
 // 04-noexcept.cpp : a noexcept function throwing an exception
 
-import std.core;
+import std;
 using namespace std;
 
 int throw_if_zero(int i) noexcept {

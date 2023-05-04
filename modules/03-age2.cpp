@@ -1,6 +1,6 @@
 // 03-age2.cpp : get and then test an integer is within range
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

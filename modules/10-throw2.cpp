@@ -1,6 +1,6 @@
 // 10-throw2.cpp : throw and catch exceptions from within and outside std::exception hierarchy
 
-import std.core;
+import std;
 using namespace std;
 
 int throwing() {

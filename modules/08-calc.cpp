@@ -1,6 +1,6 @@
 // 08-calc.cpp : read from a file and perform calculations
 
-import std.core;
+import std;
 using namespace std;
 
 double calc(char op, double x, double y) {

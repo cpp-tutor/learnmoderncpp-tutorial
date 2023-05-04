@@ -1,6 +1,6 @@
 // 09-person3.cpp : define operator== and operator<< for Person class
 
-import std.core;
+import std;
 using namespace std;
 
 struct Date {

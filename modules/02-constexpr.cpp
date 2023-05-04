@@ -1,6 +1,6 @@
 // 02-constexpr.cpp : introducing the constexpr keyword
 
-import std.core;
+import std;
 using namespace std;
 
 const double PI1 = acos(-1.0);     // acos is not (yet) constexpr

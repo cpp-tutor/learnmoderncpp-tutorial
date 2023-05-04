@@ -1,6 +1,6 @@
 // 03-zerotest1.cpp : test an integer value against zero
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

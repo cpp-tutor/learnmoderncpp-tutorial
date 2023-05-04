@@ -1,6 +1,6 @@
 // 08-stringstream1.cpp : write to string stream
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

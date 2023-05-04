@@ -1,6 +1,6 @@
 // 07-span.cpp : convert different container types to span and print them out
 
-import std.core;
+import std;
 using namespace std;
 
 void print_ints(span<int> s) {

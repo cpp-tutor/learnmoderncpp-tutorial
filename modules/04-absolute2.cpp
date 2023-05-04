@@ -1,6 +1,6 @@
 // 04-absolute2.cpp : return the absolute value of a local variable
 
-import std.core;
+import std;
 using namespace std;
 
 int abs_value(int v) {

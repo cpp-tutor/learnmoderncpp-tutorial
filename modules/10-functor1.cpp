@@ -1,6 +1,6 @@
 // 10-functor1.cpp : simple function object demonstration
 
-import std.core;
+import std;
 using namespace std;
 
 struct Average {

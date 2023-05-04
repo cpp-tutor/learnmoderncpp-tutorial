@@ -1,6 +1,6 @@
 // 03-age1.cpp : get and then display an integer
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

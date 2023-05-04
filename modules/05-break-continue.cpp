@@ -1,6 +1,6 @@
 // 05-break-continue.cpp : use of control flow commands in loop
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

@@ -1,6 +1,6 @@
 // 03-signtest.cpp : test an integer value for zero, positive or negative
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

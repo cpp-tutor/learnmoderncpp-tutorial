@@ -1,6 +1,6 @@
 // 04-absolute3.cpp : modify a parameter to become its absolute value
 
-import std.core;
+import std;
 using namespace std;
 
 void abs_value(int& v) {

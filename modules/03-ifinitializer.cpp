@@ -1,6 +1,6 @@
 // 03-ifinitializer.cpp : use of variable initializer in if statement
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

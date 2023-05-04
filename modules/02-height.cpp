@@ -1,6 +1,6 @@
 // 02-height.cpp : define the same variable name in two different namespaces
 
-import std.core;
+import std;
 using namespace std;
 
 namespace Wonderland {

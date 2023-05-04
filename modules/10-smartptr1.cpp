@@ -1,6 +1,6 @@
 // 10-smartptr1.cpp : use of unique_ptr
 
-import std.core;
+import std;
 using namespace std;
 
 class Simple {

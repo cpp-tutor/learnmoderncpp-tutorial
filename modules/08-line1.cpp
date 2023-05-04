@@ -1,6 +1,6 @@
 // 08-line1.cpp : obtain a line of input from the user and display it
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

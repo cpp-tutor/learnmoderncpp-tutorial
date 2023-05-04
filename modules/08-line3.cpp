@@ -1,6 +1,6 @@
 // 08-line3.cpp : read a text file into a string variable and display it
 
-import std.core;
+import std;
 using namespace std;
 
 int main(int argc, const char *argv[]) {

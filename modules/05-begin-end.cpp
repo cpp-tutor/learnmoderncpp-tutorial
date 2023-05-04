@@ -1,6 +1,6 @@
 // 05-begin-end.cpp : demostration of the use of begin() and end()
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

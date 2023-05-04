@@ -1,6 +1,6 @@
 // 02-swap.cpp : attempt to swap the values of an int and a double
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

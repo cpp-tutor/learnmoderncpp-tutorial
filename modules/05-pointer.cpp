@@ -1,6 +1,6 @@
 // 05-pointer.cpp : write a variables value through a pointer
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

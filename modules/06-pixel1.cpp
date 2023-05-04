@@ -1,6 +1,6 @@
 // 06-pixel1.cpp : Color and position Pixel type through composition
 
-import std.core;
+import std;
 using namespace std;
 
 struct Point {

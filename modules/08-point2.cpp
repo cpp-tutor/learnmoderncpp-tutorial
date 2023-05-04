@@ -1,6 +1,6 @@
 // 08-point2.cpp : read Points from input stream
 
-import std.core;
+import std;
 using namespace std;
 
 struct Point {

@@ -1,6 +1,6 @@
 // 04-noreturn.cpp : program which does not return from main()
 
-import std.core;
+import std;
 using namespace std;
 
 [[noreturn]] void report_fatal_error(int e) {

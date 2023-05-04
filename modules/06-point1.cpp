@@ -1,6 +1,6 @@
 // 06-point1.cpp : a Point type with getter and setters
 
-import std.core;
+import std;
 using namespace std;
 
 struct Point {

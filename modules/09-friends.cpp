@@ -1,6 +1,6 @@
 // 09-friends.cpp : two classes as friends of each other
 
-import std.core;
+import std;
 using namespace std;
 
 class B;

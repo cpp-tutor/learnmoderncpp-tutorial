@@ -1,6 +1,6 @@
 // 06-point4.cpp : Point type with global operator+ and member operator+= defined
 
-import std.core;
+import std;
 using namespace std;
 
 struct Point{
@@ -13,7 +13,7 @@ struct Point{
     }
 };
 
-Point operator+ (const Point& lhs, const Point& rhs) { // non-member operator+
+const Point operator+ (const Point& lhs, const Point& rhs) { // non-member operator+
     Point result{ lhs };
     result += rhs;
     return result;

@@ -1,6 +1,6 @@
 // 03-fallthrough.cpp : demonstrate case clauses without break
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

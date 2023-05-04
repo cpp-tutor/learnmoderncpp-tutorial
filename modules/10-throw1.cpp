@@ -1,6 +1,6 @@
 // 10-throw1.cpp : simple exception demonstration, throw and catch
 
-import std.core;
+import std;
 using namespace std;
 
 template <typename T>

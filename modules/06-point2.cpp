@@ -1,6 +1,6 @@
 // 06-point2.cpp : a Point type with getter and setters which check for values being within range
 
-import std.core;
+import std;
 using namespace std;
 
 struct Point {

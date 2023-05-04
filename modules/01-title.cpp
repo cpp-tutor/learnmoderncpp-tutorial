@@ -1,6 +1,6 @@
 // 01-title.cpp : output the title page of a well-known book
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

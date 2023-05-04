@@ -1,6 +1,6 @@
 // 08-receipt.cpp : output a till-receipt from user input
 
-import std.core;
+import std;
 using namespace std;
 
 struct Entry {

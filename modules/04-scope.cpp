@@ -1,6 +1,6 @@
 // 04-scope.cpp : demonstrate function scope rules
 
-import std.core;
+import std;
 using namespace std;
 
 int alice_height_m;

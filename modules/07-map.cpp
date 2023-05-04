@@ -1,6 +1,6 @@
 // 07-map.cpp : calculate prices from associative array of products and per-weight cost
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

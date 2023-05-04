@@ -1,6 +1,6 @@
 // 02-scopes.cpp : define three variables with the same name in one program
 
-import std.core;
+import std;
 using namespace std;
 
 auto a{ 1.5f };

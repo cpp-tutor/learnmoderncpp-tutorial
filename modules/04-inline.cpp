@@ -1,6 +1,6 @@
 // 04-inline.cpp : use of an inline function
 
-import std.core;
+import std;
 using namespace std;
 
 inline void swap(int& x, int& y) {

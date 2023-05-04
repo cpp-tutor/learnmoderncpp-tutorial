@@ -1,6 +1,6 @@
 // 10-pupils.cpp : use of shared_ptr and weak_ptr to avoid dependency cycle
 
-import std.core;
+import std;
 using namespace std;
 
 struct Pupil;

@@ -1,6 +1,6 @@
 // 05-do-while.cpp : use of post-condition loop to validate user input
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

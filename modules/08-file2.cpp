@@ -1,6 +1,6 @@
 // 08-file2.cpp : echo disk file to console
 
-import std.core;
+import std;
 using namespace std;
 
 int main(int argc, const char *argv[]) {

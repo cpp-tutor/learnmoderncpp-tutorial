@@ -1,6 +1,6 @@
 // 06-pixel2.cpp : Color and position Pixel type through inheritance
 
-import std.core;
+import std;
 using namespace std;
 
 struct Point {

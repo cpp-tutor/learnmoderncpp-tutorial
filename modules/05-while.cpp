@@ -1,6 +1,6 @@
 // 05-while.cpp : print a user-entered string vertically
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

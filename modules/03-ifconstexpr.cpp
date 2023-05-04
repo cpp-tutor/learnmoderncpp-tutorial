@@ -1,6 +1,6 @@
 // 03-ifconstexpr.cpp : demonstrate compile-time if
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

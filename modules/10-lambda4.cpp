@@ -1,6 +1,6 @@
 // 10-lambda4.cpp : lambda accessing scoped variables by value and reference
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

@@ -1,6 +1,6 @@
 // 05-christmas.cpp : calculate total number of gifts from the popular song
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

@@ -1,6 +1,6 @@
 // 04-base-n.cpp : print out a number to given base
 
-import std.core;
+import std;
 using namespace std;
 
 void print_base_n(unsigned long long num, unsigned base = 10);

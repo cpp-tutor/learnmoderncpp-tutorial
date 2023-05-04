@@ -1,6 +1,6 @@
 // 04-overload.cpp : calling a function with different types of arguments and parameters
 
-import std.core;
+import std;
 using namespace std;
 
 void f(int i) {

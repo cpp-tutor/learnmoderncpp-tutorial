@@ -1,6 +1,6 @@
 // 05-array-decay.cpp : demonstrate equivalence of pointer vs array parameters
 
-import std.core;
+import std;
 using namespace std;
 
 void print_arr(const char s[]) {

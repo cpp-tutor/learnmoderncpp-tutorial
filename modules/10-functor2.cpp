@@ -1,6 +1,6 @@
 // 10-functor2.cpp : function object maintaining state
 
-import std.core;
+import std;
 using namespace std;
 
 struct MinMaxAvg {

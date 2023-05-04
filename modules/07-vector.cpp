@@ -1,6 +1,6 @@
 // 07-vector.cpp : read integers from user, sort them and then output
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

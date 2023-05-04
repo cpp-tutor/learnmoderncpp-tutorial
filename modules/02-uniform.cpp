@@ -1,6 +1,6 @@
 // 02-uniform.cpp : avoid compiler error with uniform initialization and explicit narrowing cast
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

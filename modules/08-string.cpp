@@ -1,6 +1,6 @@
 // 08-string.cpp : read a string using the stream extraction operator
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

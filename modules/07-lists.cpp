@@ -1,6 +1,6 @@
 // 07-lists.cpp : forward and bi-directional lists
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

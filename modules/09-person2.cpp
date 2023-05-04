@@ -1,6 +1,6 @@
 // 09-person2.cpp : model Person, Student and Employee as a class inheritance hierarchy
 
-import std.core;
+import std;
 using namespace std;
 
 class Person {

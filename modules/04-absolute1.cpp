@@ -1,6 +1,6 @@
 // 04-absolute1.cpp : return the absolute value of a global variable
 
-import std.core;
+import std;
 using namespace std;
 
 int value;

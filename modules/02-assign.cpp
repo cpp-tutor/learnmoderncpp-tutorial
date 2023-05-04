@@ -1,6 +1,6 @@
 // 02-assign.cpp : assign to local variables
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

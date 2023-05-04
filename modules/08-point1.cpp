@@ -1,6 +1,6 @@
 // 08-point1.cpp : a Point class with ostream formatter
 
-import std.core;
+import std;
 using namespace std;
 
 struct Point {

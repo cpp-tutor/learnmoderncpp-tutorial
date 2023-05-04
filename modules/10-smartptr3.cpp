@@ -1,6 +1,6 @@
 // 10-smartptr3.cpp : use of shared_ptr
 
-import std.core;
+import std;
 using namespace std;
 
 class Simple {

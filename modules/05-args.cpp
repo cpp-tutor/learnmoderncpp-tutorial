@@ -1,6 +1,6 @@
 // 05-args.cpp : print out all arguments
 
-import std.core;
+import std;
 using namespace std;
 
 int main(int argc, char *argv[]) {

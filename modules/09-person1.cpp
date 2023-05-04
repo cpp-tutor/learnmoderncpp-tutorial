@@ -1,6 +1,6 @@
 // 09-person1.cpp : model Person as a class with constructor
 
-import std.core;
+import std;
 using namespace std;
 
 struct Date {

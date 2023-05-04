@@ -1,13 +1,13 @@
 // 06-point3.cpp : Point type with global operator+ defined
 
-import std.core;
+import std;
 using namespace std;
 
 struct Point{
     int x{}, y{};
 };
 
-Point operator+ (const Point& lhs, const Point& rhs) {
+const Point operator+ (const Point& lhs, const Point& rhs) {
     Point result;
     result.x = lhs.x + rhs.x;
     result.y = lhs.y + rhs.y;

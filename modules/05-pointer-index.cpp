@@ -1,6 +1,6 @@
 // 05-pointer-index.cpp : demonstrate array indexing and pointer arithmetic
 
-import std.core;
+import std;
 using namespace std;
 
 void print_arr(const char s[], size_t n) {

@@ -1,6 +1,6 @@
 // 08-stringstream2.cpp : validate input to calculator function
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

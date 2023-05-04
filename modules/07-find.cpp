@@ -1,6 +1,6 @@
 // 07-find.cpp : find and erase a single element
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

@@ -1,6 +1,6 @@
 // 04-constexpr.cpp : use of a constexpr function with static_assert
 
-import std.core;
+import std;
 using namespace std;
 
 constexpr int factorial(int n) {

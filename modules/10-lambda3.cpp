@@ -1,6 +1,6 @@
 // 10-lambda3.cpp : lambda function which calculates average of two values
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

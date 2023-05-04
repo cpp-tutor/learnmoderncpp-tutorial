@@ -1,6 +1,6 @@
 // 05-range-for.cpp : print a string literal vertically
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

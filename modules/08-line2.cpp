@@ -1,6 +1,6 @@
 // 08-line2.cpp : obtain a line of input from the user, store it in a string variable and display it
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

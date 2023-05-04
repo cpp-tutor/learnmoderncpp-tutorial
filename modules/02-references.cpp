@@ -1,6 +1,6 @@
 // 02-references.cpp : introducing l-value references
 
-import std.core;
+import std;
 using namespace std;
 
 int alice_age{ 9 };

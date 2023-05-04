@@ -1,6 +1,6 @@
 // 07-string-upper.cpp : function to make a std::string uppercase in-place
 
-import std.core;
+import std;
 using namespace std;
 
 void string_to_uppercase(string &s) {

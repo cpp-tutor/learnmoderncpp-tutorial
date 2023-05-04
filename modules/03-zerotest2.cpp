@@ -1,6 +1,6 @@
 // 03-zerotest2.cpp : test an integer value against zero and use conditional expression
 
-import std.core;
+import std;
 using namespace std;
 
 int main() {

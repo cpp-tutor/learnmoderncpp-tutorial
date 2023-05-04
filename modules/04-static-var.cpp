@@ -1,6 +1,6 @@
 // 04-static-var.cpp : preserving function state in a static variable
 
-import std.core;
+import std;
 using namespace std;
 
 void f() {
