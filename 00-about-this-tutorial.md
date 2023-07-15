@@ -14,8 +14,8 @@ Of course, it is far easier to add features to a language than remove them (this
 
 I have been learning and using C++ since around 2002, and Modern C++ is the language I wish had been available to me back then; I believe it is an easier language to learn to use productively than older versions. Of course, there have been many books written about C++ over the years, but unavoidably most of these will be (badly) out-of-date. Even [Stroustrup's](https://stroustrup.com) "The C++ Programming Language" (Fourth Edition)[^1] only covers up to and including C++11.
 
-This online self-study course has been put together as a personal project designed to be accessible and comprehensible to anyone without any previous experience of programming in compiled languages; hopefully, no material is presented without suitable context and explanation. The format is a conversational-tone introduction to a topic followed by an example program (in many cases intended to be compiled and run, with all source code [available on GitHub](https://github.com/cpp-tutor/learnmoderncpp-examples/)[^2]). Then a list of points-of-interest follows the code, often followed by a number of possible modifications that you (the reader) are invited to make in order to cement your understanding. Each Chapter introduces several related topics.
- 
+This online self-study course has been put together as a personal project designed to be accessible and comprehensible to anyone without any previous experience of programming in compiled languages; hopefully, no material is presented without suitable context and explanation. The format is a conversational-tone introduction to a topic followed by an example program (in many cases intended to be compiled and run, with all source code [available on GitHub](https://github.com/cpp-tutor/learnmoderncpp-tutorial/)[^2]). Then a list of points-of-interest follows the code, often followed by a number of possible modifications that you (the reader) are invited to make in order to cement your understanding. Each Chapter introduces several related topics.
+
 Most people "learn by doing" (kinesthetic learning) and for decades it has been recognized that the only way to become proficient in a programming language is to write working programs in it. There are dozens (hundreds?) of C++ video tutorials available elsewhere on the Web, and if these are more suited to your learning style, then great! However, I believe that written information is more likely to be taken in than spoken, both at first reading and in review. The course materials (this Tutorial) have been made freely available and are intended to be improved over time. Spelling, technical and other errors will be present, and I welcome feedback and suggestions for improvement; please leave a comment or drop me an email, thanks!
 
 ## Which compiler should I choose when learning C++?
@@ -32,18 +32,18 @@ Plain text C++ *source code* files must be translated into a binary form underst
 
 The simple programs we will introduce and create will consist of just one source file each, as in the first example program `01-hellow.cpp` available from GitHub[^2] and also listed in full in the first Chapter of this Tutorial. To compile this program use one of the following:
 
-* **MSVC**: `cl /EHsc /std:c++latest 01-hellow.cpp` 
+* **MSVC**: `cl /EHsc /std:c++latest 01-hellow.cpp`
 * **GCC**: `g++ -o 01-hellow -std=c++20 01-hellow.cpp`
 * **Clang**: `clang++ -o 01-hellow -std=c++20 -stdlib=libc++ 01-hellow.cpp`
 
 Note: Different options are used with the different compilers and when using `import` instead of `#include`.
 
-Successful compilation produces an *executable binary* called `01-hellow.exe` (under Windows) or `01-hellow` (MacOS or Linux). This can be run by typing `01-hellow.exe` (or just `01-hellow`) into a Windows console (see graphic below), or by typing `./01-hellow` into a MacOS or Linux Terminal (both assuming that the executable is located in the current directory). I don't recommend running the program by double-clicking it in an Explorer or File Manager window as any output may be lost as the program exits, so your program may not actually appear to do anything! 
+Successful compilation produces an *executable binary* called `01-hellow.exe` (under Windows) or `01-hellow` (MacOS or Linux). This can be run by typing `01-hellow.exe` (or just `01-hellow`) into a Windows console (see graphic below), or by typing `./01-hellow` into a MacOS or Linux Terminal (both assuming that the executable is located in the current directory). I don't recommend running the program by double-clicking it in an Explorer or File Manager window as any output may be lost as the program exits, so your program may not actually appear to do anything!
 
 ![Output from running the above program under Windows 10](https://learnmoderncpp.files.wordpress.com/2023/02/compile-console.png)
 
 [^1]: https://stroustrup.com
-[^2]: https://github.com/cpp-tutor/learnmoderncpp-examples/
+[^2]: https://github.com/cpp-tutor/learnmoderncpp-tutorial/
 [^3]: https://visualstudio.microsoft.com
 [^4]: https://gcc.gnu.org
 [^5]: https://clang.llvm.org
