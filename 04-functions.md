@@ -146,7 +146,7 @@ The way the variable `value` is passed from `main()` to `abs_value()` is describ
 
 As we have seen, variables which are defined as references are not copies of existing variables, instead they are an alternative name, or *alias*, of a variable **which already exists**. References become particularly useful when defining them in a **different** scope to the variable they reference. As we have seen, a *callee* function cannot access local variables within the *caller* function, instead it can only reference global variables and variables passed as parameters.
 
-Parameter variables an be defined as references by using a single ampersand (`&`) between the type and the variable name in the parameter list. This small and subtle change completely changes the semantics of the function. Changes to a **parameter** variable defined as a *pass by reference* will change the **argument** variable in the calling function, as shown in the following program:
+Parameter variables can be defined as references by using a single ampersand (`&`) between the type and the variable name in the parameter list. This small and subtle change completely changes the semantics of the function. Changes to a **parameter** variable defined as a *pass by reference* will change the **argument** variable in the calling function, as shown in the following program:
 
 ```cpp
 // 04-absolute3.cpp : modify a parameter to become its absolute value
