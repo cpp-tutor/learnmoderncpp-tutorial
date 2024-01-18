@@ -1,8 +1,124 @@
-# Files and Formatting
+﻿# Files and Formatting
+
+## Formatting values and variables for output
+
+We have seen how values and variables can be put to output streams using `<<`, and how `print()` and `println()` can be used to output subsequent parameters using curly braces in the format string. For further control over the way these are output, such as field width, accuracy etc. we need to specify this using stream manipulators (when outputting to streams) or extra information in the *format string* (when using `print()`/`println()`). Manipulators are covered later in this Chapter, what follows is a discussion of how to use *format specifiers* with `print()`, `println()` and `format()`/`format_to()`.
+
+The following program demonstrates use of format specifiers for some common types:
+
+```cpp
+// 08-format1.cpp : Basic usage of format string
+
+#include <print>
+#include <string>
+using namespace std;
+
+int main() {
+    string s{ "Formatted" };
+    auto d{ 10.0 / 3.0 };
+    auto i{ 20000 };
+    println("{0:20}:{2:8}, {1:12.11}", s, d, i);
+}
+```
+
+This program outputs the text `Formatted` followed by sufficient spaces to pad up to a width of 20 characters, then a colon present in the format string, then the value `20000` right-aligned to a width of 8 characters, then the comma and space present in the format string, and finally the value 3.3333333333 at a "precision" of 11 figures (plus decimal point) padded to a width of 12 characters (no padding is necessary for this particular value.
+
+**Experiment**:
+
+* Try printing the three parameters in a different order, by changing the numbers before the colon within the curly braces.
+
+* Is it possible to achieve the same results when removing these numbers altogether?
+
+* What happens if you repeat one of `s`, `d`, or `i` in the parameter list? Or take one away?
+
+The format string, and its associated format specifier(s), are evaluated at compile-time for maximum performance. It must therefore be a string literal, not a string-type variable except for one that is `constexpr`. The values of the subsequent parameters referenced by the format specifiers can (and probably will) change during the run of the program.
+
+## Format specifiers
+
+As well as describing the field width and precision for all of the built-in types (plus several Standard Library types), format specifiers offer fine-grained control over the output. In fact, all format specifiers are made up of eight optional parts, all of which (if used) appear in order after the colon in the format string. These are listed in the table below:
+
+| Field          | Description                                         | Example | Result                   |
+|----------------|-----------------------------------------------------|---------|--------------------------|
+| Fill-and-align | Optional fill character then: <, >, or ^            | {:@>10} | @@@@1233456              |
+| Sign           | One of: +, - (default), or space                    | {:+}    | +1.23                    |
+| #              | Use alternate form                                  | {:#}    | 0x12a, 3.0               |
+| 0              | Pad integers with leading zeros                     | {:06}   | 000123                   |
+| Width          | Minimum field width                                 | {:10}   | "abc       "             |
+| Precision      | FP-precision, maximum field width                   | {:.7}   | 3.333333, "Formatt"      |
+| L              | Use locale-specific setting                         | {L}     | 12,345, 1.234,56, "faux" |
+| Type           | One of: b, B, d, o, x, X, a, A, e, E, f, F, g, G, ? | {:8.7a} | 1.aaaaaabp+1             |
+
+It is also possible to write custom formatters which operate on arbitrary format specifiers and user-defined classes. An alternative method would be to create a public `toString()` method in the class and simply invoke this as a parameter after the format string.
+
+The format specifiers listed above work with `print()` and `println()` as well as other functions from the `<format>` header (which include wide-character variants). Here is a complete list:
+
+| Function      | Description                                | Parameters                     | Return value              |
+|---------------|--------------------------------------------|--------------------------------|---------------------------|
+| `print()`       | Output to `stdout`, `FILE*` or `std::ostream`    | [dest, ] fmt, ...              | None                      |
+| `println()`     | As for `print()` with trailing newline       | [dest, ] fmt, ...              | None                      |
+| `format()`      | Create a string from (wide-) format string | [locale, ] fmt, ...            | `std::string`, `std::wstring` |
+| `format_to()`   | Write to a (wide-) output iterator         | iter, [locale, ] fmt, ...      | `out` member is `std::iterator`             |
+| `format_to_n()` | As for `format_to()` with size limit    | iter, max, [locale, ] fmt, ... | `out` member is `std::iterator`             |
+
+In choosing between the above functions, the aim would be to choose the most performant for the task. The following program outputs different format strings and parameters utilizing a variety of these functions:
+
+```cpp
+// 08-format2.cpp : Various format string-using functions
+
+#include <print>
+#include <format>
+#include <string>
+#include <iostream>
+#include <iterator>
+#include <array>
+#include <cmath>
+using namespace std;
+
+int main() {
+    string world{ "World" };
+    print(cout, "Hello, {}!\n", world);
+    println("{1} or {0}", false, true);
+    
+    constexpr const char *fmt = "Approximation of π = {:.12g}";
+    string s = format(fmt, asin(1.0) * 2);
+    cout << s << '\n';
+    
+    constexpr const wchar_t *wfmt = L"Approximation of pi = {:.12g}";
+    wstring ws = format(wfmt, asin(1.0) * 2);
+    wcout << ws << L'\n';
+    
+    format_to(ostream_iterator<char>(cout), "Hello, {}!\n", world);
+    wstring ww{ L"World" };
+    array<wchar_t,9> wa;
+    auto iter = format_to_n(wa.begin(), 8, L"Hello, {}!\n", ww);
+    *(iter.out) = L'\0';
+    wcout << wa.data() << L'\n';
+}
+```
+
+A few things to note about this program:
+
+* The use of `print()` is straightforward and simply outputs `Hello, World!` on a single line, using the variant that prints to a `std::ostream`, in this case `cout`.
+
+* The call to `println()` reverses the order of its subsequent parameters and outputs them textually: `true or false`. You should be aware that this prints to the C standard output (`stdout`) as mixing stream and C output can sometimes cause issues.
+
+* The uses of `format()`, first with a 8-bit and second with a wide-character format string, create a temporary (wide-) string and then put this to the (wide-) character output stream.
+
+* The function `format_to()` is called with `ostream_iterator<char>(cout)` which is boilerplate for creating a suitable output iterator from a stream object.
+
+* The use for `format_to_n()` is more involved as it uses a fixed size `std::array` to hold the wide-character output string. The first parameter is the (writable) iterator pointing to the start of the array, and the second is the maximum number of characters to write. The return value has an `out` data member which is the iterator pointing to the next character in the array, which needs to be set to NUL in order to allow putting `data()` to `wcout`.
+
+**Experiment:**
+
+* Modify this program to use different field widths. Do they work with wide characters?
+
+* Try some of the different format specifiers from the table above, together with different built-in types such as `long long` and `double`.
 
 ## Simple file access
 
 All of the programs we have seen so far lose their internal state, together with any user input, when they exit. A program which can save and/or restore its state makes use of *persistence*. The way this is usually achieved, of course, is to enable saving to and loading from a disk file, stored on a hard-drive, memory card or network server.
+
+C++ file access using the Standard Library header `<fstream>` is designed to be analogous to use of `cin` and `cout`, using the stream extraction (`>>`) and insertion (`<<`) operators. File access using the C Library's `<cstdio>` header is also possible, and a suitable `FILE *` pointer can be passed as the first parameter to `print()` and `println()` to switch output to that file.
 
 The following program reads from a previously created file and echoes the content to the console. (The filename is provided at run-time as the first environment parameter after the executable name.) This program is only safe to use with text files, so fire up your favorite editor and create a test file to use, including some whitespace such as spaces, tabs and newlines.
 
@@ -42,7 +158,7 @@ A few things to note about this program:
 
 **Experiment:**
 
-* Try removing `static_cast<char>` and see what happens. Consider if this could ever be desirable.
+* Try removing `static_cast<char>` and see what happens. Consider whether this could ever be desirable.
 
 * What happens if you change the same line to `cout.put(c);`?
 
@@ -608,4 +724,4 @@ int main() {
 
 * Modify this program to read `Pixel`s.
 
-*All text and program code &copy;2019-2022 Richard Spencer, all rights reserved.*
+*All text and program code &copy;2019-2024 Richard Spencer, all rights reserved.*
