@@ -8,7 +8,7 @@ C++ is a statically typed language, meaning that the type of each variable is kn
 
 The shortest possible name or *identifier* for a variable is a single letter, and these are often the name of choice for variables whose purpose is obvious (such as a loop counter); this convention also provides a symmetry with variable names in Mathematics. Variable names must start with a lower- or uppercase letter or an underscore, followed by an arbitrary number of lower- or uppercase letters, underscores or decimal digits in any order. Reserved names that should not be used as identifiers are any of the C++ keywords (of which there are just under a hundred at the time of writing), names beginning with an underscore followed by a capital letter, names containing adjacent double underscores, and at global scope any name beginning with an underscore. Use of top-bit-set characters (including UTF-8 sequences) **is** permitted in variable names with more recent compilers, including as the initial character.
 
-C++ does not mandate different uses of capital letters and so on for different types of entity, but your organization may well follow conventions such as constants in upper case, user-defined types in sentence case and member functions in camel case. The rules for identifiers are the same for `class`, `struct`, `enum` and `union` names, function names, namespace names and macro names. Different variable naming styles, the use of which may fall into coding standards at your employer, are listed in the following table:
+C++ does not mandate different uses of capital letters and so on for different types of entity, but your organization may well follow conventions such as constants in upper case, user-defined types in sentence case and member functions in camel case. The rules for identifiers are the same for `class`, `struct`, `enum` and `union` names, function names, namespace names and macro names. Different variable naming styles, the use of which may fall under coding standards requirements at your employer, are listed in the following table:
 
 |   Naming Style   |     Example     |
 |:----------------:|:---------------:|
@@ -19,22 +19,26 @@ C++ does not mandate different uses of capital letters and so on for different t
 | Upper Snake Case | A_VARIABLE_NAME |
 |    Camel Case    |  aVariableName  |
 
-New variables are introduced (defined) by providing a type, an identifier and, optionally (but highly recommended) either an initial value or a pair of empty braces `{}`. The initial value follows an equals sign when using C-style syntax, as shown in this program; this is optional when using *uniform initialization* with braces (covered later). The following program defines three variables but only assigns to two of them initially:
+New variables are introduced (defined) by providing a type, an identifier and, optionally (but highly recommended) either an initial value or a pair of empty braces `{}`. The initial value follows an equals sign (`=`) when using C-style syntax, as shown in this program; this equals sign is optional when using *uniform initialization* with braces (covered later).
+
+Braces are also used with strings passed to `print()` and `println()` indicating a point in the string where a variable's current value should be substituted. The number of brace pairs must equal the number of additional parameters passed to the functions. (To output a literal `{` or `}` use one of the escape sequences `{{` or `}}` respectively.)
+
+The following program defines three variables but only assigns to two of them initially, despite the fact that it prints them all out twice:
 
 ```cpp
 // 02-assign.cpp : assign to local variables
 
-#include <iostream>
+#include <print>
 using namespace std;
 
 int main() {
     int i = 1, j = 2;
     unsigned k;
-    cout << "(1) i = " << i << ", j = " << j << ", k = " << k << '\n';
+    println("(1) i = {}, j = {}, k = {}", i, j, k);
     i = j;
     j = 3;
     k = -1;
-    cout << "(2) i = " << i << ", j = " << j << ", k = " << k << '\n';
+    println("(2) i = {}, j = {}, k = {}", i, j, k);
 }
 ```
 
@@ -47,7 +51,7 @@ Running this program produced the output:
 
 There are probably no surprises for the values of `i` and `j` as output the first and second time. Note that the statement `i = j` merely assigns the **current** value of `j` to `i` and does not imply that they point to the same object; the values of `i` and `j` can subsequently change **independently**.
 
-The first time `k` is output its value is essentially random; nothing can be guaranteed about its value other than it is within the valid range for the `unsigned` type. Assigning a negative number to an `unsigned` type is (perhaps surprisingly) legal C++, and if you are unsure of why the second output of `k` is what it is, you may want to do some research into "two's-complement" binary representation of integers (it's actually the number (2^32)-1 represented as a positive integer).
+The first time `k` is output its value is essentially random; nothing can be guaranteed about its value other than it is within the valid range for the `unsigned` type. Assigning a negative number to an `unsigned` type is (perhaps surprisingly) legal C++, and if you are unsure of why the second output of `k` is what it is, you may want to do some research into "two's-complement" binary representation of integers (it's actually the number 2<sup>32</sup>-1 represented as a positive integer).
 
 **Experiment**
 
@@ -64,16 +68,16 @@ The following program assigns an integer to a variable `a` of type `int`, and a 
 ```cpp
 // 02-swap.cpp : attempt to swap the values of an int and a double
 
-#include <iostream>
+#include <print>
 using namespace std;
 
 int main() {
     int a = 1;
     double b = 2.5;
-    cout << "(1) a = " << a << ", b = " << b << '\n';
+    println("(1) a = {}, b = {}", a, b);
     a = 2.5;
     b = 1;
-    cout << "(2) a = " << a << ", b = " << b << '\n';
+    println("(2) a = {}, b = {}", a, b);
 }
 ```
 
@@ -99,14 +103,14 @@ Implicit casts can happen at variable initialization and assignment too, however
 ```cpp
 // 02-uniform.cpp : avoid compiler error with uniform initialization and explicit narrowing cast
 
-#include <iostream>
+#include <print>
 using namespace std;
 
 int main() {
     // int c = { 2.5 };                 // Error: this does NOT compile
     int c = { static_cast<int>(2.5) };  // while this does
     double d = { 1 };                   // and so does this
-    cout << "c = " << c << ", d = " << d << '\n';
+    println("c = {}, d = {}", c, d);
 }
 ```
 
@@ -132,16 +136,16 @@ C++ has quite a lot of built-in types, most of them inherited from the C languag
 |   unsigned short   |      16      |           0          |         65535        |   n/a (as for unsigned)        |
 |         int        |      32      |      -2147483648     |      2147483647      |       -1000, 0x7fff            |
 |      unsigned      |      32      |           0          |      4294967295      |       1000U, 0xffffU           |
-|        long        |      32      |      -2147483648     |      2147483647      |      1L, 0x7fffffffL           |
-|    unsigned long   |      32      |           0          |      4294967295      |    10000000UL, 0xbbbfUL        |
+|        long        |   64 (32)    |      -2147483648     |      2147483647      |      1L, 0x7fffffffL           |
+|    unsigned long   |   64 (32)    |           0          |      4294967295      |    10000000UL, 0xbbbfUL        |
 |      long long     |      64      | -9223372036854775808 |  9223372036854775807 | -10000LL, 0x80000000000LL      |
 | unsigned long long |      64      |           0          | 18446744073709551615 | 10000ULL, 0x7fffffffffULL      |
-|       size_t       |   64 (32)    |           0          | 18446744073709551615 |   0ULL (assuming 64 bit), 0z * |
+|       size_t       |   64 (32)    |           0          | 18446744073709551615 |           0UZ, OZ *            |
 |        float       |      32      |      1.17549e-38     |      3.40282e+38     |       0.f, 3.2e-10f            |
 |       double       |      64      |     2.22507e-308     |     1.79769e+308     |      2.3, 1.2345e200           |
 |     long double    |      96      |     3.3621e-4932     |     1.18973e+4932    |  100000000.5L, 0.0000345L      |
 
-&#42; The use of suffix `z` for `size_t` literals is currently only a proposal, so not all compilers support it. On 32-bit machines `long` and `size_t` are usually 32 bits, while `long long` is guaranteed to be (at least) 64 bits.
+&#42; The availability of suffix `UZ` for unsigned `size_t` literals (and `Z` for signed `size_t`) is new to C++23. On 32-bit machines `long` and `size_t` are usually 32 bits, while `long long` is guaranteed to be (at least) 64 bits on all platforms.
 
 The variable definition `double n{2.3};` should by now appear familiar and correct; it assigns a floating-point number (actually as shown in the table, a numeric literal) to a double precision variable. In other words it's an exact match between the declared type and the literal type. (If it were a narrowing cast, such as `double n{2.3L}` we would expect compilation to fail.)
 
@@ -205,11 +209,10 @@ Suffixes can apply to either integer or floating point literals (both in the cas
 |  l, L  | extended precision float OR long integer |   100'000l, 3.3L   |
 |  u, U  |             unsigned integer             |     65536u, -1U    |
 | ll, LL |        long long integer (64 bits)       | 0ll, -1'234'567LL  |
-|   z *  |         unsigned size type (size_t)      | 0z, 4'294'967'296z |
+| uz, UZ |         unsigned size type (size_t)      | 0uz, 4'294'967'296UZ |
+|  z, Z  |           signed size type (size_t)      | 0z, 4'294'967'296Z |
 
-&#42; Suppport for this literal has to be explicitly enabled, currently
-
-Note there is no literal for `short int` and is unlikely to ever be so, as the `s` suffix is used for seconds when using the `<chrono>` header. Also, the integer literal suffixes don't ever actually need to be used in modern C++, source-code literals in all bases are automatically *promoted* (widened) to a type that can hold the value of the literal. To enable all the literal suffixes in the Standard Library use:
+Note there is no literal for `short int` and there is unlikely to ever be one, as the `s` suffix is used for seconds when using the `<chrono>` header (and `string` when used with the `<string>` header). Also, the integer literal suffixes don't ever actually need to be used in Modern C++, source-code literals in all bases are automatically *promoted* (widened) to a type that can hold the value of the literal. To enable all the literal suffixes in the Standard Library use:
 
 ```cpp
 using namespace std::literals;  // This is also implied by "using namespace std;"
@@ -217,9 +220,9 @@ using namespace std::literals;  // This is also implied by "using namespace std;
 
 **Experiment**
 
-* Make up some variable assignments from various literals. Use `auto`, and output the variables using `cout`. See if the output is what you expected.
+* Make up some variable assignments from various literals. Use `auto`, and output the variables using `print()`. See if the output is what you expected.
 
-* Alter your assignments to specify the correct type instead of `auto`, such as `long long`. Check the tables above if you're not sure, and use uniform initialization. Try to avoid always using the biggest types `long long` and `long double` as this may not be optimal in terms of memory and performance footprint.
+* Alter your assignments to specify the correct type instead of `auto`, such as `long long`. Check the tables above if you're not sure, and use uniform initialization. Try to avoid automatically using the biggest types `long long` and `long double` regardless of the value/calculation, as this may not be optimal in terms of memory footprint and performance.
 
 ## Local and global scopes
 
@@ -227,25 +230,25 @@ Variables defined outside of any function scope are called *global* variables, w
 
 A local variable with the same name as a previously defined global variable temporarily takes precedence over, or *shadows*, the global variable until it goes *out of scope*. Variables defined within a function go out of scope at the end of the function, and the space reserved for them is released.
 
-It is also possible to nest scopes within functions up to an arblitrary level. The delimiters `{` and `}` are used for this purpose, mirroring their use to introduce a function scope. Code within *sub-scopes* is typically indented an extra level. (Sub-scopes which can contain scoped variable definitions are also introduced by a variety of C++ keywords including `if` and `while`.) Variable names re-defined within sub-scopes lose visibility at the closing brace and can no longer be referenced (the memory they use may not be released until the function exits, however).
+It is also possible to nest scopes within functions up to an arbitrary level. The delimiters `{` and `}` are used for this purpose, mirroring their use to introduce a function scope. Code within *sub-scopes* is typically written indented an extra level. (Sub-scopes which can contain scoped variable definitions are also introduced by a variety of C++ keywords including `if` and `while`.) Variable names re-defined within sub-scopes lose visibility at the closing brace and can no longer be referenced (the memory they use may not be released until the function exits, however).
 
 The following program defines and initializes the variable `a` three times. This does not violate the One Definition Rule (ODR) because of one simple fact: *the three variables exist in different scopes*.
 
 ```cpp
 // 02-scopes.cpp : define three variables with the same name in one program
 
-#include <iostream>
+#include <print>
 using namespace std;
 
 auto a{ 1.5f };
 
 int main() {
-    cout << "(1) " << a << '\n';
+    println("(1) {}", a);
     auto a{ 2u };
-    cout << "(2) " << a << '\n';
+    println("(2) {}", a);
     {
         auto a{ 2.5 };
-        cout << "(3) " << a << '\n';
+        println("(3) {}", a);
     }
 }
 ```
@@ -262,9 +265,9 @@ Running this program produces the output:
 
 * Change the assignments to 1, 2, and 3 (using integer literals with `int` instead of `auto`). Does this still satisfy the ODR?
 
-* Add a fourth `cout << a` line between the two closing curly braces, just before `main()` exits. Is the output what you expected?
+* Add `println("(4) {}", a);` between the two closing curly braces, just before `main()` exits. Is the output what you expected?
 
-* Change the output command `<< a <<` to `<< ::a <<` in each of the three times it appears in the program. What appears to happen? (Explanation: the global scope resolution operator `::` selects the global `a` over any other `a` that may be visible.)
+* Change the output command `, a)` to `, ::a)` in each of the three times it appears in the program. What appears to happen? (Explanation: the global scope resolution operator `::` selects the global `a` over any other `a` that may be visible.)
 
 ## Static and thread-local variables
 
@@ -301,7 +304,7 @@ The next program defines two global variables, each in different namespaces, whi
 ```cpp
 // 02-height.cpp : define the same variable name in two different namespaces
 
-#include <iostream>
+#include <print>
 using namespace std;
 
 namespace Wonderland {
@@ -313,11 +316,9 @@ namespace VictorianEngland {
 }
 
 int main() {
-    cout << "Alice\'s height varies between "
-    << Wonderland::alice_height_m
-    << "m and "
-    << VictorianEngland::alice_height_m
-    << "m.\n";
+    println("Alice\'s height varies between {}m and {}m",
+        Wonderland::alice_height_m,
+        VictorianEngland::alice_height_m);
 }
 ```
 
@@ -325,13 +326,13 @@ int main() {
 
 * Add the statement `using namespace VictorianEngland;` as the first line of `main()`. Does this change the output in any way?
 
-* Now remove `VictorianEngland::` from the compound `cout` output line. Does the output change now? What do you learn about the connection between `using` directives and unqualified names?
+* Now remove `VictorianEngland::` from the output call. Does the output change now? What do you learn about the connection between `using` directives and unqualified names?
 
 Namespaces are *open*, that is elements can be added to a namespace from different parts of a program, even from different `.cpp` files. (This means it is technically possible to add to the `std` namespace, but doing so is strongly discouraged as it can create misleading code that may mysteriously fail to compile on other systems or platforms.)
 
 Namespaces can be nested in two ways: by either using multiple `namespace` keywords, or using the scope resolution operator, as shown in the code fragments below:
 
-```
+```cpp
 namespace Wonderland {
 namespace Animals {
 auto white_rabbit{ 1 };
@@ -347,7 +348,7 @@ The fully qualified names of both variables defined are very similar, they are: 
 
 Another feature of namespaces is the curiously named *unnamed namespace*. The syntax is simple, a `namespace` keyword followed immediately by `{`. The purpose of the unnamed namespace is to replace the use of `static` in definition of global names visible to just the current translation unit. The following code fragment defines and assigns a variable whose fully qualified name in the same translation unit is just `i`, and is not visible in any other.
 
-```
+```cpp
 namespace {
 int i = 3000;    // variable i is only visible later within this file
 }
@@ -368,16 +369,15 @@ Constants are defined using the `const` keyword, **either** before or after the 
 ```cpp
 // 02-constants.cpp : introducing the const keyword
 
-#include <iostream>
+#include <print>
 using namespace std;
 
 const double PI = 3.14159265358979;
 
 int main() {
     auto const APPROX_E = 3;
-    cout << "pi is almost exactly " << PI
-    << "e is approximately " << APPROX_E
-    << '\n';
+    println("pi is almost exactly {}, while e is approximately {}",
+        PI, APPROX_E);
 }
 ```
 
@@ -398,16 +398,16 @@ A reference is an *alias* (an alternative name) for another variable **which mus
 ```cpp
 // 02-references.cpp : introducing l-value references
 
-#include <iostream>
+#include <print>
 using namespace std;
 
 int alice_age{ 9 };
 
 int main() {
-    cout << "Alice\'s age is " << alice_age << '\n';
+    println("Alice\'s age is {}", alice_age);
     int& alice_age_ref = alice_age;
     alice_age_ref = 10;
-    cout << "Alice\'s age is now " << alice_age << '\n';
+    println("Alice\'s age is now {}", alice_age);
 }
 ```
 
@@ -423,7 +423,7 @@ As shown above, the syntax for creating and initializing a reference is simple, 
 
 The property of "reference-ness" and "const-ness" is stripped away from variables that are being assigned from. It is possible to initialize a constant from another constant when using `auto`, but this needs to be explicitly specified as a property of the entity being initialized:
 
-```
+```cpp
 const auto a{ 10 };  // define a as constant
 auto b = a;          // define b as variable copy of a
 const auto c = a;    // define c as constant copy of a
@@ -431,7 +431,7 @@ const auto c = a;    // define c as constant copy of a
 
 It is also possible to explicitly (re-)specify the reference property on the assignee side, but attempting to change the value of a constant value through a non-`const` reference is not allowed:
 
-```
+```cpp
 const auto d{ 11 };  // define d as constant
 auto e{ 12 };        // define e as variable
 const auto& f{ 12 }; // define f as constant reference (to a literal constant value)
@@ -456,36 +456,33 @@ Another way of qualifying a definition is with the `constexpr` keyword. This is 
 
 In fact, `constexpr` expressions can be complex with recent compilers, as long as all parts of the expression are themselves `constexpr`. The following program defines two constants, one of which is `constexpr`. Only the `constexpr` entity can be tested against `static_assert()`, which is a boolean truth test checked at compile-time. Don't worry if the inequality syntax is unfamiliar as this is covered in the next Chapter; the test `PI > 3.141 && PI < 3.143` evaluates the mathematical inequality `3.141 < PI < 3.143` in a way that is valid C++:
 
-```
+```cpp
 // 02-constexpr.cpp : introducing the constexpr keyword
 
-#include <iostream>
+#include <print>
 #include <cmath>
 using namespace std;
 
-const double PI1 = acos(-1.0);     // acos is not (yet) constexpr
+constexpr double PI1 = acos(-1.0);
 constexpr double PI2 = 22.0 / 7.0;
 
-// the following line does not compile and has been commented out
-//static_assert(PI1 > 3.141 && PI1 < 3.143);
+static_assert(PI1 > 3.141 && PI1 < 3.143);
 static_assert(PI2 > 3.141 && PI2 < 3.143);
 
 int main() {
-    cout << "PI1 = " << PI1 << '\n';
-    cout << "PI2 = " << PI2 << '\n';
+    println("PI1 = {}", PI1);
+    println("PI2 = {}", PI2);
 }
 ```
 
-(Hint: this program is the first to require an additional header to `<iostream>`; you may need to add `-lm` to the compile command under Linux/MacOS in order to link in the math library containing the `acos()` function.)
+(Hint: this program is the first to require an additional header to `<print>`; you may need to add `-lm` to the compile command under Linux/MacOS in order to link in the math library containing the `acos()` function.)
 
 **Experiment**
 
-* Uncomment the first `static_assert()` and try to compile the program. Is the error message user-friendly?
-
-* Now try to make the second `static_assert()` fail by using an invalid inequality test.
+* Try to make the second `static_assert()` fail by using an invalid inequality test.
 
 * Now change the program to check the value of *e* at compile time. (Hint: use the expression `exp(1.0)` to get a good approximation of *e*.)
 
-As can be seen from attempting to compile and run this program, both `PI1` and `PI2` have exactly the same value and are both constant, but the first `static_assert()` always fails because it can't evaluate at run-time, so compilation halts. In general, a program that fails to compile is preferable to one that runs incorrectly, so `static_assert()` is a useful tool to have. It also adds no *overhead* cost at run-time. The `static_assert()` test can optionally take a second string literal parameter, this being the error message for the compiler to output if the assertion fails.
+As can be seen from attempting to compile this program, `static_assert()` is a useful tool to have. It also adds no overhead cost at run-time. The `static_assert()` test can optionally take a second string literal parameter, this being the error message for the compiler to output if the assertion fails.
 
-*All text and program code &copy;2019-2022 Richard Spencer, all rights reserved.*
+*All text and program code &copy;2019-2024 Richard Spencer, all rights reserved.*
