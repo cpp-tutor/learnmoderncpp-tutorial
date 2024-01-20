@@ -12,7 +12,7 @@ enum Rank : unsigned short { ace = 1, two, three, four, five, six, seven, eight,
 
 The name of this type is `Rank`, by convention for a user-defined type this is in *SentenceCase*. Following the colon `:` is the *underlying type*; this **must** be a built-in integer type (`char` is also allowed) and defaults to `int` if not specified. Since we have specified `unsigned short` we can assign values from `0` to `65535` (most likely, however strictly speaking this is implementation dependent). Then, within curly braces are a list of comma-separated *enumerators*, each of which can optionally have values specified. We have set `ace = 1` instead of relying on the default value of zero for the first enumerator because it allows the internal value and representation to be the same. Subsequent enumerators take the next available value.
 
-A variable of type `enum` (also known as *plain* enum) such as our `Rank` can be initialized from any of the enumerators listed in its definition. However, care should be taken not to assign values not in its enumeration set; this includes default-initialization:
+A variable of type `enum` (also known as *plain* enum), such as `Rank` above, can be initialized from any of the enumerators listed in its definition. However, care should be taken not to assign values not in its enumeration set; this includes default-initialization if zero is not one of the enumerators:
 
 ```cpp
 Rank r1{ ace };     // ok, r1 is value of enumeration constant ace (1)
@@ -23,7 +23,7 @@ auto r5 = king;     // ok, r5 is of type Rank (not unsigned short)
 int i = seven;      // ok, implicit conversion to integral type
 ```
 
-It may be surprising to discover that in most ways `ace`, `two`, `three`, `four` and so on are just "normal" integer constant values. (Indeed in some historical versions of the C language, the way to define constants was by using anonymous `enum`s; this curiosity was given the affectionate name of the "enum hack".) Thus variables of type `enum` can "borrow" enumerators from different types of `enum`s! Even worse, enumerators from different `enum` definitions in the same scope could **not** use the same name without causing a name collision.
+It may be surprising to discover that in most ways `ace`, `two`, `three`, `four` and so on are just "normal" integer constant values. (Indeed in some historical versions of the C language, the only way to define constants was by using anonymous `enum`s; this curiosity was given the affectionate name of the "enum hack".) Thus variables of type `enum` can "borrow" enumerators from different types of `enum`s! Even worse, enumerators from different `enum` definitions in the same scope could **not** use the same name without causing a name collision.
 
 To address these limitations the C++ `enum class` type was created; this type is also known as *scoped* or *strongly typed* enumeration. We can represent the suit of a card using this type:
 
@@ -31,7 +31,7 @@ To address these limitations the C++ `enum class` type was created; this type is
 enum class Suit : char { spades = 'S', clubs = 'C', hearts = 'H', diamonds = 'D', none = '\?' };
 ```
 
-The difference in syntax is small, we have `enum class Suit` compared to `enum Rank`. However the `none` in `Suit` does not clash with `none` in `Rank`, and related to this feature the enumerators in an `enum class` have to be qualified with the type name, as follows:
+The difference in syntax is small, we have `enum class Suit` compared to `enum Rank`, although this time the underlying type is `char` and character literals are used for the enumerators. However the `none` in `Suit` does not clash with `none` in `Rank`, and related to this feature the enumerators in an `enum class` have to be qualified with the type name, as follows:
 
 ```cpp
 Suit s1 = Suit::hearts;     // good, types match
@@ -137,15 +137,13 @@ string_view get_color(Color c) {
     switch (c) {
         case Color::red:
             return "red";
-            break;
         case Color::green:
             return "green";
-            break;
         case Color::blue:
             return "blue";
-            break;
+        default:
+            return "<no color>";
     }
-    return "<no color>";
 }
 
 int main() {
@@ -208,15 +206,13 @@ string_view get_color(Color c) {
     switch (c) {
         case Color::red:
             return "red";
-            break;
         case Color::green:
             return "green";
-            break;
         case Color::blue:
             return "blue";
-            break;
+        default:
+            return "<no color>";
     }
-    return "<no color>";
 }
 
 int main() {
@@ -501,4 +497,4 @@ A few things to note about this program:
 
 * Add a `static` function to calculate the diagonal distance between two `Point`s and return it as a `double`. Consider how to implement `operator/` to calculate this value, and whether this would be a suitable use of OO.
 
-*All text and program code &copy;2019-2022 Richard Spencer, all rights reserved.*
+*All text and program code &copy;2019-2024 Richard Spencer, all rights reserved.*
