@@ -2,7 +2,7 @@
 
 ## Number and character arrays
 
-A C++ array can be described as a collection of entities *of the same type* and arranged *contiguously* in memory. C++ inherits its *built-in array* syntax from C, sometimes these are referred to as *C-style* arrays. Uniform initialization syntax can be used to assign the contents of an array at the point it is defined (and **only** at this point). This is called *aggregate initialization* using a *braced initializer* (the equals sign shown below is in fact optional):
+A C++ array can be described as a collection of entities *of the same type* arranged *contiguously* in memory. C++ inherits its *built-in array* syntax from C, sometimes these are referred to as *C-style* arrays. Uniform initialization syntax can be used to assign the contents of an array at the point it is defined (and **only** at this point). This is called *aggregate initialization* using a *braced initializer* (the equals sign shown below is in fact optional):
 
 ```
 int numbers[] = { 1, 2, 3, 4, 5 };
@@ -167,7 +167,7 @@ int main() {
 }
 ```
 
-A few new things to notice about this program.
+A few new things to notice about this program:
 
 * The size of the array called `str[]` is set by an integer constant, and this value is needed twice more in the program where it is accessible as `size(str)`, a compile-time value. An alternative way would be to use a constant or macro at each point the value is needed, and this is the only way to avoid repeated *magic constants* in older versions of C++ which did not provide `std::size()`.
 
@@ -523,4 +523,4 @@ The following table lists all eight members of the `begin()`/`end()` family, whe
 
 * Now modify the program so that only the last element of the array is printed out, whatever size the array is.
 
-*All text and program code &copy;2019-2022 Richard Spencer, all rights reserved.*
+*All text and program code &copy;2019-2024 Richard Spencer, all rights reserved.*
