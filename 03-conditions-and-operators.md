@@ -2,9 +2,23 @@
 
 ## Run-time user input
 
-The programs we have seen in the previous two chapters have been a little predictable in how they run as they have a *linear execution path* through the `main()` function. Such simple programs have very little practical use. More complex programs, which alter their *control flow* based on *user input* fall into two types. *Batch programs* take all of their input at the beginning of their execution, usually from any or all of: program parameters, an environment variable, or an input file. *Interactive programs* enact a dialog with the *user* (the computer operator) while the program is executing. This dialog is often two-way as the user is not necessarily expected to know what input is required without being prompted. Interactive programs often use either a console or a *GUI* (Graphical User Interface, historically found on desktop computers, but more often found these days on tablets and smartphones). Interactive console programs often produce output to the console *interleaved* with user input, while batch programs ususally know all of their input at the beginning of their execution and produce all of their output following this with no further user involvement or action. As an example of a modern alternative, a purely voice-activated device (possibly without a screen) has an interface which interestingly has more in common with an interactive console program than with a GUI application.
+The programs we have seen in the previous two chapters have been a little predictable in how they run as they have a *linear execution path* through the `main()` function. Such simple programs have very little practical use. More complex programs, which alter their *control flow* based on *user input* fall into two types:
 
-As a complement to the stream output object `cout`, the stream input object `cin` (an abbreviation of "Character Input") overloads `>>` (the *stream extraction operator*) to allow variables to be set from user input. When a `cin` input expression is reached, the program waits (indefinitely) for the user to type some input and press Enter. The following program outputs a message inviting the user to enter a number, and then prints this number out again on the console. Before `cin` is used, the variable to be used to accept the input into must have already been defined so that the type of the required input can be deduced. Providing an initial value is preferred (empty braces give it a default value) in case the read by `cin` fails due to either invalid input, such as the user typing letters where digits were required, or end-of-input (Ctrl-D or Ctrl-Z):
+* *Batch programs* take all of their input at the beginning of their execution, usually from any or all of: program parameters, an environment variable, or an input file.
+
+* *Interactive programs* enact a dialog with the *user* (the computer operator) while the program is executing. This dialog is often two-way as the user is not necessarily expected to know what input is required without being prompted.
+
+Interactive programs often use either a console or a *GUI* (Graphical User Interface, historically found on desktop computers, but more often found these days on tablets and smartphones). Interactive console programs often produce output to the console *interleaved* with user input, while batch programs ususally know all of their input at the beginning of their execution and produce all of their output following this with no further user involvement or action. As an example of a modern alternative, a purely voice-activated device (possibly without a screen) has an interface which interestingly has more in common with an interactive console program than with a GUI application.
+
+Previously we have enountered `print()` and `println()` for putting formatted output to the console. Interestingly, there is currently no direct equivalent in Modern C++ for reading input. The `getline()` functions are not covered until Chapter 7, and as might be guessed from the name read a textual string which must then be processed further in order to obtain a valid value for numerical (or similar) input. For reasons of simplicity, this Chapter only covers the use of *stream objects* for reading from and writing to the console, and use if these requires the `<iostream>` header.
+
+As a quick introduction to the stream output object `cout` (an abbreviation of "Character Output"), string literals, character literals, numeric (and other) values and variables are "put to" the console using (possibly multiple) occurrencies of `<<` (the *stream insertion operator*). There is no format string as such, the output is created from the object to the right of each `<<`, in order from left to right. For example:
+
+```cpp
+cout << "The answer is: " << 42 << '\n';  // println("The answer is: {}", 42);
+```
+
+As a complement to `cout`, the stream input object `cin` (an abbreviation of "Character Input") overloads `>>` (the *stream extraction operator*) to allow variables to be set from user input. When a `cin` input expression is reached, the program waits (indefinitely) for the user to type some input and press Enter. The following program outputs a message inviting the user to enter a number, and then prints this number out again on the console. Before `cin` is used, the variable to be used to accept the input into must have already been defined so that the type of the required input can be deduced. Providing an initial value is preferred (empty braces give it a default value) in case the read by `cin` fails due to either invalid input, such as the user typing letters where digits were required, or end-of-input (Ctrl-D or Ctrl-Z):
 
 ```cpp
 // 03-age1.cpp : get and then display an integer
@@ -20,15 +34,15 @@ int main() {
 }
 ```
 
-Use of `cin` from the user's perspective has a few quirks. Perhaps usefully, whitespace (any spaces, tabs or preceding new-lines) is ignored, while perhaps not so usefully, non numerical input is (silently) evaluated to the number zero. Also, the program makes no checks on the range of the input, so numbers such as `200` and `-50` are accepted without complaint, and printed out. In fact, the variable `alice_age` can be set to any value that can be held by type `int`; however the number must (usually) be entered as a decimal; the prefixes for binary, octal and hexadecimal are by default only interpreted at compile-time for literals within program code.
+Use of `cin` from the user's perspective has a few quirks. Perhaps usefully, whitespace (any spaces, tabs or preceding new-lines) is ignored, while perhaps not so usefully, non numerical input is (silently) evaluated to the number zero. Also, the program makes no checks on the range of the input, so numbers such as `200` and `-50` are accepted without complaint, and printed out. In fact, the variable `alice_age` can be set to any value that can be held by type `int`; however the number must (usually) be entered as a decimal; the prefixes for binary, octal and hexadecimal are by default only interpreted at compile-time for literals within program code, or by conversion functions such as `from_chars()`.
 
 ## Conditions and if-else
 
-The keyword `if` is followed by a *conditional expression* in (mandatory) parentheses, which always evaluates to `true` or `false` at run-time (these named boolean values are implicitly convertible both to and from integer `1` and `0` respectively). (To evaluate conditions at compile-time as well the construct `if constexpr` can be used; this is discussed later.) There are a number of symbols that are combined to represent mathematical conditions of equality, greater than, and so on. Some of these symbols together with their meanings are shown in the table below:
+The keyword `if` is followed by a *conditional expression* in (mandatory) parentheses, which always evaluates to `true` or `false` at run-time (these named Boolean values are implicitly convertible both to and from integer `1` and `0` respectively). (To evaluate conditions at compile-time as well the construct `if constexpr` can be used; this is discussed later in this Chapter.) There are a number of symbols that are combined to represent mathematical conditions of equality, greater than, and so on. Some of these symbols together with their meanings are shown in the table below:
 
 | Symbol |        Meaning        |
 |:------:|:---------------------:|
-|   ==   |         equal*        |
+|   ==   |         equal *       |
 |   !=   |       not equal       |
 |    >   |      greater than     |
 |    <   |       less than       |
@@ -59,17 +73,19 @@ int main() {
 }
 ```
 
-Notice that the scopes for both the `if` and `else` *clauses* are delimited with `{` and `}`, and that indentation is used for the `cout` operations within them. Notice also that the `if` and the `else` keywords line up vertically, this style is recommended in order to enable in-editor code folding to work, amongst other reasons. In this program the braces for the `if` and `else` clauses are in fact optional because they comprise only a single statement each, however using braces even where not strictly needed is again strongly recommended in case extra code needs to be added to the clauses later (and because code folding often only works in editors where an opening brace exists). Braces for function **definitions**, including `main()`, are always mandatory, even in the case of single-statement or empty functions. Function **declarations**, by contrast, do not have braces; they are analogous to a C++ **statement** being followed by a semi-colon.
+Notice that the scopes for both the `if` and `else` *clauses* are delimited with `{` and `}`, and that indentation is used for the `cout` operations within them. Notice also that the `if` and the `else` keywords line up vertically, this style is recommended in order to enable in-editor code folding to work, amongst other reasons. In this program the braces for the `if` and `else` clauses are in this case optional because they comprise only a single statement each, however using braces even where not strictly needed is again strongly recommended in case extra code needs to be added to the clauses later (and because code folding often only works in editors where an opening brace exists).
+
+Note: Braces for function **definitions**, including `main()`, are always mandatory, even in the case of single-statement or empty functions. Function **declarations**, by contrast, do not have braces; they are analogous to a C++ **statement** ending with a semi-colon.
 
 **Experiment**
 
 * What happens if you press Ctrl-D (Ctrl-Z then Enter under Windows) when prompted? Can you explain why this is?
 
-* Change the program to test against non-zero using the "not equal" operator and a `0`.
+* Change the program to test for non-zero using the "not equal" operator and a `0`. Does this work in the same way?
 
-* Change the program again to test against zero, and change the output statements appropriately so the output remains correct.
+* Change the program again to test for zero (as opposed to non-zero), and change the output statements appropriately so the output remains correct.
 
-* Now alter the original program to test a floating-point (`double`) variable as being zero or non-zero.
+* Now alter the original program to test a floating-point (`double`) variable as being zero or non-zero. Do you consider use of `0.0` as better style?
 
 * Delete the braces surrounding the `if` and `else` clauses. Does the code still compile? What happens if you added a second statement line to the `else` clause? Or the `if` clause?
 
@@ -182,15 +198,15 @@ Notice also the use of `cerr` to output error messages to the *standard error st
 
 **Experiment**
 
-* Change the type of input to `double` and make sure the program still compiles and runs correctly.
+* Change the type of the input and result variables to `double` and make sure the program still compiles and runs correctly.
 
-* Add a `case` clause for the exponentiation operator `'^'` which calls the function `pow(x,y)` (C++ has no built-in exponentiation operator, `'^'` in code actually means bitwise exclusive-or). Hint: you will need `#include <cmath>` and possibly also `-lm` on the link path.
+* Add a `case` clause for the exponentiation operator `'^'` which calls the function `pow(x,y)` (C++ has no built-in exponentiation operator, `^` in code actually means bitwise exclusive-or). Hint: you will need `#include <cmath>` and possibly also `-lm` on the link path.
 
 * Go back to using `int` variables and add the modulo operator `%` to the list of valid operators. You will need to add a suitable `case` clause. Note that this operation gives the remainder from a division, so divide-by-zero needs to be caught here as well.
 
 * Rewrite the case values as plain decimal integers, obtained from a table showing ASCII characteres against their numbers. Then try using hexadecimal values, and then octal values.
 
-* Rewrite the whole switch-case block as multiple if-else-if statements.
+* Rewrite the whole switch-case block as multiple if-else-if statements. Test all control-flow paths.
 
 The need for `break` statements at the end of each `case` clause has already been mentioned. Occasionally the behavior of program flow falling through to the next case can be useful. More often, multiple `case` matches using the same code is the desired behavior. The following program demonstrates the former of these:
 
@@ -224,7 +240,7 @@ int main() {
 }
 ```
 
-Notice that `case 1:` falls through into `case 2:`, and `case 0:` falls through into both of these. Some compilers will warn where `break` is missing from a `case` clause as it is a common programming mistake; this warning can be suppressed by writing `[[fallthrough]]` (this is a C++ *attribute*) where the compiler is expecting to find `break` (immediately before the next `case`). Using this attribute in the way shown here provides clarity to both human reader and compiler, it is not necessary where `case` statements follow on immediately with no code between.
+Notice that `case 1:` "falls through" into `case 2:`, and `case 0:` falls through into both of these. Some compilers will warn where `break` is missing from a `case` clause as it is a common programming mistake; this warning can be suppressed by writing `[[fallthrough]]` (this is a C++ *attribute*) where the compiler is expecting to find `break` (immediately before the next `case`). Using this attribute in the way shown here provides clarity to both human reader and compiler; it is not necessary where `case` statements follow on immediately with no code between.
 
 **Experiment:**
 
@@ -269,7 +285,7 @@ int main() {
 }
 ```
 
-Note that the parentheses around the **whole** conditional expression **are** needed as `<<` has a higher precedence than `?:`.
+Note: the parentheses around the **whole** conditional expression **are** needed as `<<` has a higher precedence than `?:`.
 
 **Experiment**
 
@@ -367,4 +383,4 @@ The table below is intended to be a complete list, and as such introduces operat
 | throw                                                                                                                                                                        | right to left | exception throw expression                                                                                                                                                                                                                                                                                                                                                                                                        | throw expression                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | ,                                                                                                                                                                            | left to right | comma sequencing operator                                                                                                                                                                                                                                                                                                                                                                                                         | expression, expression                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 
-*All text and program code &copy;2019-2022 Richard Spencer, all rights reserved.*
+*All text and program code &copy;2019-2024 Richard Spencer, all rights reserved.*
