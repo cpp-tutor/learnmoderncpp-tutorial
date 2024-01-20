@@ -333,7 +333,7 @@ f(): int: 1
 f(): double: 2.5
 ```
 
-The function to be used is determined at compile-time from the usage at the call site, as the types of the arguments are always known. A best-match is performed in the case of no exact match, so for example `f('a')` would call `f(int i)` while `f(0.5f)` would call `f(double d)`.
+The function to be used is determined at compile-time from the usage at the call site, as the types of the arguments are always known. A "best-match" is performed in the case of no exact match, so for example `f('a')` would call `f(int)` while `f(0.5f)` would call `f(double)`.
 
 **Experiment**
 
@@ -425,7 +425,7 @@ There are three main new things to notice about this program.
 
 ## Inline functions
 
-Functions can be declared as inline functions by using the keyword `inline` before the return type in the function definition. The main aim of declaring a function `inline` is to remove the time overhead of a function call; the function body code is replicated for each function call *in place* at the call site(s). Functions declared with `inline` must be present (and identical) in each translation unit that uses them, hence they often appear in header files; this is a special relaxation of the ODR. Overuse of inline functions can lead to *code-bloat*, so they are best reserved for very short functions. The following program demonstrates use of the `inline` keyword:
+Functions can be declared as inline functions by using the keyword `inline` before the return type in the function definition. The main aim of declaring a function `inline` is to remove the time overhead of a function call; the function body's code is replicated for each function call *in place* at the call site(s). Functions declared with `inline` must be present (and identical) in each translation unit that uses them, hence they often appear in header files; this is a special relaxation of the ODR. Overuse of inline functions can lead to *code-bloat*, so they are best reserved for very short functions. The following program demonstrates use of the `inline` keyword:
 
 ```cpp
 // 04-inline.cpp : use of an inline function
