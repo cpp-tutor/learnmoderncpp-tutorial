@@ -90,7 +90,7 @@ int main() {
 }
 ```
 
-In fact, the call of `abs_value()` yielding its return value could be used directly in the second `cout` call, which means a named variable `a` is not needed. Using a (temporary) variable to store the return value of a function could be seen as unnecessary if the value is used only once, however if the return value of a function is needed more than once and is not stored in a variable, the function must be called multiple times which could become inefficient.
+In fact, the call of `abs_value()` yielding its return value could be used directly in the second `cout` call, which means a named variable `a` is not needed. Using a (temporary) variable to store the return value of a function could be seen as unnecessary if the value is used only once, however if the return value of a function is needed more than once and is not stored in a variable, the function must be called every time its return value is needed, which could become inefficient.
 
 **Experiment**
 
@@ -98,7 +98,7 @@ In fact, the call of `abs_value()` yielding its return value could be used direc
 
 * Modify `abs_value()` so that the keyword `else` is used. Does this make the code any more obvious in intent? Do you get a warning about there being no `return` keyword outside of the `if`-`else` clauses? What happens if you add a third `return` statement just before the function's closing brace?
 
-* Rearrange the order of the definitions (all beginnning with `int`). What errors do you get?
+* Rearrange the order of the variable and/or function definitions (all beginning with `int`). What errors do you get?
 
 ## Parameters by value
 
@@ -333,7 +333,7 @@ f(): int: 1
 f(): double: 2.5
 ```
 
-The function to be used is determined at compile-time from the usage at the call site, as the types of the arguments are always known. A best-match is performed in the case of no exact match, so for example `f('a')` would call `f(int)` while `f(0.5f)` would call `f(double)`.
+The function to be used is determined at compile-time from the usage at the call site, as the types of the arguments are always known. A best-match is performed in the case of no exact match, so for example `f('a')` would call `f(int i)` while `f(0.5f)` would call `f(double d)`.
 
 **Experiment**
 
@@ -346,12 +346,12 @@ Variables declared `static` inside a function body are in fact global variables 
 ```cpp
 // 04-static-var.cpp : preserving function state in a static variable
 
-#include <iostream>
+#include <print>
 using namespace std;
 
 void f() {
     static int s{1};
-    cout << s << '\n';
+    println("{}", s);
     ++s;
 }
 
@@ -425,12 +425,12 @@ There are three main new things to notice about this program.
 
 ## Inline functions
 
-Functions can be declared as inline functions by using the keyword `inline` before the return type in the function definition. The main aim of declaring a function `inline` is to remove the time overhead of a function call; the code is replicated for each function call *in place* at the call site(s). Functions declared with `inline` must be present (and identical) in each translation unit that uses them, hence they often appear in header files; this is a special relaxation of the ODR. Overuse of inline functions can lead to *code-bloat*, so they are best reserved for very short functions. The following program demonstrates use of the `inline` keyword:
+Functions can be declared as inline functions by using the keyword `inline` before the return type in the function definition. The main aim of declaring a function `inline` is to remove the time overhead of a function call; the function body code is replicated for each function call *in place* at the call site(s). Functions declared with `inline` must be present (and identical) in each translation unit that uses them, hence they often appear in header files; this is a special relaxation of the ODR. Overuse of inline functions can lead to *code-bloat*, so they are best reserved for very short functions. The following program demonstrates use of the `inline` keyword:
 
 ```cpp
 // 04-inline.cpp : use of an inline function
 
-#include <iostream>
+#include <print>
 using namespace std;
 
 inline void swap(int& x, int& y) {
@@ -441,9 +441,9 @@ inline void swap(int& x, int& y) {
 
 int main() {
     int a = 1, b = 2;
-    cout << "(1) a = " << a << ", b = " << b << '\n';
+    println("(1) a = {}, b = {}", a, b);
     swap(a, b);
-    cout << "(2) a = " << a << ", b = " << b << '\n';
+    println("(2) a = {}, b = {}", a, b);
 }
 ```
 
@@ -504,7 +504,7 @@ Note that it is **not** necessary (or even possible) to use `if constexpr` for t
 
 ## Non-returning and noexcept functions
 
-It is possible to write a function which never returns, for example using an infinite loop. Another example might be a function that causes an abnormal early exit from the running program; the Modern C++ way of doing this is to throw an exception, or even call `std::terminate()` directly (the C Standard Library also provides `abort()`, `exit()` and `quick_exit()` but these do not deallocate all global objects correctly). The way to indicate this property to the compiler is to use the `[[noreturn]]` attribute when declaring the function, as shown in this example program:
+It is possible to write a function which never returns, for example using an infinite loop. Another example might be a function that causes an abnormal early exit from the running program; the Modern C++ way of doing this is to throw an exception, or even to call `std::terminate()` directly (the C Standard Library also provides `abort()`, `exit()` and `quick_exit()` but these do not deallocate all global objects correctly). The way to indicate this property to the compiler is to use the `[[noreturn]]` attribute when declaring the function, as shown in this example program:
 
 ```cpp
 // 04-noreturn.cpp : program which does not return from main()
@@ -534,7 +534,7 @@ The keyword `noexcept` is used to declare that a function is guaranteed to not t
 ```cpp
 // 04-noexcept.cpp : a noexcept function throwing an exception
 
-#include <iostream>
+#include <print>
 #include <stdexcept>
 using namespace std;
 
@@ -542,7 +542,7 @@ int throw_if_zero(int i) noexcept {
     if (!i) {
         throw runtime_error("found a zero");
     }
-    cout << "throw_if_zero(): " << i << '\n';
+    println("throw_if_zero(): {}", i);
 }
 
 int main() {
@@ -552,9 +552,9 @@ int main() {
         throw_if_zero(0);
     }
     catch(...) {
-        cout << "Caught an exception!\n";
+        println("Caught an exception!");
     }
-    cout << "Leaving main()\n";
+    println("Leaving main()\n");
 }
 ```
 
@@ -562,4 +562,4 @@ int main() {
 
 * Remove the `noexcept` keyword. Does the program compile? What is the output when run?
 
-*All text and program code &copy;2019-2022 Richard Spencer, all rights reserved.*
+*All text and program code &copy;2019-2024 Richard Spencer, all rights reserved.*
