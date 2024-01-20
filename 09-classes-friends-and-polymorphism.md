@@ -34,30 +34,29 @@ The key to solving the inability to create `Person`s using uniform initializatio
 ```cpp
 // 09-person1.cpp : model Person as a class with constructor
 
+#include <chrono>
 #include <iostream>
 #include <string>
 #include <string_view>
 using namespace std;
-
-struct Date {
-    int year{}, month{}, day{};
-};
+using namespace std::chrono;
 
 class Person {
 public:
-    Person(const Date& dob, string_view familyname, string_view firstname)
+    Person(const year_month_day& dob, string_view familyname, string_view firstname)
         : dob{ dob }, familyname{ familyname }, firstname{ firstname }
         {}
     string getName() const { return firstname + ' ' + familyname; }
+    const year_month_day& getDob() const { return dob; }
 private:
-    const Date dob;
+    const year_month_day dob;
     string familyname, firstname;
 };
 
 
 int main() {
-    Person genius{ { 1879, 3, 14 }, "Einstein", "Albert" };
-    cout << genius.getName() << '\n';
+    Person genius{ { 1879y, March, 14d }, "Einstein", "Albert" };
+    cout << genius.getName() << " was born " << genius.getDob() << '\n';
 }
 ```
 
@@ -69,11 +68,13 @@ Quite a few things to note about this program:
 
 * The member variables are initialized using uniform initialization syntax; this forbids narrowing conversions, and there shouldn't be any as the parameter types should have been carefully chosen. (Older code may use parentheses here instead of braces.) The order of construction is the same as the way the member fields are laid out (after the `private:` access specifier); the order in the comma-separated initializers is unimportant (although you should try to replicate the order of the member fields, your compiler will warn if they differ). The constructor's body is empty here (although it must be present), and this is not unusual.
 
-* The `Date` parameter is passed as `const`-reference instead of by value, as it is probably too big to fit in a single register to pass by value. The names are passed by value as `std::string_view` although in older code `const std::string&` would be common.
+* The `std::chrono::year_month_day` parameter (itself initialized by uniform initialization) is passed as `const`-reference instead of by value, as it is probably too big to fit in a single register to pass by value. The names are passed by value as `std::string_view` although in older code `const std::string&` would be common.
 
 * The member function `getName()` is declared `const` as it is guaranteed not to change any member variables. It returns a newly created `std::string` which must be returned by value.
 
-* The member variable `date` is declared `const` as it will never need to be changed; of course it needs to be initialized by the constructor, but this is allowed. The member variables `familyname` and `firstname` need to be of type `std::string` (not `std::string_view` as for the constructor's parameters) for them to be guaranteed to exist for the lifetime of the class.
+* The member variable `dob` is declared `const` as it will never need to be changed; of course it needs to be initialized by the constructor, and this case is allowed. The member variables `familyname` and `firstname` need to be of type `std::string` (not `std::string_view` as for the constructor's parameters) for them to be guaranteed to exist for the lifetime of the class.
+
+* The member function `getDob()` is also declared `const` and returns a `const`-reference. It is possible to put this return value directly to a `std::ostream` as the Standard Library overloads `operator<<` for `std::chrono::year_month_day`.
 
 **Experiment:**
 
@@ -81,7 +82,9 @@ Quite a few things to note about this program:
 
 * Rewrite the constructor to initialize the member variables in the body, instead of using the comma-separated list of member initializers.
 
-* Write getters (all declared `const`) called `getFamilyName()`, `getFirstName()`, `getDOB()` avoiding creation of unnecessary temporary variables. Modify `main()` to use these.
+* Modify this program to use `std::println()` instead of `cout`.
+
+* Write getters (all declared `const`) called `getFamilyName()` and `getFirstName()` avoiding creation of unnecessary temporary variables. Modify `main()` to use these.
 
 * Write setters called `setFamilyName()` and `setFirstName()`. Test these from `main()` again.
 
@@ -100,17 +103,18 @@ The following program defines three `class`es, the second and third of which der
 ```cpp
 // 09-person2.cpp : model Person, Student and Employee as a class inheritance hierarchy
 
+#include <chrono>
 #include <iostream>
 #include <string>
 #include <string_view>
 #include <vector>
 using namespace std;
+using namespace std::chrono;
 
 class Person {
 public:
-    struct Date;
-    Person(Date dob) : dob{ dob } {}
-    Person(Date dob, string_view familyname, string_view firstname, bool familynamefirst = false)
+    Person(year_month_day dob) : dob{ dob } {}
+    Person(year_month_day dob, string_view familyname, string_view firstname, bool familynamefirst = false)
         : dob{ dob }, familyname{ familyname }, firstname{ firstname },
           familynamefirst{ familynamefirst } {}
     virtual ~Person() {}
@@ -128,12 +132,8 @@ public:
             return firstname + ' ' + familyname;
         }
     }
-    struct Date {
-        unsigned short year{};
-        unsigned char month{}, day{};
-    };
 protected:
-    const Date dob;
+    const year_month_day dob;
 private:
     string familyname, firstname;
     bool familynamefirst{};
@@ -144,7 +144,7 @@ public:
     enum class Schooling;
     Student(const Person& person, const vector<string>& attended_classes = {}, Schooling school_type = Schooling::preschool)
         : Person{ person }, school_type{ school_type }, attended_classes{ attended_classes } {}
-    const Date& getDOB() const { return dob; }
+    const year_month_day& getDob() const { return dob; }
     const vector<string>& getAttendedClasses() const { return attended_classes; }
     enum class Schooling { preschool, elementary, juniorhigh, highschool, college, homeschool, other };
 private:
@@ -156,7 +156,7 @@ class Employee : public Person {
 public:
     Employee(const Person& person, int employee_id, int salary = 0)
         : Person{ person }, employee_id{ employee_id }, salary{ salary } {}
-    bool isBirthday(Date today) const { return dob.month == today.month && dob.day == today.day; }
+    bool isBirthdayToday(year_month_day today) const { return dob.month() == today.month() && dob.day() == today.day(); }
     void setSalary(int salary) { salary = salary; }
     auto getDetails() const { return pair{ employee_id, salary }; }
 private:
@@ -165,7 +165,7 @@ private:
 };
 
 int main() {
-    Person genius{ { 1879, 3, 14 }, "Einstein", "Albert" };
+    Person genius{ { 1879y, March, 14d }, "Einstein", "Albert" };
     Student genius_student{ genius, { "math", "physics", "philosophy" }, Student::Schooling::other };
     Employee genius_employee{ genius, 1001, 15000 };
 
@@ -179,8 +179,8 @@ int main() {
 
     auto [ id, salary ] = genius_employee.getDetails();
     cout << "ID: " << id << ", Salary: $" << salary << '\n';
-    Person::Date next_bday{ 2020, 3, 14 };
-    if (genius_employee.isBirthday(next_bday)) {
+    year_month_day next_bday{ 2023y, March, 14d };
+    if (genius_employee.isBirthdayToday(next_bday)) {
         cout << "Happy Birthday!\n";
     }
 }
@@ -188,15 +188,11 @@ int main() {
 
 Many things to note about this program:
 
-* The `Date` type has been moved to be inside the `Person`; its fully qualified name is therefore `Person::Date`; this has been done to illustrate how `struct`s and `class`es and be nested inside each other. (The type `std::year_month_day`, new to C++20, was not available in my compiler when this program was written.) A forward-declaration `struct Date;` is necessary to avoid having to define `Date` in full before the first constructor.
+* A second constructor for `Person` taking only a `std::chrono::year_month_day` has been added. Setters can be used later to initialize or modify the other three member variables, which are left defaulted by this constructor (empty for the two `std::string`s and `false` for the `bool`).
 
-* A second constructor for `Person` taking only a `Date` has been added. Setters can be used later to initialize or modify the other three member variables, which are left defaulted by this constructor (empty for the two `std::string`s and `false` for the `bool`).
-
-* A `virtual` destructor has been addded to `Person`; if you remember one thing about inheritance, it should be that base classes need a virtual destructor. This is so that any heap objects of type `Student` or `Employee` assigned to a pointer of type `Person*` (including use of smart pointers), the correct destructor of the **derived** class can be found and thus called, avoiding memory leaks.
+* A `virtual` destructor has been added to `Person`; if you remember one thing about inheritance, it should be that base classes need a virtual destructor. This is so that any heap objects of type `Student` or `Employee` assigned to a pointer of type `Person*` (including use of smart pointers), the correct destructor of the **derived** class can be found and thus called, avoiding memory leaks.
 
 * The `getName()` function returns the name(s) provided by either the constructor or the setter(s) as a single `std::string`, ordered according to the member variable `familynamefirst`. (I hope this attempt at cultural inclusion doesn't offend anyone!)
-
-* The `Date` type has been modified to try to fit it into 32-bits, so it is almost certainly passed more efficiently by value in a single register rather than by `const`-reference.
 
 * The member variable `dob` is declared `protected:`, the other three are `private:`, as before.
 
@@ -208,13 +204,13 @@ Many things to note about this program:
 
 * The base class portion of `Student` is initialized as `Person{ person }` where `person` is of type `const Person&`. Then the other two fields of `Student` are initialized. The constructor parameter variable `attended_classes` is passed as a `const vector<string>&` so that only one copy is made, which is when the member variable of the same name is initialized.
 
-* A `public:` member function `getDOB()` makes the `protected:` member of the base class `dob` available to **users** of the derived class. It is declared `const` and returns a `const`-reference.
+* A `public:` member function `getDob()` makes the `protected:` data member of the base class `dob` available to **users** of the derived class, in this case `Student`. It is declared `const` and returns a `const`-reference.
 
 * The member function `getAttendedClasses()` returns a `const`-reference to `attended_classes`, therefore this `std::vector<string>` is made visible to the function which calls this member function, but is not modifiable.
 
 * The `Employee` constructor takes three parameters, the third of which is optional. The base class portion is initialized in the same way as for `Student`.
 
-* The member function `isBirthday()` takes a `Person::Date` as a parameter and compares the `day` and `month` fields with those of `dob`, returning `true` if they are the same, or `false` otherwise. (We're pretending "today" is March 14, 2020.)
+* The member function `isBirthdayToday()` takes a `std::chrono::year_month_day` as a parameter and compares the return values of the `day()` and `month()` members with those of `dob`, returning `true` if they are the same, or `false` otherwise. (We're pretending "today" is March 14, 2024, so this function always returns `true`.)
 
 * The member variable `employee_id` is not meant to be able to be changed, so is declared `const`. The setter `setSalary()` is defined so that `salary` can be updated, while the getter `getDetails()` returns an aggregate of both derived class member variables by value.
 
@@ -232,7 +228,7 @@ Many things to note about this program:
 
 * Write a second constructor for `Employee` to accomplish the same thing.
 
-* Add `getDOB()` to `Employee`, as for `Student`. Now try to add it to `Person`, what do you find? Would a single `public:` getter in the base class be more useful than a `protected:` member variable?
+* Add `getDob()` to `Employee`, as for `Student`. Now try to add it to `Person`, what do you find? Would a single `public:` getter in the base class be more useful than a `protected:` member variable?
 
 * Add member functions `addAttendedClass()` and `removeAttendedClass()` to `Student`. Make them smart enough to handle duplicates/invalid parameters.
 
@@ -327,18 +323,15 @@ A couple of things to note:
 Friends have access to all members of the `class` that declares them a `friend`, including those declared `private:` or `protected:`. Sometimes this is desirable, as shown in the following program:
 
 ```cpp
-// 09-person3.cpp : define operator== and operator<< for Person class
+// 09-person3.cpp : define operator<=> for Person class
 
 #include <iostream>
 using namespace std;
 
 struct Date {
     int year{}, month{}, day{};
+    auto operator<=>(const Date&) const = default;
 };
-
-bool operator== (const Date& lhs, const Date& rhs) {
-    return lhs.year == rhs.year && lhs.month == rhs.month && lhs.day == rhs.day;
-}
 
 class Person {
 public:
@@ -346,18 +339,13 @@ public:
         : dob{ dob }, familyname{ familyname }, firstname{ firstname }
         {}
     string getName() const { return firstname + ' ' + familyname; }
-    friend bool operator== (const Person&, const Person&);
+    const auto& getDob() const { return dob; }
+    auto operator<=>(const Person&) const = default;
     friend ostream& operator<< (ostream&, const Person&);
 private:
-    const Date dob;
     string familyname, firstname;
+    const Date dob;
 };
-
-bool operator== (const Person& lhs, const Person& rhs) {
-    return lhs.familyname == rhs.familyname
-        && lhs.firstname == rhs.firstname
-        && lhs.dob == rhs.dob;
-}
 
 ostream& operator<< (ostream& os, const Person& p) {
     os << "Name: " << p.getName() << ", DOB: "
@@ -366,8 +354,8 @@ ostream& operator<< (ostream& os, const Person& p) {
 }
 
 int main() {
-    Person person1{ { 2000, 1, 1 }, "John", "Doe" },
-        person2{ { 1987, 11, 31 }, "John", "Doe" };
+    Person person1{ { 2000, 1, 1 }, "Doe", "John" },
+        person2{ { 1987, 11, 31 }, "Doe", "John" };
     cout << "person1: " << person1 << '\n';
     cout << "person2: " << person2 << '\n';
     if (person1 == person2) {
@@ -376,16 +364,28 @@ int main() {
     else {
         cout << "Different person!\n";
     }
+
+    cout << "person1 is ";
+    if (person1.getDob() > person2.getDob()) {
+        cout << "younger than ";
+    }
+    else if (person1.getDob() < person2.getDob()) {
+        cout << "older than ";
+    }
+    else {
+        cout << "the same age as ";
+    }
+    cout << "person2" << '\n';
 }
 ```
 
 Some things to note about this program:
 
-* Global `operator==` is defined for `Date`. Note that if we used either `std::year_month_day` or `operator<=>` (both new in C++20, but not covered in this Tutorial), this definition would not be necessary. As this `Date` is a `struct` with all members `public:`, use of the keyword `friend` is not needed.
+* Member `operator<=>` (the "spaceship operator") is defaulted for this roll-your-own `Date`; this is all that is needed for the equality and ordering comparisons to be defined for this class, with ordering performed member-wise starting with the first data member.
 
-* Within the definition of `Person`, both global `operator==` and global `operator<<` are declared `friend`. This is more boilerplate that you can use in your own classes, changing all occurrences of `Person` to the name of your class. (They are identical to normal function declarations, other than the use of the `friend` keyword.)
+* Within the definition of `Person`, global `operator<<` is declared as a `friend` function. This is more boilerplate that you can use in your own classes, changing parameter `const Person&` to the name of your class. (They are identical to normal function declarations, other than the use of the `friend` keyword.)
 
-* Global `operator==` is defined for `Person`. Here the `std:::string` members are compared explicitly, before the `Date` members are compared, calling the previously defined `operator==` for `Date` automatically.
+* Member `operator<=>` is defaulted for `Person`; with this code the `std:::string` members will be compared (`familyname` before `firstname`), before the `Date` members are compared.
 
 * Global `operator<<` is also defined for `Person`, allowing objects to be put to `cout` (and any other `std::ostream`s) using `<<`. This needs to be a `friend` because it accesses `dob`.
 
@@ -395,11 +395,9 @@ Some things to note about this program:
 
 * Now give them different names. What output do you get?
 
-* Define global `operator<<` for `Date`. Can you remove the need for `operator<<` for `Person`, to itself be a `friend` of `class Person`?
+* Define global `operator<<` for `Date`. Can you remove the need for `operator<<` for `Person` to itself be a `friend` of `class Person`?
 
-* Make global `operator==` for `Person` compare `getName()`s. Can you remove the need for it to be a `friend`?
-
-* Make `operator==` for `Person` a member function instead of a global function.
+* Compare a few `Person` instances with similar or same family names and first names, storing them in a `std::set<Person>`. Write code to output them telephone-book style. Are they ordered in the way you would expect?
 
 Classes can be declared `friend`s as well as functions, although this use is probably less common. The following program defines two `class`es `A` and `B` which are mutual friends, thus allowing member functions of either to access each other's `private:` members.
 
@@ -628,4 +626,4 @@ A lot of things to note about this program:
 
 [^1]: Grady Booch, Robert A. Maksimchuk, Michael W. Engle, Bobbi J. Young, Jim Conallen, Kelli A. Houston *Object-Oriented Analysis and Design with Applications* (3rd ed. Pearson, 2007, ISBN-13: 9780201895513)
 
-*All text and program code &copy;2019-2022 Richard Spencer, all rights reserved.*
+*All text and program code &copy;2019-2024 Richard Spencer, all rights reserved.*
