@@ -5,7 +5,7 @@ using namespace std;
 
 void f() {
     static int s{1};
-    cout << s << '\n';
+    println("{}", s);
     ++s;
 }
 

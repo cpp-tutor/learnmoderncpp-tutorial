@@ -1,15 +1,12 @@
-// 09-person3.cpp : define operator== and operator<< for Person class
+// 09-person3.cpp : define operator<=> for Person class
 
 #include <iostream>
 using namespace std;
 
 struct Date {
     int year{}, month{}, day{};
+    auto operator<=>(const Date&) const = default;
 };
-
-bool operator== (const Date& lhs, const Date& rhs) {
-    return lhs.year == rhs.year && lhs.month == rhs.month && lhs.day == rhs.day;
-}
 
 class Person {
 public:
@@ -17,18 +14,13 @@ public:
         : dob{ dob }, familyname{ familyname }, firstname{ firstname }
         {}
     string getName() const { return firstname + ' ' + familyname; }
-    friend bool operator== (const Person&, const Person&);
+    const auto& getDob() const { return dob; }
+    auto operator<=>(const Person&) const = default;
     friend ostream& operator<< (ostream&, const Person&);
 private:
-    const Date dob;
     string familyname, firstname;
+    const Date dob;
 };
-
-bool operator== (const Person& lhs, const Person& rhs) {
-    return lhs.familyname == rhs.familyname
-        && lhs.firstname == rhs.firstname
-        && lhs.dob == rhs.dob;
-}
 
 ostream& operator<< (ostream& os, const Person& p) {
     os << "Name: " << p.getName() << ", DOB: "
@@ -37,8 +29,8 @@ ostream& operator<< (ostream& os, const Person& p) {
 }
 
 int main() {
-    Person person1{ { 2000, 1, 1 }, "John", "Doe" },
-        person2{ { 1987, 11, 31 }, "John", "Doe" };
+    Person person1{ { 2000, 1, 1 }, "Doe", "John" },
+        person2{ { 1987, 11, 31 }, "Doe", "John" };
     cout << "person1: " << person1 << '\n';
     cout << "person2: " << person2 << '\n';
     if (person1 == person2) {
@@ -47,4 +39,16 @@ int main() {
     else {
         cout << "Different person!\n";
     }
+
+    cout << "person1 is ";
+    if (person1.getDob() > person2.getDob()) {
+        cout << "younger than ";
+    }
+    else if (person1.getDob() < person2.getDob()) {
+        cout << "older than ";
+    }
+    else {
+        cout << "the same age as ";
+    }
+    cout << "person2" << '\n';
 }

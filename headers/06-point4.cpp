@@ -13,7 +13,7 @@ struct Point{
     }
 };
 
-Point operator+ (const Point& lhs, const Point& rhs) { // non-member operator+
+const Point operator+ (const Point& lhs, const Point& rhs) { // non-member operator+
     Point result{ lhs };
     result += rhs;
     return result;

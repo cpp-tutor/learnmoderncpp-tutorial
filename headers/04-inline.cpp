@@ -1,6 +1,6 @@
 // 04-inline.cpp : use of an inline function
 
-#include <iostream>
+#include <print>
 using namespace std;
 
 inline void swap(int& x, int& y) {
@@ -11,7 +11,7 @@ inline void swap(int& x, int& y) {
 
 int main() {
     int a = 1, b = 2;
-    cout << "(1) a = " << a << ", b = " << b << '\n';
+    println("(1) a = {}, b = {}", a, b);
     swap(a, b);
-    cout << "(2) a = " << a << ", b = " << b << '\n';
+    println("(2) a = {}, b = {}", a, b);
 }

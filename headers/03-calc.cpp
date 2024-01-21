@@ -6,7 +6,7 @@ using namespace std;
 int main() {
     int r{}, x{}, y{};
     char op{};
-    cout << "Please enter a calulation (number op number, op is one of +-*/):\n";
+    cout << "Please enter a calculation (number op number, op is one of +-*/):\n";
     cin >> x >> op >> y;
     switch (op) {
     case '+':

@@ -2,12 +2,12 @@
 
 import std;
 using namespace std;
+using namespace std::chrono;
 
 class Person {
 public:
-    struct Date;
-    Person(Date dob) : dob{ dob } {}
-    Person(Date dob, string_view familyname, string_view firstname, bool familynamefirst = false)
+    Person(year_month_day dob) : dob{ dob } {}
+    Person(year_month_day dob, string_view familyname, string_view firstname, bool familynamefirst = false)
         : dob{ dob }, familyname{ familyname }, firstname{ firstname },
           familynamefirst{ familynamefirst } {}
     virtual ~Person() {}
@@ -25,12 +25,8 @@ public:
             return firstname + ' ' + familyname;
         }
     }
-    struct Date {
-        unsigned short year{};
-        unsigned char month{}, day{};
-    };
 protected:
-    const Date dob;
+    const year_month_day dob;
 private:
     string familyname, firstname;
     bool familynamefirst{};
@@ -41,7 +37,7 @@ public:
     enum class Schooling;
     Student(const Person& person, const vector<string>& attended_classes = {}, Schooling school_type = Schooling::preschool)
         : Person{ person }, school_type{ school_type }, attended_classes{ attended_classes } {}
-    const Date& getDOB() const { return dob; }
+    const year_month_day& getDob() const { return dob; }
     const vector<string>& getAttendedClasses() const { return attended_classes; }
     enum class Schooling { preschool, elementary, juniorhigh, highschool, college, homeschool, other };
 private:
@@ -53,7 +49,7 @@ class Employee : public Person {
 public:
     Employee(const Person& person, int employee_id, int salary = 0)
         : Person{ person }, employee_id{ employee_id }, salary{ salary } {}
-    bool isBirthday(Date today) const { return dob.month == today.month && dob.day == today.day; }
+    bool isBirthdayToday(year_month_day today) const { return dob.month() == today.month() && dob.day() == today.day(); }
     void setSalary(int salary) { salary = salary; }
     auto getDetails() const { return pair{ employee_id, salary }; }
 private:
@@ -62,7 +58,7 @@ private:
 };
 
 int main() {
-    Person genius{ { 1879, 3, 14 }, "Einstein", "Albert" };
+    Person genius{ { 1879y, March, 14d }, "Einstein", "Albert" };
     Student genius_student{ genius, { "math", "physics", "philosophy" }, Student::Schooling::other };
     Employee genius_employee{ genius, 1001, 15000 };
 
@@ -76,8 +72,8 @@ int main() {
 
     auto [ id, salary ] = genius_employee.getDetails();
     cout << "ID: " << id << ", Salary: $" << salary << '\n';
-    Person::Date next_bday{ 2020, 3, 14 };
-    if (genius_employee.isBirthday(next_bday)) {
+    year_month_day next_bday{ 2023y, March, 14d };
+    if (genius_employee.isBirthdayToday(next_bday)) {
         cout << "Happy Birthday!\n";
     }
 }

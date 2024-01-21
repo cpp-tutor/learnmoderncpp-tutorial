@@ -6,11 +6,11 @@ using namespace std;
 auto a{ 1.5f };
 
 int main() {
-    cout << "(1) " << a << '\n';
+    println("(1) {}", a);
     auto a{ 2u };
-    cout << "(2) " << a << '\n';
+    println("(2) {}", a);
     {
         auto a{ 2.5 };
-        cout << "(3) " << a << '\n';
+        println("(3) {}", a);
     }
 }

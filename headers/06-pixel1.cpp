@@ -19,15 +19,13 @@ string_view get_color(Color c) {
     switch (c) {
         case Color::red:
             return "red";
-            break;
         case Color::green:
             return "green";
-            break;
         case Color::blue:
             return "blue";
-            break;
+        default:
+            return "<no color>";
     }
-    return "<no color>";
 }
 
 int main() {

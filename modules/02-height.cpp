@@ -12,9 +12,7 @@ namespace VictorianEngland {
 }
 
 int main() {
-    cout << "Alice\'s height varies between "
-    << Wonderland::alice_height_m
-    << "m and "
-    << VictorianEngland::alice_height_m
-    << "m.\n";
+    println("Alice\'s height varies between {}m and {}m",
+        Wonderland::alice_height_m,
+        VictorianEngland::alice_height_m);
 }

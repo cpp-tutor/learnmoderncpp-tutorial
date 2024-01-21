@@ -7,7 +7,7 @@ int throw_if_zero(int i) noexcept {
     if (!i) {
         throw runtime_error("found a zero");
     }
-    cout << "throw_if_zero(): " << i << '\n';
+    println("throw_if_zero(): {}", i);
 }
 
 int main() {
@@ -17,7 +17,7 @@ int main() {
         throw_if_zero(0);
     }
     catch(...) {
-        cout << "Caught an exception!\n";
+        println("Caught an exception!");
     }
-    cout << "Leaving main()\n";
+    println("Leaving main()\n");
 }
