@@ -136,16 +136,19 @@ C++ has quite a lot of built-in types, most of them inherited from the C languag
 |   unsigned short   |      16      |           0          |         65535        |   n/a (as for unsigned)        |
 |         int        |      32      |      -2147483648     |      2147483647      |       -1000, 0x7fff            |
 |      unsigned      |      32      |           0          |      4294967295      |       1000U, 0xffffU           |
-|        long        |   64 (32)    |      -2147483648     |      2147483647      |      1L, 0x7fffffffL           |
-|    unsigned long   |   64 (32)    |           0          |      4294967295      |    10000000UL, 0xbbbfUL        |
-|      long long     |      64      | -9223372036854775808 |  9223372036854775807 | -10000LL, 0x80000000000LL      |
-| unsigned long long |      64      |           0          | 18446744073709551615 | 10000ULL, 0x7fffffffffULL      |
-|       size_t       |   64 (32)    |           0          | 18446744073709551615 |           0UZ, OZ *            |
+|        long        |   64 (32) +  |      -2147483648     |      2147483647      |      1L, 0x7fffffffL           |
+|    unsigned long   |   64 (32) +  |           0          |      4294967295      |    10000000UL, 0xbbbfUL        |
+|      long long     |      64 +    | -9223372036854775808 |  9223372036854775807 | -10000LL, 0x80000000000LL      |
+| unsigned long long |      64 +    |           0          | 18446744073709551615 | 10000ULL, 0x7fffffffffULL      |
+|      ssize_t       |   64 (32)    | -9223372036854775808 |  9223372036854775807 |              0Z *              |
+|       size_t       |   64 (32)    |           0          | 18446744073709551615 |             0UZ *              |
 |        float       |      32      |      1.17549e-38     |      3.40282e+38     |       0.f, 3.2e-10f            |
 |       double       |      64      |     2.22507e-308     |     1.79769e+308     |      2.3, 1.2345e200           |
-|     long double    |      96      |     3.3621e-4932     |     1.18973e+4932    |  100000000.5L, 0.0000345L      |
+|     long double    |     128      |     3.3621e-4932     |     1.18973e+4932    |  100000000.5L, 0.0000345L      |
 
-&#42; The availability of suffix `UZ` for unsigned `size_t` literals (and `Z` for signed `size_t`) is new to C++23. On 32-bit machines `long` and `size_t` are usually 32 bits, while `long long` is guaranteed to be (at least) 64 bits on all platforms.
+&#42; The "size types" `std::size_t` (unsigned) and `std::ssize_t` (signed) are present in the Standard Library, and so require a header which defines them, such as `<cstddef>`. (Negative values for `std::ssize_t` are typically used to represent error values.)
+
+&#43; On 32-bit machines `long`, `unsigned long`, `ssize_t` and `size_t` are usually 32 bits, and are usually 64 bits on 64-bit machines, while `long long` and `unsigned long long` are guaranteed to be (at least) 64 bits on all platforms.
 
 The variable definition `double n{2.3};` should by now appear familiar and correct; it assigns a floating-point number (actually as shown in the table, a numeric literal) to a double precision variable. In other words it's an exact match between the declared type and the literal type. (If it were a narrowing cast, such as `double n{2.3L}` we would expect compilation to fail.)
 
@@ -209,10 +212,12 @@ Suffixes can apply to either integer or floating point literals (both in the cas
 |  l, L  | extended precision float OR long integer |   100'000l, 3.3L   |
 |  u, U  |             unsigned integer             |     65536u, -1U    |
 | ll, LL |        long long integer (64 bits)       | 0ll, -1'234'567LL  |
-| uz, UZ |         unsigned size type (size_t)      | 0uz, 4'294'967'296UZ |
-|  z, Z  |           signed size type (size_t)      | 0z, 4'294'967'296Z |
+| uz, UZ |    unsigned size type (std::size_t)      | 0uz, 4'294'967'296UZ |
+|  z, Z  |      signed size type (std::ssize_t)     | 0z, -2'147'483'648Z |
 
-Note there is no literal for `short int` and there is unlikely to ever be one, as the `s` suffix is used for seconds when using the `<chrono>` header (and `string` when used with the `<string>` header). Also, the integer literal suffixes don't ever actually need to be used in Modern C++, source-code literals in all bases are automatically *promoted* (widened) to a type that can hold the value of the literal. To enable all the literal suffixes in the Standard Library use:
+Note there is no literal for `short int` and there is unlikely to ever be one, as the `s` suffix is used for seconds when using the `<chrono>` header (and `string` when used with the `<string>` header). Also, the integer literal suffixes don't ever actually need to be used in Modern C++, source-code literals in all bases are automatically *promoted* (widened) to a type that can hold the value of the literal.
+
+To enable all the literal suffixes in the Standard Library (assuming the necessary header(s) is/are present) use:
 
 ```cpp
 using namespace std::literals;  // This is also implied by "using namespace std;"
