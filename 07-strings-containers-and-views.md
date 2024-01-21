@@ -2,14 +2,14 @@
 
 ## String initialization, concatenation and comparison
 
-Whilst support for read-only string literals is built into C++, we must make use of the Standard Library when we want a string-type which is be able to be manipulated and compared, using operators such as `+` and `==`. The `std::string` type supports all of the operations you would expect to be present, such as concatenation, indexing, sub-string extraction, comparisons and reporting the length. All of the memory management operations necessary are taken care of automatically at run-time; string objects are allowed to use heap memory and interestingly do not use any "special" features of the language not available to the application programmer.
+Whilst support for read-only string literals is built into C++, we must make use of the Standard Library when we want a string-type which is be able to be manipulated and compared, using operators such as `+` (concatenation) and `==` (equality comparison). The `std::string` type supports all of the operations you would expect to be present, such as concatenation, indexing, sub-string extraction, comparisons and reporting the length. All of the memory management operations necessary are taken care of automatically at run-time; string objects are allowed to use heap memory and interestingly do not use any "special" features of the language not available to the application programmer.
 
-An empty string object can be created using `string` as the type specifier, either using uniform initializtion syntax, `auto`, or omitting the braces altogether where the type specifier is first:
+An empty string object can be created using `string` as the type specifier, either using uniform initialization syntax, or `auto`, or omitting the braces altogether where the type specifier is first:
 
 ```cpp
 string s1;
 string s2{};
-auto s3 = string{};
+auto s3 = string{}; // s1, s2, s3 are empty (mutable) strings
 ```
 
 Other variants exist as well, but these shown are the most modern. When an empty `std::string` is compared against an empty string literal `""` using `==` the result is `true`.
@@ -34,14 +34,14 @@ Single `char` literals can be appended too, although a `std::string` **cannot** 
 
 ```cpp
 string s1 = 'A';             // Error! Does not compile
-auto s2 = string{} + 'A';    // This version is fine, but maybe nonobvious
+auto s2 = string{} + 'A';    // This version is fine, but maybe non-obvious
 ```
 
 Strings can be reset to empty using a member function, or by assigning to an empty string literal:
 
 ```cpp
 s1 = "";                     // Both of these accomplish the same thing
-s2.clear();                  // (This is the preferred method)
+s2.clear();                  // (Using clear() is the preferred method)
 ```
 
 Confusingly, there are two different member functions which return a `std::string`'s length (excluding the `\0` terminator if it was constructed from a string literal), and a third which returns a `bool` (value `true` indicates length is zero):
@@ -147,7 +147,7 @@ auto s3 = wizard.substr(12);      // s3 is "Gray"
 
 The return type of `substr()` is `std::string`, which is a **new** variable containing a **copy** of (part of) the contents of the original `std::string`.
 
-Finally there is `append()` which is considered better style than using the `+` operator as it is potentially more efficient:
+Finally there is `append()` which is considered better style than using the `+=` operator as it is potentially more efficient:
 
 ```cpp
 auto wizard2 = "Saruman"s;    // note: suffix produces a string
@@ -173,26 +173,26 @@ auto n3 = stoi(s2);   // n3 is of type int
 auto n4 = stold(s1);  // n4 is of type long double
 ```
 
-For the functions which return an integer type, the optional third parameter is the numerical base to be applied (this defaults to 10), while for all of them the optional second parameter is a pointer to `std::size_t` variable used to indicate the index into the `std::string` of the first unused character (this defaults to `nullptr`, that is no index is returned).
+For the conversion functions which return an integer type, the optional third parameter is the numerical base to be applied (this defaults to 10), while for all of these functions the optional second parameter is a pointer to `std::size_t` variable used to indicate the index into the `std::string` of the first unused character (this defaults to `nullptr`, that is no index is returned).
 
 It is possible to declare `std::string` variables using syntax which is very similar to that for string literals, which uses the *literal suffix* `s`:
 
 ```cpp
 auto h1{ "Merry"s };               // h1 is mutable
 const auto h2{ "Pippin"s };        // h2 cannot be altered
-constexpr auto h3{ "Samwise"s };   // h3 can be used in constexpr contexts, new to C++20
+constexpr auto h3{ "Samwise"s };   // h3 can be used in constexpr contexts
 ```
 
 In addition, a single (possibly empty) `std::string` literal can be safely concatenated with any number of string and character literals:
 
 ```cpp
 auto alphabet = ""s + "ABCDEF" + ' ' + "abcde" + 'f';
-             // alphabet contains "ABCDEF abcdef" and of type std::string
+             // alphabet contains "ABCDEF abcdef" and is of type std::string
 ```
 
 Here `alphabet` has type `std::string`, and the concatenation is performed at run-time (use `constexpr` to make it happen at compile-time).
 
-Access to the underlying `char` representation of a `std::string` is provided by the member functions `c_str()` (an abbreviation of "C-String") and `data()`. The difference between the two is that `c_str()` **guarantees** to include a terminating zero-byte and is **not** writable, whereas `data()` **is** writable but with the caveat that there may be not be any terminating zero-byte (it depends on both how the `std::string` was initialized and the library implementation). Thus `c_str()` returns a `const char *` that can be safely used as a parameter to C functions such as `puts()`, or with C++ stream output, whereas `data()` returns a `char *` which is not safe to be used with any function which expects a zero-byte terminator.
+Access to the underlying `char` representation of a `std::string` is provided by the member functions `c_str()` (an abbreviation of "C-String") and `data()`. The difference between the two is that `c_str()` **guarantees** to include a terminating zero-byte and is **not** writable, whereas `data()` **is** writable but with the caveat that there may be not be any terminating zero-byte (it depends on both the `std::string`'s contents and the library implementation). Thus `c_str()` returns a `const char *` that can be safely used as a parameter to C functions such as `puts()`, or with C++ stream output, whereas `data()` returns a `char *` which is not always safe to be used with any function which expects a zero-byte terminator. (As an example, use of `data()` combined with `size()` to create a `std::string_view` is always safe.)
 
 **Experiment:**
 
@@ -206,7 +206,7 @@ Access to the underlying `char` representation of a `std::string` is provided by
 
 There is a fourth string-like type (besides literal string, built-in array of `char` and `std::string`) called `std::string_view`, which provides a "half-way house" between a fully-fledged string type and raw array access. Typically it is implemented with only two fields (pointer and length); its main advantage over `std::string` is that it can be constructed and passed around more cheaply in many cases.
 
-The `std::string_view` type only provides a subset of the features provided by `std::string`, in particular it does **not** support either in-place modification or concatenation. It also does **not** "own" the resource it refers to, therefore care must be taken to ensure that a `std::string_view` object does not outlive the entity it was constructed from (usually a `std::string` or `const char *`). It is safe when used as a function parameter (where otherwise a `const std::string&` or `const char *` would be used), and sometimes safe as a return type (instead of `const char *`).
+The `std::string_view` type only provides a subset of the features provided by `std::string`, in particular it does **not** support either in-place modification or concatenation. It also does **not** "own" the resource it refers to, therefore care must be taken to ensure that a `std::string_view` object does not outlive the entity from which it was constructed (usually a `std::string` or `const char *`, construction from a string literal is always safe.). It is safe when used as a function parameter (where otherwise a `const std::string&` or `const char *` would be used), and sometimes safe as a return type (instead of `const char *`).
 
 ```cpp
 string_view v1{ "Elrond" }; // string_view constructed from const char *
@@ -477,7 +477,7 @@ Unlike `std::string_view`, `std::span` can modify its elements, although it does
 
 ## Ordered and unordered sets
 
-A `std::set` holds its contents in sorted order at all times, thus it is called an *ordered container*. Occasionally this is desirable, however there are space and time costs to this convenience so before using this container type you should consider whether a `std::vector` which can be (manually) sorted when required is a better solution. Array access (using `[]`) is not supported for `std::set`; this may be a deciding factor as to its suitability. Ordered containers require that operator less-than (`<`) is defined when using them to hold user-defined types (other ordering critera can be specified, if needed).
+A `std::set` holds its contents in sorted order at all times, thus it is called an *ordered container*. Occasionally this is desirable, however there are space and time costs to this convenience so before using this container type you should consider whether a `std::vector` which can be (manually) sorted when required is a better solution. Array access (using `[]`) is not supported for `std::set`; this may be a deciding factor as to its suitability. Ordered containers require that `operator<` (less-than) is defined when using them to hold user-defined types (other ordering criteria can be specified, if needed).
 
 A feature of `std::set` is that it cannot hold duplicate values; subsequently inserting a previously held value does not alter the container, while an initializer list containing duplicates is shortened (and sorted) immediately. (The type `std::multiset` does allow duplicate values.)
 
@@ -701,11 +701,11 @@ There are some other containers and *container adaptors* implemented in the Stan
 
 * `std::priority_queue` implements a FIFO that sorts by age and priority
 
-* `std::flat_map` implements an unordered map essentially as two vectors (new in C++23)
+* `std::flat_map` implements an unordered map essentially as two vectors
 
 A brief Tutorial such as this is not the place to delve into these, and indeed the other containers covered in this Chapter have much more detail to discover. As a go-to for both tutorial and reference I can highly recommend [CppReference.com](https://en.cppreference.com)[^1] and [Josuttis, "The C++ Standard Library"](http://cppstdlib.com)[^2].
 
 [^1]: https://en.cppreference.com
 [^2]: http://cppstdlib.com
 
-*All text and program code &copy;2019-2022 Richard Spencer, all rights reserved.*
+*All text and program code &copy;2019-2024 Richard Spencer, all rights reserved.*
