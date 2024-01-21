@@ -123,10 +123,10 @@ public:
     }
 };
 
-auto o1 = Opt{ 1.2 };
-auto o2 = Opt{ 3 };
-auto o3 = Opt{};
-auto o4 = Opt<size_t>{};
+auto o1 = Opt{ 1.2 };    // T = double, valid = true
+auto o2 = Opt{ 3 };      // T = int, valid = true
+auto o3 = Opt{};         // T = char, valid = false
+auto o4 = Opt<size_t>{}; // T = size_t, valid = false
 ```
 
 Some things to note about this program:
@@ -139,7 +139,7 @@ Some things to note about this program:
 
 * Calling member function `hasValue()` is always safe, yielding a `bool`. Calling `get()` on an `Opt` with no value immediately terminates the program (the keyword `throw` is explained later in this Chapter).
 
-Of course, this simple class is of limited practical use, if you need a type to be considered optionally valid without using a "special" value to indicate this, then make use of `std::optional<T>` from the Standard Library.
+Of course, this simple class is of limited practical use; if you need a type to be considered optionally valid without using a "special" value to indicate this, then making use of `std::optional<T>` from the Standard Library is recommended.
 
 Member functions can be template functions, too. The following program defines a `Stringy` class with a `std::string` member, which can be initialized from another `std::string`, a `std::string_view` or a `const char *`:
 
@@ -854,7 +854,7 @@ int main() {
             cout << "Name not recognized!\n";
         }
     }
-}    
+}
 ```
 
 This is one of the larger programs we have seen, and covers much of the contents of this Chapter:
@@ -885,4 +885,4 @@ This is one of the larger programs we have seen, and covers much of the contents
 
 * Change `Pupil` and `Class` to be `class`es instead of `struct`s, with `private:` data members. Hint: you will need to write some `public:` getters.
 
-*All text and program code &copy;2019-2022 Richard Spencer, all rights reserved.*
+*All text and program code &copy;2019-2024 Richard Spencer, all rights reserved.*
