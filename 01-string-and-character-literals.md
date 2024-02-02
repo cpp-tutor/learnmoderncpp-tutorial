@@ -1,4 +1,4 @@
-﻿# String and Character Literals
+# String and Character Literals
 
 ## Introducing a Modern C++ program
 

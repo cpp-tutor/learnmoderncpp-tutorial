@@ -1,4 +1,4 @@
-﻿# Conditions and Operators
+# Conditions and Operators
 
 ## Run-time user input
 

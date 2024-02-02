@@ -1,4 +1,4 @@
-﻿# Files and Formatting
+# Files and Formatting
 
 ## Formatting values and variables for output
 

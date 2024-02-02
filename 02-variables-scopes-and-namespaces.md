@@ -1,4 +1,4 @@
-﻿# Variables, Scopes and Namespaces
+# Variables, Scopes and Namespaces
 
 ## Declarations, definitions and assignment
 
