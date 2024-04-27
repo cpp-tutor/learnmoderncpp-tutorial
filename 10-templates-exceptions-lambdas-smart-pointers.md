@@ -372,8 +372,7 @@ struct MinMaxAvg {
 
 int main() {
     vector v{ 3, 5, 2, 6, 2, 4 };
-    MinMaxAvg f;
-    for_each(begin(v), end(v), ref(f));
+    MinMaxAvg f = for_each(begin(v), end(v), MinMaxAvg{});
     cout << "Min: " << f.min << " Max: " << f.max
       << " Avg: " << f.avg << " Num: " << f.num << '\n';
 }
@@ -381,13 +380,11 @@ int main() {
 
 A few points to note about this program:
 
-* Only `num` and `first` are required to be set before the first `std::for_each()` call; we have used universal initializtion of the member variables, but this could also be achieved by using a (default-)constructor.
+* Only `num` and `first` are required to be set before the `std::for_each()` call; we have used universal initialization of the member variables, but this could also be achieved by using a (default-)constructor.
 
-* The definition of `f` (a `MinMaxAvg` function object) is required **before** the call to `std::for_each()` so that its state is still accessible after the call. It is destroyed at the end of `main()`, as this is the scope it is declared within. The code `for_each(begin(v), end(v), MinMaxAvg{});` would compile, but its result would be lost as the functor would itself be destroyed here.
+* The assignment of `f` (a `MinMaxAvg` function object) is the result of the call to `std::for_each()`, being the modified (default-constructed) third parameter.
 
-* The syntax `std::ref(f)` passes the function object by reference, with plain `f` a **copy** would be made which would mean the copy's member variables would be discarded at the end of the `for_each()` scope, so again the result would be lost.
-
-* The function template `std::for_each()` call decomposes to the equivalent of: `f(3); f(5); f(2); f(6); f(2); f(4);`. Of course, a range-for loop could be used to accomplish the same thing, but the *logic* would have to be written (or repeated) within the body of the loop.
+* The function template `std::for_each()` call decomposes to the equivalent of: `auto f = MinMaxAvg{}; f(3); f(5); f(2); f(6); f(2); f(4);`. Of course, a range-for loop could be used to accomplish the same thing, but the *logic* within the functor's `operator()` would have to be written (or repeated) within the body of the loop.
 
 **Experiment:**
 

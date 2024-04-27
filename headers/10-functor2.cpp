@@ -28,8 +28,7 @@ struct MinMaxAvg {
 
 int main() {
     vector v{ 3, 5, 2, 6, 2, 4 };
-    MinMaxAvg f;
-    for_each(begin(v), end(v), ref(f));
+    MinMaxAvg f = for_each(begin(v), end(v), MinMaxAvg{});
     cout << "Min: " << f.min << " Max: " << f.max
       << " Avg: " << f.avg << " Num: " << f.num << '\n';
 }
