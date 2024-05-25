@@ -133,7 +133,7 @@ While little hands make vain pretence
 Our wanderings to guide.
 ```
 
-* Now use a (non-raw) string literal for each line and a single call to `print()` with suitable escape characters. What happens if you remove all of the stream insertion operators *except* for the first? (Explanation: *concatenation* of adjacent string literals is automatically performed by the pre-processor.)
+* Now use a (non-raw) string literal for each line and a single call to `print()` with suitable escape characters. You concatenate the string literals without any operator: *concatenation* of adjacent string literals is automatically performed by the pre-processor.
 
 * Modify `01-title.cpp` to output the title of your favorite book or film centered on the console window (assume an 80 character fixed width, and change the size of the console window if different).
 
