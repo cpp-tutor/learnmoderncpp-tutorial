@@ -538,7 +538,7 @@ The keyword `noexcept` is used to declare that a function is guaranteed to not t
 #include <stdexcept>
 using namespace std;
 
-void throw_if_zero(int i) {
+void throw_if_zero(int i) noexcept {
     if (!i) {
         throw runtime_error("found a zero");
     }
