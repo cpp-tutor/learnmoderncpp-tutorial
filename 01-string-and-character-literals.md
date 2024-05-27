@@ -133,7 +133,7 @@ While little hands make vain pretence
 Our wanderings to guide.
 ```
 
-* Now use a (non-raw) string literal for each line and a single call to `print()` with suitable escape characters. What happens if you remove all of the stream insertion operators *except* for the first? (Explanation: *concatenation* of adjacent string literals is automatically performed by the pre-processor.)
+* Now use a (non-raw) string literal for each line and a single call to `print()` with suitable escape characters. You concatenate the string literals without any operator: *concatenation* of adjacent string literals is automatically performed by the pre-processor.
 
 * Modify `01-title.cpp` to output the title of your favorite book or film centered on the console window (assume an 80 character fixed width, and change the size of the console window if different).
 
@@ -156,7 +156,7 @@ The following table lists C++ types, sizes, target encodings, literals and objec
 | char32_t |   32  |  UTF-32  |     U"abcd"    |        U'a'       |     UR"(abcd)"     |  u32string  |      n/a      |   no    |
 |  wchar_t | 16/32 |   n/a +  |     L"abcd"    |        L'a'       |     LR"(abcd)"     |   wstring   |  wcout/wcerr  |   no    |
 
-&#42; An explicit cast to type `char` in `operator<<` may be required when using `cout`/`cerr`, for example: `cout << static_cast<char>(u8"Hello \u20AC!\n");`.
+&#42; An explicit cast to type `char` in `operator<<` may be required when using `cout`/`cerr`, for example: `cout << reinterpret_cast<const char*>(u8"Hello \u20AC!\n");`.
 
 &#43; The `wchar_t` encoding and streams under Windows are 16-bit and support UTF-16.
 

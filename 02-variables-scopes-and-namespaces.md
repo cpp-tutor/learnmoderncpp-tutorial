@@ -468,6 +468,9 @@ In fact, `constexpr` expressions can be complex with recent compilers, as long a
 #include <cmath>
 using namespace std;
 
+// Note: currently, not all compilers mark `acos` as a
+// constexpr function in cmath. The following line might
+// not compile with `clang++` for example.
 constexpr double PI1 = acos(-1.0);
 constexpr double PI2 = 22.0 / 7.0;
 
@@ -480,7 +483,7 @@ int main() {
 }
 ```
 
-(Hint: this program is the first to require an additional header to `<print>`; you may need to add `-lm` to the compile command under Linux/MacOS in order to link in the math library containing the `acos()` function.)
+(Hint: this program is the first to require an additional header to `<print>`; you may need to add `-lm` to the compile command under Linux in order to link in the math library containing the `acos()` function.)
 
 **Experiment**
 
