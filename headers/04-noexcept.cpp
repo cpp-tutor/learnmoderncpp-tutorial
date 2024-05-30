@@ -4,7 +4,7 @@
 #include <stdexcept>
 using namespace std;
 
-int throw_if_zero(int i) noexcept {
+void throw_if_zero(int i) noexcept {
     if (!i) {
         throw runtime_error("found a zero");
     }
@@ -12,13 +12,13 @@ int throw_if_zero(int i) noexcept {
 }
 
 int main() {
-    cout << "Entering main()\n";
+    println("Entering main()");
     try {
         throw_if_zero(1);
         throw_if_zero(0);
     }
-    catch(...) {
-        println("Caught an exception!");
+    catch(exception& e) {
+        println("Caught an exception: {}", e.what());
     }
-    println("Leaving main()\n");
+    println("Leaving main()");
 }
