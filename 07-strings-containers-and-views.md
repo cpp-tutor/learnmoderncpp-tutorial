@@ -394,11 +394,11 @@ vector: 1 9 7 3
 set: 3 4 6 8
 Found in string at position: 2
 Found in vector: 7
-Found in set: 4
+Found in set: 6
 After:
 string: helo
 vector: 1 9 3
-set: 3 6 8
+set: 3 4 8
 ```
 
 Take time to study this program as it contains some important concepts:
