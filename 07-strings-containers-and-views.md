@@ -693,15 +693,17 @@ There are some other containers and *container adaptors* implemented in the Stan
 
 * `std::bitset` also stores binary bits, but has its size fixed at compile-time
 
-* `std::deque` (pronounced "deck") implements a double-ended FIFO similar to `std::vector`
+* `std::deque` (pronounced "deck") implements a double-ended container similar to `std::vector`, but with additional operations such as `push_front()`
 
-* `std::stack` implements a LIFO
+* `std::stack` implements a LIFO (Last In First Out)
 
-* `std::queue` implements a FIFO
+* `std::queue` implements a FIFO (First In First Out)
 
 * `std::priority_queue` implements a FIFO that sorts by age and priority
 
-* `std::flat_map` implements an unordered map essentially as two vectors
+* `std::flat_set` implements a sorted container of unique values, typically implemented as a vector
+
+* `std::flat_map` implements a sorted associative container, typically implemented as two vectors (one for keys and one for values)
 
 A brief Tutorial such as this is not the place to delve into these, and indeed the other containers covered in this Chapter have much more detail to discover. As a go-to for both tutorial and reference I can highly recommend [CppReference.com](https://en.cppreference.com)[^1] and [Josuttis, "The C++ Standard Library"](http://cppstdlib.com)[^2].
 
