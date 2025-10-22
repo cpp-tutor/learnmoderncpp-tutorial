@@ -6,6 +6,8 @@ All of the source Markdown pages for the Modern C++ Tutorial on https://learnmod
 
 **Note:** Some Chapters have had significant changes made to update them to C++23, and not all programs compile successfully yet. In particular, use of `std::println()` with `import std;` does not compile. In case of issues with your compiler please see the Releases page for the C++20 version of the Tutorial.
 
+**New:** Jupyter Notebooks have been auto-generated from the source Markdown files and are located in the `jupyter-notebooks` directory. You will need the executable `jupyter-lab` available with suitable C++ kernels, see output from running `jupyter kernelspec list` (tested with kernel `cpp23`, which needs to be set on first load).
+
 The "headers" subdirectory contains C++ programs with legacy header `#includes`, whilst the "modules" subdirectory contains the same programs using the `import` keyword instead. See https://learnmoderncpp.com/2020/09/05/where-are-c-modules/ for more details about C++ compilers which have support for modules.
 
 The "scripts" subdirectory contains a C++ program which extracts all programs from the Markdown source to the above two folders.
