@@ -1,8 +1,10 @@
 #!/bin/bash
 
-# Note: in order to be recognized as code blocks, they must start with: ```python
+# Note: in order to be recognized as code blocks, must start with: ```python
 
-for f in ../01*.md ../02*.md ../03*.md ../04*.md ../05*.md ../06*.md ../07*.md ../08*.md ../09*.md ../10*.md ; do
-  out=../jupyter-notebooks/$(basename $f)
+srcdir=$(dirname $(readlink -f "$0"))/..
+destdir=$srcdir/jupyter-notebooks
+for f in $srcdir/{01,02,03,04,05,06,07,08,09,10}-*.md ; do
+  out=$destdir/$(basename $f)
   cat $f | sed 's/```cpp/```python/' | jupytext --from md --to notebook -o ${out%%.md}.ipynb
 done
