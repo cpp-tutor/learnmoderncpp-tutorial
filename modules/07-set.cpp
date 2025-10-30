@@ -5,7 +5,7 @@ using namespace std;
 
 int main() {
     set<string> s{
-        "Rossum, Guido van",
+        "Stroustrup, Bjarne",
         "Yukihiro, Matsumoto",
         "Wall, Larry",
         "Eich, Brendan"

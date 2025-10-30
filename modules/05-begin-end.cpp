@@ -1,4 +1,4 @@
-// 05-begin-end.cpp : demostration of the use of begin() and end()
+// 05-begin-end.cpp : demonstration of the use of begin() and end()
 
 import std;
 using namespace std;

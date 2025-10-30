@@ -50,5 +50,5 @@ int main() {
     else {
         cout << "the same age as ";
     }
-    cout << "person2" << '\n';
+    cout " person2\n";
 }

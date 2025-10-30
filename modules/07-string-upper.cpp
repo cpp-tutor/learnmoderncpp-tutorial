@@ -10,7 +10,7 @@ void string_to_uppercase(string &s) {
 }
 
 int main() {
-    cout << "Please enter some text in lower-, mixed- or upper-case:\n";
+    cout << "Please enter some text in lower, mixed or uppercase:\n";
     string input;
     getline(cin, input);
     string_to_uppercase(input);
