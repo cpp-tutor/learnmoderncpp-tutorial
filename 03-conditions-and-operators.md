@@ -2,9 +2,9 @@
 
 ## Run-time user input
 
-The programs we have seen in the previous two chapters have been a little predictable in how they run as they have a *linear execution path* through the `main()` function. Such simple programs have very little practical use. More complex programs, which alter their *control flow* based on *user input* fall into two types:
+The programs we have seen in the previous two chapters have been a little predictable in how they run, as they have a *linear execution path* through the `main()` function. Such simple programs have very little practical use. More complex programs, which alter their *control flow* based on *user input* fall into two types:
 
-* *Batch programs* take all of their input at the beginning of their execution, usually from any or all of: program parameters, an environment variable, or an input file.
+* *Batch programs* take all of their input at the beginning of their execution, usually from any or all of: program parameters, an environment variable(s), or an input file.
 
 * *Interactive programs* enact a dialog with the *user* (the computer operator) while the program is executing. This dialog is often two-way as the user is not necessarily expected to know what input is required without being prompted.
 
@@ -18,7 +18,7 @@ As a quick introduction to the stream output object `cout` (an abbreviation of "
 cout << "The answer is: " << 42 << '\n';  // println("The answer is: {}", 42);
 ```
 
-As a complement to `cout`, the stream input object `cin` (an abbreviation of "Character Input") overloads `>>` (the *stream extraction operator*) to allow variables to be set from user input. When a `cin` input expression is reached, the program waits (indefinitely) for the user to type some input and press Enter. The following program outputs a message inviting the user to enter a number, and then prints this number out again on the console. Before `cin` is used, the variable to be used to accept the input into must have already been defined so that the type of the required input can be deduced. Providing an initial value is preferred (empty braces give it a default value) in case the read by `cin` fails due to either invalid input, such as the user typing letters where digits were required, or end-of-input (Ctrl-D or Ctrl-Z):
+As a complement to `cout`, the stream input object `cin` (an abbreviation of "Character Input") overloads `>>` (the *stream extraction operator*) to allow variables to be set from user input. When a `cin` input expression is reached, the program waits (indefinitely) for the user to type some input and press Enter. The following program outputs a message inviting the user to enter a number, and then prints this number out again on the console. Before `cin` is used, the variable to be used to accept the input into must have already been defined so that the type of the required input can be deduced. Providing an initial value is preferred (empty braces give it the default value, zero in this case) in case the read by `cin` fails due to either invalid input, such as the user typing letters where digits were required, or end-of-input (Ctrl-D, or Ctrl-Z under Windows):
 
 ```cpp
 // 03-age1.cpp : get and then display an integer
@@ -83,11 +83,11 @@ Note: Braces for function **definitions**, including `main()`, are always mandat
 
 * Change the program to test for non-zero using the "not equal" operator and a `0`. Does this work in the same way?
 
-* Change the program again to test for zero (as opposed to non-zero), and change the output statements appropriately so the output remains correct.
+* Change the program again to test for "equals" zero (as opposed to "not equal"), and change the output statements appropriately so the same logic remains. Is this program better? Consider whether the *happy path* should be satisfied by the first "if" clause (as opposed to "else").
 
-* Now alter the original program to test a floating-point (`double`) variable as being zero or non-zero. Do you consider use of `0.0` as better style?
+* Now alter the original program to test a floating-point (`double`) variable as being zero or non-zero. Do you consider use of `0.0` as being better style?
 
-* Delete the braces surrounding the `if` and `else` clauses. Does the code still compile? What happens if you added a second statement line to the `else` clause? Or the `if` clause?
+* Delete the braces surrounding the `if` and `else` clauses. Does the code still compile? What happens if you add a second statement line to the `else` clause? Or the `if` clause?
 
 The `if` statement is a binary choice, however some decisions require more than two options. To enable this, `if` statements can be *chained* together. The following program chains a further `if` onto the tail of the first `else` clause. Note that in this special case, using braces for the first `else` clause is **not** recommended as this would indent the code. The combination `else if` (with mandatory space) is unambiguous to readers of your code; a second statement to the first `else` clause (which would necessitate braces) is unlikely to be needed as the (possibly itself chained) `if` which follows counts as a single statement.
 
@@ -145,7 +145,7 @@ int main() {
 
 **Experiment**
 
-* Change the above program so that the test logic is inverted with the output remaining the same, in other words `alice_age` falling outside the range 6-11 results in a positive condition test. Hint: you will need to use the `or` keyword and change the order of the output statements.
+* Change the above program so that the test logic is inverted, while the output remains the same; in other words `alice_age` falling outside the range 6-11 results in a positive condition test. Hint: you will need to use the `or` keyword and change the order of the output statements.
 
 * Now change `and` to `&&` in the original program. Does it still compile and run? Which style do you prefer?
 
@@ -192,9 +192,9 @@ int main() {
 }
 ```
 
-Notice that "getting" multiple variables from `cin` allows for the input of three values together, optionally separated by whitespace or newlines. This permissiveness can be useful in some cases but doesn't handle erroneous input very well so is often unsuitable to be used in production code (as error recovery involves clearing the error state, possibly losing input in the process). The four `case` statements each check for a valid integer (actually a character literal) stored in `op` and program flow jumps to the one that matches, if any. The `break` statements are necessary and cause control flow to jump to the closing brace of the switch block; if they were not present flow would *fall through* to the next `case` statement, which is rarely desirable. The `default` case statement is optional, and program flow always continues here if none of the `case` statements match, if it is not present the compiler will often produce a warning.
+Notice that "getting" multiple variables from `cin` allows for the input of three values together, optionally separated by whitespace or newlines. This permissiveness can be useful in some cases but doesn't handle erroneous input very well so is often unsuitable to be used in production code (as error recovery involves clearing the error state, possibly losing input in the process). The four `case` statements each check for a valid integer (actually a character literal) stored in `op` and program flow jumps to the one that matches, if any. The `break` statements are necessary and cause control flow to jump to the closing brace of the switch block; if they were not present flow would *fall through* to the next `case` statement, which is rarely desirable. The `default` case statement is optional but usually desirable, and program flow always continues here if none of the `case` statements match; if it is not present the compiler will often produce a warning.
 
-Notice also the use of `cerr` to output error messages to the *standard error stream*; by default `cerr` echos to the terminal (the same as for `cout`) but this output can be redirected at run-time to a text file (or a null device). The `if` test for zero divisor should be familiar syntax by now and prevents a possible floating-point exception. In this case, and in the case of an error, the result variable contains the default value zero.
+Notice also the use of `cerr` to output error messages to the *standard error stream*; by default `cerr` echoes to the terminal (the same as for `cout`) but this output can be redirected at run-time to a text file (or a null device). The `if` test for zero divisor should be familiar syntax by now and prevents a possible floating-point exception. In this case, and in the case of an error caused by an invalid operator, the result variable `r` contains the default value zero.
 
 **Experiment**
 
@@ -202,13 +202,13 @@ Notice also the use of `cerr` to output error messages to the *standard error st
 
 * Add a `case` clause for the exponentiation operator `'^'` which calls the function `pow(x,y)` (C++ has no built-in exponentiation operator, `^` in code actually means bitwise exclusive-or). Hint: you will need `#include <cmath>` and possibly also `-lm` on the link path.
 
-* Go back to using `int` variables and add the modulo operator `%` to the list of valid operators. You will need to add a suitable `case` clause. Note that this operation gives the remainder from a division, so divide-by-zero needs to be caught here as well.
+* Go back to using `int` variables and add the modulo operator `%` to the list of valid operators. You will need to add a suitable `case` clause. Note: this operation gives the remainder from a division, so divide-by-zero needs to be caught here as well.
 
-* Rewrite the case values as plain decimal integers, obtained from a table showing ASCII characteres against their numbers. Then try using hexadecimal values, and then octal values.
+* Rewrite the case values as plain decimal integers, obtained from a table showing ASCII characters against their numbers. Then try using hexadecimal values, and then octal values.
 
-* Rewrite the whole switch-case block as multiple if-else-if statements. Test all control-flow paths.
+* Rewrite the whole switch-case block as multiple if-else-if... statements. Test all control-flow paths.
 
-The need for `break` statements at the end of each `case` clause has already been mentioned. Occasionally the behavior of program flow falling through to the next case can be useful. More often, multiple `case` matches using the same code is the desired behavior. The following program demonstrates the former of these:
+The need for `break` statements at the end of each `case` clause has already been mentioned, however occasionally the behavior of program flow falling through to the next case can be useful. More often, multiple `case` matches using the same code is the desired behavior. The following program demonstrates the former of these:
 
 ```cpp
 // 03-fallthrough.cpp : demonstrate case clauses without break
@@ -323,9 +323,9 @@ The variable defined in the initializer can optionally be used in the condition 
 
 **Experiment**
 
-* Try to use `n` and `m` after the closing brace of the `else` clause.
+* Try to use `n` and `m` after the closing brace of the `else` clause. Which, if either, is possible? What does this tell you about the scope of an initializer-defined variable?
 
-* Rewrite this program to use a `switch` statement instead of `if`. Pay close attention to the conditional expression needed. The new program should correctly handle all inputs and produce identical output to the one shown.
+* Rewrite this program to use a `switch` statement instead of `if`. The new program should correctly handle all inputs and produce identical output to the one shown. Hint: you may want to use `case` statements which fall through.
 
 ## Constexpr if
 
@@ -383,4 +383,4 @@ The table below is intended to be a complete list, and as such introduces operat
 | throw                                                                                                                                                                        | right to left | exception throw expression                                                                                                                                                                                                                                                                                                                                                                                                        | throw expression                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | ,                                                                                                                                                                            | left to right | comma sequencing operator                                                                                                                                                                                                                                                                                                                                                                                                         | expression, expression                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 
-*All text and program code &copy;2019-2024 Richard Spencer, all rights reserved.*
+*All text and program code &copy;2019-2025 Richard Spencer, all rights reserved.*

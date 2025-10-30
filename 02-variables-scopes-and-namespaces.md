@@ -2,13 +2,22 @@
 
 ## Declarations, definitions and assignment
 
-A variable is a named entity which can hold a value; thus it has *state*. As the name "variable" suggests, this value can, and often does, change over the entity's lifetime. A *declaration* can be thought of as introducing a variable to your program, as if it is saying: "I exist with this name and have such-and-such type, use me." On the other hand, a *definition* is **everything** a declaration is, plus asking: "Please reserve some memory for me here." Additionally, an *assignment* can be combined with a definition, thus stating "I have this initial value from now until (optional) later reassignment." Defining a variable without giving it an initial value is usually best avoided, as the variable will likely contain random garbage (dereferencing an uninitialized variable causes undefined behavior in C++; your compiler can and often will warn of this). Declarations that are not also definitions are rare for variables of the built-in types, so we will omit further discussion of them here.
+A variable is a named entity which can hold a value; thus it has *state*. As the name "variable" suggests, this value can, and often does, change during the entity's lifetime. A *declaration* can be thought of as introducing a variable to your program, as if it is saying: "I exist with this name and have such-and-such type, use me." On the other hand, a *definition* is **everything** a declaration is, plus asking: "Please reserve some memory for me here." Additionally, an *assignment* can be combined with a definition, thus stating "I have this initial value from now until (optional) later reassignment (unless I am a constant)." Defining a variable without giving it an initial value is usually best avoided, as the variable will likely contain random garbage (dereferencing an uninitialized variable causes undefined behavior in C++; your compiler can and often will warn of this). Declarations that are not also definitions are rare for variables of the built-in types, so we will omit further discussion of them here.
 
-C++ is a statically typed language, meaning that the type of each variable is known at compile time (importantly, this is also true of variables defined with the keyword `auto`, see later). Due to the fact the types are known and fixed, the amount of memory needed for each varaible is known at compile time too; this specific amount of memory is called the variable's *storage class*. (Storage class applies to **all** user-defined types, too.) This fact gives rise to the *One Definition Rule* (ODR) which states that a variable can be declared or assigned to multiple times, but must be defined **exactly** once. If you remember one thing about variables in C++, remember the ODR. By default, C++ reserves space for new local (function or sub-scope) variables on the *stack*, which means that two variables of the same name can exist in different scopes (one scope enclosing the other); however the *address* of the variable which is always unique. The other place variables can be stored is on the *heap*, which is sometimes preferable for large objects or arrays. Again these variables always have a unique address, but continue to use memory until it is explicitly deallocated.
+C++ is a statically typed language, meaning that the type of each variable is known at compile time (importantly, this is also true of variables defined with the keyword `auto`, see later). Due to the fact the types are known and fixed, the amount of memory needed for each variable is known at compile time too; this specific amount of memory is called the variable's *storage class*. (Storage class applies to **all** user-defined types, too.) This fact gives rise to the *One Definition Rule* (ODR) which states that a variable can be declared or assigned to multiple times, but must be defined **exactly** once. This is the key concept concerning memory usage of variables in C++, so remember the ODR. By default, C++ reserves space for new local (function or sub-scope) variables on the *stack*, which means that two variables of the same name can exist in different scopes (one scope enclosing the other); however the *address* of the variable which is always unique. The other place variables can be stored is on the *heap*, which is often preferable for large objects or arrays. Again these variables always have a unique address, but continue to use memory until it is explicitly deallocated, with the responsibility being the programmer's, not the C++ runtime.
 
-The shortest possible name or *identifier* for a variable is a single letter, and these are often the name of choice for variables whose purpose is obvious (such as a loop counter); this convention also provides a symmetry with variable names in Mathematics. Variable names must start with a lower- or uppercase letter or an underscore, followed by an arbitrary number of lower- or uppercase letters, underscores or decimal digits in any order. Reserved names that should not be used as identifiers are any of the C++ keywords (of which there are just under a hundred at the time of writing), names beginning with an underscore followed by a capital letter, names containing adjacent double underscores, and at global scope any name beginning with an underscore. Use of top-bit-set characters (including UTF-8 sequences) **is** permitted in variable names with more recent compilers, including as the initial character.
+The shortest possible name or *identifier* for a variable is a single letter, and these are often the name of choice for variables whose purpose is obvious (such as a loop counter); this convention also provides a symmetry with variable names in Mathematics. Variable names must start with a lower- or uppercase letter or an underscore, followed by an arbitrary number of lower- or uppercase letters, underscores or decimal digits in any order.
 
-C++ does not mandate different uses of capital letters and so on for different types of entity, but your organization may well follow conventions such as constants in upper case, user-defined types in sentence case and member functions in camel case. The rules for identifiers are the same for `class`, `struct`, `enum` and `union` names, function names, namespace names and macro names. Different variable naming styles, the use of which may fall under coding standards requirements at your employer, are listed in the following table:
+Reserved names that should not be used as identifiers are:
+
+* Any of the C++ keywords (of which there are just under a hundred at the time of writing).
+* Names beginning with an underscore followed by a capital letter (these are reserved for the Standard Library).
+* Names containing adjacent double underscores (reserved for purposes such as name mangling).
+* At **global scope** any name beginning with an underscore.
+
+Use of top-bit-set characters (including UTF-8 sequences) **is** permitted in variable names with more recent compilers, including as the initial character; such sequences are also recognized by the preprocessor.
+
+Unlike some programming languages, C++ does not mandate different uses of capital letters and so on for different types of entity, but your organization may well follow conventions such as constants in upper case, user-defined types in sentence case and member functions in camel case. The rules for identifiers are the same for `class`, `struct`, `enum` and `union` names, function names, namespace names and macro names. Different variable naming styles, the use of which may fall under coding standards requirements at your employer, are listed in the following table:
 
 |   Naming Style   |     Example     |
 |:----------------:|:---------------:|
@@ -19,7 +28,7 @@ C++ does not mandate different uses of capital letters and so on for different t
 | Upper Snake Case | A_VARIABLE_NAME |
 |    Camel Case    |  aVariableName  |
 
-New variables are introduced (defined) by providing a type, an identifier and, optionally (but highly recommended) either an initial value or a pair of empty braces `{}`. The initial value follows an equals sign (`=`) when using C-style syntax, as shown in this program; this equals sign is optional when using *uniform initialization* with braces (covered later).
+New variables are introduced (defined) by providing a type, an identifier and, optionally (but highly recommended) either an initial value after an equals sign (`=`), and/or within or a pair of braces `{` and `}` (which can be empty to assign the default value for the type). Use of equals is historical syntax, while use of braces (where the equals sign becomes optional) is called *uniform initialization* and is discussed on more detail later in this Chapter.
 
 Braces are also used with strings passed to `print()` and `println()` indicating a point in the string where a variable's current value should be substituted. The number of brace pairs must equal the number of additional parameters passed to the functions. (To output a literal `{` or `}` use one of the escape sequences `{{` or `}}` respectively.)
 
@@ -51,7 +60,7 @@ Running this program produced the output:
 
 There are probably no surprises for the values of `i` and `j` as output the first and second time. Note that the statement `i = j` merely assigns the **current** value of `j` to `i` and does not imply that they point to the same object; the values of `i` and `j` can subsequently change **independently**.
 
-The first time `k` is output its value is essentially random; nothing can be guaranteed about its value other than it is within the valid range for the `unsigned` type. Assigning a negative number to an `unsigned` type is (perhaps surprisingly) legal C++, and if you are unsure of why the second output of `k` is what it is, you may want to do some research into "two's-complement" binary representation of integers (it's actually the number 2<sup>32</sup>-1 represented as a positive integer).
+The first time `k` is output its value is essentially random, an example of *undefined behavior* (UB); nothing can be guaranteed about its value other than it is within the valid range for the `unsigned` type. Assigning a negative number to an `unsigned` type is (perhaps surprisingly) legal C++, and if you are unsure of why the second output of `k` is what it is, you may want to do some research into "two's-complement" binary representation of integers (it's actually the number 2<sup>32</sup>-1 represented as a positive integer).
 
 **Experiment**
 
@@ -63,7 +72,7 @@ The first time `k` is output its value is essentially random; nothing can be gua
 
 ## Casts and uniform initialization
 
-The following program assigns an integer to a variable `a` of type `int`, and a real number to a variable `b` of type `double`. In case you're wondering, the name for the type of `b` comes from *double precision* as defined in the IEEE Standard for Floating-Point Arithmetic (IEEE 754), which defines how an (accurate) approximation of a real number is stored in 64 bits of memory. Single precision `float` uses 32 bits, and extended precision `long double` uses 96 bits. Then the initial values of `a` and `b` are then reassigned to each other, meaning the second output line is different:
+The following program assigns an integer to a variable `a` of type `int`, and a real number to a variable `b` of type `double`. In case you're wondering, the name for the type of `b` comes from *double precision* as defined in the IEEE Standard for Floating-Point Arithmetic (IEEE 754), which defines how an (accurate) approximation of a real number is stored in 64 bits of memory. Single precision `float` uses 32 bits, and extended precision `long double` typically uses up to 96 bits (the storage class may be different from the number of precision bits used). The initial values of `a` and `b` are then reassigned to each other, meaning the second output line is different:
 
 ```cpp
 // 02-swap.cpp : attempt to swap the values of an int and a double
@@ -88,7 +97,7 @@ Running this program produces the output:
 (2) a = 2, b = 1
 ```
 
-The variable assignment statement `a = 2.5` is called a *narrowing cast* because of the reduction in precision and likelihood of information being lost. In this case the value is **automatically** rounded down from `2.5` to `2`, as the decimal part cannot be represented in an `int`. Even though the term being assigned is floating-point (actually it's a double-precision literal) the type of `a` **remains** as `int` (and this is why the fractional part is lost). In contrast, the statement `b = 1` is a *widening cast* with the assumption that there is no chance of information being lost; `b` remains of type `double` holding an integer value (which could be represented explictly as `1.0`). Both of these casts are *implicit casts* becuase the compiler makes them happen automatically; the instruction to carry out the type casting is implicit. (We could have used `static_cast<int>(2.5)` and `static_cast<double>(1)` to make the casts explicit, we'll see this later.)
+The variable assignment statement `a = 2.5` is called a *narrowing cast* because of the reduction in precision and likelihood of information being lost. In this case the value is **automatically** *truncated* from `2.5` to `2`, as the decimal part cannot be represented in an `int`. Even though the term being assigned is floating-point (actually it's a double-precision literal, see later in this Chapter) the type of `a` **remains** as `int` (and this is why the fractional part is lost). In contrast, the statement `b = 1` is a *widening cast* with the assumption that there is no chance of information being lost; `b` remains of type `double` holding an integer value (which could be represented explictly as a literal `1.0`). Both of these casts are *implicit casts* becuase the compiler makes them happen automatically; the instruction to carry out the type casting is implicit. (We could have used a more verbose `static_cast<int>(2.5)` and `static_cast<double>(1)` to make the casts explicit, we'll see this later.)
 
 **Experiment**
 
@@ -98,7 +107,7 @@ The variable assignment statement `a = 2.5` is called a *narrowing cast* because
 
 * Again, modify the original program to use `static_cast`. (Hint: don't worry if you don't fully understand the syntax yet.)
 
-Implicit casts can happen at variable initialization and assignment too, however this is not always the behavior we want. To force the compiler to disallow (possibly unintentional) narrowing casts we can use *uniform initialization* which involves enclosing the assigned value in curly braces:
+Implicit casts can happen with variable initialization-and-assignment too, however this is not always the behavior we want. To force the compiler to disallow (possibly unintentional) narrowing casts we can use *uniform initialization* which involves enclosing the assigned value in curly braces:
 
 ```cpp
 // 02-uniform.cpp : avoid compiler error with uniform initialization and explicit narrowing cast
@@ -114,7 +123,7 @@ int main() {
 }
 ```
 
-It is important not to confuse a single value in curly braces with an array initializer containing one element when reading code like this; in practice here there is no ambiguity because if we had wanted to initialize a single element array we would have written `int c[] = {2.5,}` with a trailing comma inside the braces. Interestingly, the equals sign in uniform initialization is in fact **optional**, so we could have written `int c{2.5}` and `double d{1}`. Uniform initialization appears elsewhere in C++ so it is a good idea to become familiar with the syntax early on, and know the nuances of its behavior compared to using a time-honored C-style equals sign instead.
+It is important not to confuse a single value in curly braces with an initializer list containing one element when reading code like this; in practice here there is no ambiguity because if we had wanted to initialize an array of `int` a single element list we would have written `int c[] = {2.5,};` using a trailing comma inside the braces. Interestingly, the equals sign in uniform initialization is in fact **optional**, so we could have written `int c{2.5}` and `double d{1}`. Uniform initialization appears elsewhere in C++ so it is a good idea to become familiar with the syntax early on, and know the nuances of its behavior compared to using a time-honored C-style equals sign instead. In Modern C++, uniform initialization is probably considered better style, where you have the choice of the two.
 
 **Experiment**
 
@@ -146,24 +155,24 @@ C++ has quite a lot of built-in types, most of them inherited from the C languag
 |       double       |      64      |     2.22507e-308     |     1.79769e+308     |      2.3, 1.2345e200           |
 |     long double    |     128      |     3.3621e-4932     |     1.18973e+4932    |  100000000.5L, 0.0000345L      |
 
-&#42; The "size types" `std::size_t` (unsigned) and `std::ssize_t` (signed) are present in the Standard Library, and so require a header which defines them, such as `<cstddef>`. (Negative values for `std::ssize_t` are typically used to represent error values.)
+&#42; The "size types" `std::size_t` (unsigned) and `std::ssize_t` (signed) are from the Standard Library, and so require a header which defines them, such as `<cstddef>`. (Negative values for `std::ssize_t` are typically used to represent error values.)
 
 &#43; On 32-bit machines `long`, `unsigned long`, `ssize_t` and `size_t` are usually 32 bits, and are usually 64 bits on 64-bit machines, while `long long` and `unsigned long long` are guaranteed to be (at least) 64 bits on all platforms.
 
 The variable definition `double n{2.3};` should by now appear familiar and correct; it assigns a floating-point number (actually as shown in the table, a numeric literal) to a double precision variable. In other words it's an exact match between the declared type and the literal type. (If it were a narrowing cast, such as `double n{2.3L}` we would expect compilation to fail.)
 
-The `auto` type specifier has a meaning in Modern C++: deduce the type of the variable being assigned **to** from the value, variable or expression being assigned **from**. This means, however, that the variable definition must also always be an assignment as uninitialized `auto` variables are not allowed. The reason for this is simple: C++ variables must have their type known at compile time, and this is no different for `auto` variables. I'll repeat this as it is so important; *C++ is a statically typed language, and every possible use of `auto` does not change this*.
+The `auto` type specifier has a specific meaning in Modern C++: deduce the type of the variable being assigned **to** from the value, variable or expression being assigned **from**. This means, however, that the variable definition must also *always be an assignment* as uninitialized `auto` variables are not allowed. The reason for this is simple: C++ variables must have their type known at compile time, and this is no different for `auto` variables. I'll repeat this as it is so important; *C++ is a statically typed language, and every available use of* `auto` *does not change this*.
 
 Some example usage of `auto` is shown here:
 
 ```cpp
 int i = 1;     // both i and 1 are of type int
 auto j = i;    // j is also of type int
-auto k{ 1.0 }; // k has type double using uniform initialization syntax
+auto k{ 1.0 }; // k has type double (using uniform initialization syntax)
 auto q;        // Error: will not compile
 ```
 
-Program can be (re-)written without any use of `auto`, however you will often encounter it in modern code so you need to be able to recognize and understand its meaning. It is especially useful where the type in question is overly verbose, such as when using types related to generic classes. Notice from the example shown here the use of uniform initialization syntax with `auto`-assignment for the variable `k`; this usage can be expected to get more common.
+Program can be (re-)written without any use of `auto`, however you will often encounter it in modern code so you need to be able to recognize and understand its meaning. It is especially useful where the type in question is overly verbose, such as when using types related to generic classes. Notice from the example shown here the use of uniform initialization syntax with `auto`-assignment for the variable `k`; this usage can be expected to become more common.
 
 ## Bool and byte
 
@@ -174,9 +183,9 @@ bool success{ true };
 bool are_equal = (a == b);
 ```
 
-The `byte` type, often referred to as `std::byte` as it is a type made available from within the Standard Library namespace (in order to avoid name clashes with existing code) designed to replace `unsigned char` where the variable (or array) contains (8-bit) binary data.
+The `byte` type, often referred to as `std::byte` as it is a type made available from within the Standard Library namespace (in order to avoid name clashes with existing code), designed to replace `unsigned char` where the variable (or array) contains (8-bit) binary data.
 
-This type is actually implemented as an `enum class` (see Chapter 6) and only the bitwise operators are supported, so no addition or subtraction of `byte` values is allowed. A variable of type `byte` can be initialized with any value from `0` to `255` and converted back to an integer value with the function `to_integer()` (functions are covered in Chapter 4).
+This type is actually implemented as an `enum class` (see Chapter 6) and only the bitwise operators are supported, so addition or subtraction of `byte` values is not allowed. A variable of type `byte` can be initialized with any value from `0` to `255` and converted back to an integer value with the function `to_integer()` (functions are covered in Chapter 4).
 
 ```cpp
 std::byte b{ 254 };
@@ -186,7 +195,7 @@ auto i = std::to_integer<int>(b); // This is ugly but is shown here for referenc
 
 ## Literal prefixes and suffixes
 
-Digits can be grouped into, for example, groups of three for decimal numbers, using apostrophe (`'`) as the delimiter:
+Digits can be grouped, for example into groups of three for decimal numbers, using apostrophe (`'`) as the delimiter:
 
 ```cpp
 auto million = 1'000'000;
@@ -204,7 +213,7 @@ If some of the example literals in the last table look unfamiliar then the follo
 
 (Note: hexadecimal floating-point literals use `P` or `p` as the radix separator, while decimal floating point literals use an `E` or `e` to separate the exponent from the mantissa.)
 
-Suffixes can apply to either integer or floating point literals (both in the case of `L`). Also, `U` and `u` can be combined with `L`, `l`, `LL` and `ll`.
+Suffixes can apply to either integer or floating point literals (or to both in the case of `L`). Also, `U` and `u` can be combined with `L`, `l`, `LL`, `ll`, `Z` and `z`.
 
 | Suffix |                  Meaning                 |        Usage       |
 |:------:|:----------------------------------------:|:------------------:|
@@ -217,25 +226,27 @@ Suffixes can apply to either integer or floating point literals (both in the cas
 
 Note there is no literal for `short int` and there is unlikely to ever be one, as the `s` suffix is used for seconds when using the `<chrono>` header (and `string` when used with the `<string>` header). Also, the integer literal suffixes don't ever actually need to be used in Modern C++, source-code literals in all bases are automatically *promoted* (widened) to a type that can hold the value of the literal.
 
-To enable all the literal suffixes in the Standard Library (assuming the necessary header(s) is/are present) use:
+To enable all the literal suffixes in the Standard Library after referencing the necessary header(s) use:
 
 ```cpp
 using namespace std::literals;  // This is also implied by "using namespace std;"
 ```
 
+Note: this is **not** necessary for suffixes of the built-in types, being `F`, `f`, `U`, `u`, `L`, `l`, `LL` and `ll`.
+
 **Experiment**
 
 * Make up some variable assignments from various literals. Use `auto`, and output the variables using `print()`. See if the output is what you expected.
 
-* Alter your assignments to specify the correct type instead of `auto`, such as `long long`. Check the tables above if you're not sure, and use uniform initialization. Try to avoid automatically using the biggest types `long long` and `long double` regardless of the value/calculation, as this may not be optimal in terms of memory footprint and performance.
+* Now specify the correct built-in type instead of `auto`, such as `long long`. Check the tables above if you're not sure, and use uniform initialization. Try to avoid always using the biggest types `long long` and `long double` regardless of the value or calculation, as this may not be optimal in terms of memory footprint and performance.
 
 ## Local and global scopes
 
-Variables defined outside of any function scope are called *global* variables, while those defined within functions (including `main()`) are called *local* variables. Global variables have memory reserved for them and are initialized before `main()` is entered, although the order in which they are initialized is **not** guaranteed. Local variables have space reserved for their contents from the function stack when the function is entered, and are available for use after program flow reaches their definition within the function.
+Variables defined outside of any function scope are called *global* variables, while those defined within functions (including `main()`) are called *local* variables. Global variables have memory reserved for them and are initialized before `main()` is entered, although the order in which they are initialized is **not** guaranteed across multiple translation units (these being approximately C++ source files, discussed later in this Chapter). Local variables have space reserved for their contents from the function stack when the function is entered, and are available for use after program flow reaches their definition within the function.
 
-A local variable with the same name as a previously defined global variable temporarily takes precedence over, or *shadows*, the global variable until it goes *out of scope*. Variables defined within a function go out of scope at the end of the function, and the space reserved for them is released.
+A local variable with the same name as a previously defined global variable temporarily takes precedence over, or *shadows*, the global variable until it goes *out of scope*. Variables defined within a function go out of scope at the end of the function, and the space reserved for them is then released.
 
-It is also possible to nest scopes within functions up to an arbitrary level. The delimiters `{` and `}` are used for this purpose, mirroring their use to introduce a function scope. Code within *sub-scopes* is typically written indented an extra level. (Sub-scopes which can contain scoped variable definitions are also introduced by a variety of C++ keywords including `if` and `while`.) Variable names re-defined within sub-scopes lose visibility at the closing brace and can no longer be referenced (the memory they use may not be released until the function exits, however).
+It is also possible to nest scopes within functions up to an arbitrary level. The delimiters `{` and `}` are used for this purpose, mirroring their use to introduce a function scope. Code within *sub-scopes* is typically written indented to an extra level. (Sub-scopes which can contain scoped variable definitions are also introduced by a variety of C++ keywords including `if` and `while`.) Variable names which are re-defined within sub-scopes lose visibility at the closing brace and can no longer be referenced (the memory they use may not be released until the function exits, however).
 
 The following program defines and initializes the variable `a` three times. This does not violate the One Definition Rule (ODR) because of one simple fact: *the three variables exist in different scopes*.
 
@@ -276,13 +287,13 @@ Running this program produces the output:
 
 ## Static and thread-local variables
 
-Any global variables defined in the program are visible throughout the whole of the program, which unfortunately means that name clashes are possible in different and unrelated portions of code. The traditional way of getting round this problem, inherited from C, was to use the `static` keyword. All this does in the context of a global variable definition is make the variable local to the *translation unit*, which is the proper name for the each `.cpp` file with all the headers it `#include`s (which compiles to a single `.obj` or `.o` object file). The term *file static* can also be used to describe the visibility of such a variable, referring to the `.cpp` file it is defined in. Thus two `.obj` or `.o` files each with one or more `static` variables of the same name can be linked to form an executable, without generating linker errors.
+Any global variables defined in the program are visible throughout the whole of the program, which unfortunately means that name clashes are possible in different and unrelated portions of code. The traditional way of getting round this problem, inherited from C, was to use the `static` keyword. All this does in the context of a global variable definition is make the variable local to the *translation unit*, which is the proper name for the each C++ source file with all the headers it `#include`s (which compiles to a single `.obj` or `.o` object file). The term *file static* can also be used to describe the visibility of such a variable, referring to the `.cpp` file it is defined in. Thus two `.obj` or `.o` files each with one or more `static` variables of the same name can be linked to form an executable, without generating linker errors.
 
 ```
 static int i = 1000; // only visible within this translation unit
 ```
 
-The `thread_local` keyword (added in C++11) can be used at global scope and specifies a variable with global visibility which is created (and optionally initialized) when a new thread is launched:
+The `thread_local` keyword (added in C++11) can optionally be used at global scope and specifies a variable with global visibility which is created (and optionally initialized) when a new thread is launched:
 
 ```
 thread_local size_t my_counter{ 0 }; // different variable initialized for each new thread
@@ -304,7 +315,7 @@ The keywords `static` and `thread_local` have uses in other contexts too, as we 
 
 The purpose of namespaces is to solve the problem of global names clashing with each other. (We have already encountered the `std` namespace which contains all of the Standard Library components.) Namespaces can only be introduced at global scope and are delimited with the by now familiar `{` and `}`. Namespaces **can** exist inside other namespaces, with the scope resolution operator `::` also used to separate nested namespace names. Entities (such as variables, functions and classes) defined within namespaces are still globally visible, and can be either made available with `using` statements or directives, or referenced using their *fully qualified names*.
 
-The next program defines two global variables, each in different namespaces, which means they can exist in the same `.cpp` file. Notice that the namespace names are written in sentence case while the variable names are written in snake case, both common conventions:
+The next program defines two global variables, each in different namespaces, which means they can exist in the same `.cpp` file. Notice that the namespace names have been written in sentence case with the variable names in snake case, both common conventions:
 
 ```cpp
 // 02-height.cpp : define the same variable name in two different namespaces
@@ -367,9 +378,9 @@ int i = 3000;    // variable i is only visible later within this file
 
 ## Constants and references
 
-Constants are named entities that have only one value during their lifetime, that is their initial value remains unchanged. (I avoid the use of the word "variable" here, or worse still "`const` variable", to avoid confusion, but most of the rules of variables apply to constants too.) Constants are useful in many places in modern C++ programs, and in some places they can be used where variables cannot, such as when specifying array sizes and template parameters. Similarly to `auto` variable definitions, constants **must** have their value specified when they are defined.
+Constants are named entities that have only one value during their lifetime, in other words their initial value remains unchanged. (I avoid the use of the word "variable" here, or worse still "`const` variable", to avoid confusion, but most of the rules of variables apply to constants too.) Constants are useful in many places in Modern C++ programs, and in some places they can be used where variables cannot, such as when specifying array sizes and template parameters. Similarly to `auto` variable definitions, constants **must** have their value specified when they are defined.
 
-Constants are defined using the `const` keyword, **either** before or after the mandatory type specifier (or `auto`), as shown in the program below, which defines a global constant and a local constant:
+Constants are defined using the `const` keyword, **either** before or after the mandatory type specifier (or `auto`), as shown in the program below which defines a global constant and a local constant:
 
 ```cpp
 // 02-constants.cpp : introducing the const keyword
@@ -394,9 +405,9 @@ Notice that the named constants have been specified using upper case, which is a
 
 * Try to output the result of adding the two constants together. Is this what you would expect for two variables of different types (implied in the case of `APPROX_E`)?
 
-Constants can be assigned to a variable, and created from a variable at the point it is defined. Interestingly this implies that the value of a C++ constant *is not necessarily known* at compile-time; not all constants therefore can be used as array sizes, for example. (If a constant compile-time value is needed for this purpose, your compiler will refuse to compile such code.) Variables of many types can usefully be declared `const` where their value shouldn't be changed, or where changing them would make no sense. This stricter use of `const` is known as *const-correctness* and is an additional form of type safety which can often be very useful (of course, use of `const` is optional, as in the above program, but its consistent and correct use is strongly encouraged).
+Constants can be assigned to a variable, and created from a variable at the point it is defined. Interestingly this implies that the value of a C++ constant *is not necessarily known* at compile-time; not all constants therefore can be used as array sizes, for example. (If a constant compile-time value is needed for this purpose, your compiler will refuse to compile such code.) Variables of many types can usefully be declared `const` where their value shouldn't be changed, or where changing them would make no sense. This stricter use of `const` is known as *const-correctness* and is an additional form of type safety which can often be very useful (of course, most uses of `const` are optional, as in the above program, but its consistent and correct use is strongly encouraged).
 
-References are hugely important to C++ and the necessity of fully understanding them in order to become proficient in the language cannot be overstated. There are two types of references, the style that date back to the earliest versions of C++, now known as *l-value references*, and those introduced with C++11, known as *r-value references* (or sometimes *forwarding* or even *universal* references. Only l-value references are discussed here.
+References are hugely important to C++ and the necessity of fully understanding them in order to become proficient in the language cannot be overstated. There are two types of references, the style that date back to the earliest versions of C++, now known as *l-value references*, and those introduced with C++11, known as *r-value references* (or sometimes as *forwarding* or even *universal* references). Only l-value references are discussed here.
 
 A reference is an *alias* (an alternative name) for another variable **which must already exist**. It is (intentionally) difficult to make a reference outlive the variable it is *bound* to, managing to do so creates a *dangling* reference, which is undefined behavior. The primary use of references is to make variables visible from enclosed scopes to outer scopes from which they would not otherwise be accessible, as we shall discover later in the discussion of functions. Changing a reference changes the value of the variable to which it is bound, as shown in the program below:
 
@@ -422,7 +433,9 @@ int main() {
 
 * Make the global `alice_age` constant. Does the code compile now?
 
-* Now remove the `&` on the first line of `main()`. Does this allow the code to compile? What is the output from running this modified program?
+* Now make `alice_age_ref` constant instead. Does the code compile?
+
+* Now remove the `&` on the second line of `main()`. Does this allow the code to compile? What is the output from running this modified program?
 
 As shown above, the syntax for creating and initializing a reference is simple, a single ampersand between the type specifier and the variable name. This difference is subtle compared to a conventional definition, so you will need to be on the lookout for it whenever reading code.
 
@@ -491,6 +504,6 @@ int main() {
 
 * Now change the program to check the value of *e* at compile time. (Hint: use the expression `exp(1.0)` to get a good approximation of *e*.)
 
-As can be seen from attempting to compile this program, `static_assert()` is a useful tool to have. It also adds no overhead cost at run-time. The `static_assert()` test can optionally take a second string literal parameter, this being the error message for the compiler to output if the assertion fails.
+As can be seen from attempting to compile this program, `static_assert()` is a useful tool to have, and adds no run-time overhead cost. The `static_assert()` test can optionally take a second string literal parameter, this being the error message for the compiler to output if the assertion fails.
 
-*All text and program code &copy;2019-2024 Richard Spencer, all rights reserved.*
+*All text and program code &copy;2019-2025 Richard Spencer, all rights reserved.*

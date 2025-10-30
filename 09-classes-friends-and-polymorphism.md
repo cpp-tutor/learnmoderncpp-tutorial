@@ -21,11 +21,11 @@ Person a_person{};
 Person genius{ { 1879, 3, 14 }, "Einstein", "Albert" }; // Error: does not (yet) compile
 ```
 
-This `Person` class (here defined with `class` as opposed to the `struct` keyword we met in Chapter 6) contains three members: `dob` (itself a user-defined type), `familyname` and `firstname` (both of which are `std::string`s). We can define a variable of type `Person` (here `a_person`) using default-initialization syntax (the braces are in fact optional) but we cannot do a lot else with this object. Its fields will be zero-initialized for `a_person.dob.year`, `a_person.dob.month`, and `a_person.dob.day`, while `a_person.familyname` and `a_person.firstname` are empty strings. This is becuase the access specifier `private:` (which we also met in Chapter 6) is always implied for `class`es. This means we cannot either access the fields (member variables) directly using dot-notation, or use uniform initialization syntax, as with `genius`.
+This `Person` class (here defined with `class` as opposed to the `struct` keyword we met in Chapter 6) contains three members: `dob` (itself of a user-defined type called `Date`), `familyname` and `firstname` (both of which are `std::string`s). We can define a variable of type `Person` (here `a_person`) using default-initialization syntax (the braces shown here are in fact optional, while empty parentheses are **not** permitted) but we cannot do a lot else with this object. Its fields will be zero-initialized for `a_person.dob.year`, `a_person.dob.month`, and `a_person.dob.day`, while `a_person.familyname` and `a_person.firstname` are empty strings. This is becuase the access specifier `private:` (which we also met in Chapter 6) is always implied for `class`es. This means we cannot either access the fields (member variables) directly using dot-notation, or use uniform initialization syntax, as with `genius`.
 
 **Experiment:**
 
-* Change the above fragment to use `struct` instead of `class` in order to enable compilation, and also an empty `main()` function. Does the program run?
+* Change the above fragment to use `struct` instead of `class` in order to enable compilation, and also write an empty `main()` function. Does the program run? Is it therefore self-contained?
 
 * Now try to create `genius` within `main()` using assignment to member variables and uniform initialization. What error messages do you get? Does changing the keyword `class` to `struct` fix this problem in both cases?
 
@@ -66,23 +66,23 @@ Quite a few things to note about this program:
 
 * The constructor's parameters have names `dob`, `familyname` and `firstname`, these being the same names as for the member variables (this is allowed in Modern C++). The conventions for naming (`private:`) class members vary, historically a trailing underscore is used, but this can become difficult to read.
 
-* The member variables are initialized using uniform initialization syntax; this forbids narrowing conversions, and there shouldn't be any as the parameter types should have been carefully chosen. (Older code may use parentheses here instead of braces.) The order of construction is the same as the way the member fields are laid out (after the `private:` access specifier); the order in the comma-separated initializers is unimportant (although you should try to replicate the order of the member fields, your compiler will warn if they differ). The constructor's body is empty here (although it must be present), and this is not unusual.
+* The member variables are initialized using uniform initialization syntax; this forbids narrowing conversions, and there shouldn't be any as the parameter types should have been carefully chosen. (Older code may use parentheses here instead of braces.) The order of construction is the same as the way the member fields are laid out (in this class they are all after the `private:` access specifier); the order in the comma-separated initializers is unimportant (although you should try to replicate the order of the member fields, and your compiler will warn if they differ). The constructor's body is empty here (although it must be present), and this is not unusual.
 
 * The `std::chrono::year_month_day` parameter (itself initialized by uniform initialization) is passed as `const`-reference instead of by value, as it is probably too big to fit in a single register to pass by value. The names are passed by value as `std::string_view` although in older code `const std::string&` would be common.
 
 * The member function `getName()` is declared `const` as it is guaranteed not to change any member variables. It returns a newly created `std::string` which must be returned by value.
 
-* The member variable `dob` is declared `const` as it will never need to be changed; of course it needs to be initialized by the constructor, and this case is allowed. The member variables `familyname` and `firstname` need to be of type `std::string` (not `std::string_view` as for the constructor's parameters) for them to be guaranteed to exist for the lifetime of the class.
+* The member variable `dob` is declared `const` as it will never need to be changed; of course it needs to be initialized by the constructor, and this case is allowed. The member variables `familyname` and `firstname` need to be of type `std::string` (not `std::string_view` as for the constructor's parameters) for them to be guaranteed to exist for the lifetime of the class (consider factory functions which return a newly-constructed object, as we saw in Chapter 8).
 
 * The member function `getDob()` is also declared `const` and returns a `const`-reference. It is possible to put this return value directly to a `std::ostream` as the Standard Library overloads `operator<<` for `std::chrono::year_month_day`.
 
 **Experiment:**
 
-* Add more `Person` variables to `main()`, and output their names.
+* Add more `Person` objects to `main()`, and output their names.
 
 * Rewrite the constructor to initialize the member variables in the body, instead of using the comma-separated list of member initializers.
 
-* Modify this program to use `std::println()` instead of `cout`.
+* Modify this program to use `std::println()` instead of `cout`. Perform most of the formatting in a `const` member function `toString()`, which returns a `std::string`.
 
 * Write getters (all declared `const`) called `getFamilyName()` and `getFirstName()` avoiding creation of unnecessary temporary variables. Modify `main()` to use these.
 
@@ -90,7 +90,7 @@ Quite a few things to note about this program:
 
 * Modify the original constructor to allow for `firstname` not being present. Hint: use a defaulted function parameter. What other function needs to be changed?
 
-* Try to create a default-constructed `Person`. What do you find?
+* Try to create a default-constructed `Person`. What do you find? Now try to create a `public:` default constructor (with an empty parameter list).
 
 There is a third type of access specifier called `protected:`. Its meaning is the same as for `private:` except when inheritance is in use, when it means that (member functions defined within) derived classes have access to any members in the base class which were declared `protected:`. It's rare to find this in real code, although the next program we shall look at demonstrates its syntax and use.
 
@@ -179,7 +179,7 @@ int main() {
 
     auto [ id, salary ] = genius_employee.getDetails();
     cout << "ID: " << id << ", Salary: $" << salary << '\n';
-    year_month_day next_bday{ 2023y, March, 14d };
+    year_month_day next_bday{ 2024y, March, 14d };
     if (genius_employee.isBirthdayToday(next_bday)) {
         cout << "Happy Birthday!\n";
     }
@@ -190,9 +190,9 @@ Many things to note about this program:
 
 * A second constructor for `Person` taking only a `std::chrono::year_month_day` has been added. Setters can be used later to initialize or modify the other three member variables, which are left defaulted by this constructor (empty for the two `std::string`s and `false` for the `bool`).
 
-* A `virtual` destructor has been added to `Person`; if you remember one thing about inheritance, it should be that base classes need a virtual destructor. This is so that any heap objects of type `Student` or `Employee` assigned to a pointer of type `Person*` (including use of smart pointers), the correct destructor of the **derived** class can be found and thus called, avoiding memory leaks.
+* A `virtual` destructor has been added to `Person`; a key C++ concept is that base classes often need a virtual destructor. This is so that any heap objects of type `Student` or `Employee` assigned to a pointer of type `Person*` (including use of smart pointers), the correct destructor of the **derived** class can be found and thus called, avoiding memory leaks.
 
-* The `getName()` function returns the name(s) provided by either the constructor or the setter(s) as a single `std::string`, ordered according to the member variable `familynamefirst`. (I hope this attempt at cultural inclusion doesn't offend anyone!)
+* The `getName()` function returns the name(s) provided by either the constructor or the setter(s) as a single `std::string`, ordered according to the member variable `familynamefirst`. (Hopefully this attempt at cultural inclusion doesn't offend anyone!)
 
 * The member variable `dob` is declared `protected:`, the other three are `private:`, as before.
 
@@ -375,7 +375,7 @@ int main() {
     else {
         cout << "the same age as ";
     }
-    cout << "person2" << '\n';
+    cout " person2\n";
 }
 ```
 
@@ -477,11 +477,11 @@ The meanings implied for these member functions in the context of the `virtual` 
 
 * `f()` is a function in a base class or derived class which can (optionally) be redefined (in the derived class).
 
-* `g()` is a *pure-virtual* function of an abstract base class, which is **never** defined in this class and **must** be defined in a class that derives from it, in order for objects of the derived class to able to be created. Objects of an abstract class **cannot** be instantiated; attempting to do so would trigger a compile-time error.
+* `g()` is a *pure-virtual* function of an abstract base class, which is not usually defined in this class and **must** be defined in a class that derives from it, in order for objects of the derived class to able to be created. Objects of an abstract class **cannot** be instantiated; attempting to do so would trigger a compile-time error.
 
 * `h()` is a function in a derived class which redefines (overrides) a previous definition; the function signature must exactly match that in the base class (including `const` and `noexcept` qualifiers). This function **can** itself be redefined in any subsequently derived class.
 
-* `k()` is the same as `h()` except this function **cannot** be redefined in a subsequently derived class.
+* `k()` is the same as `h()` except this function **cannot** again be redefined in a subsequently derived class.
 
 The following program demonstrates all of these uses in a more complex hierarchy deriving from an abstract `Shape` class:
 
@@ -626,4 +626,4 @@ A lot of things to note about this program:
 
 [^1]: Grady Booch, Robert A. Maksimchuk, Michael W. Engle, Bobbi J. Young, Jim Conallen, Kelli A. Houston *Object-Oriented Analysis and Design with Applications* (3rd ed. Pearson, 2007, ISBN-13: 9780201895513)
 
-*All text and program code &copy;2019-2024 Richard Spencer, all rights reserved.*
+*All text and program code &copy;2019-2025 Richard Spencer, all rights reserved.*

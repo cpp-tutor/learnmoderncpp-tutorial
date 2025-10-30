@@ -2,7 +2,7 @@
 
 ## String initialization, concatenation and comparison
 
-Whilst support for read-only string literals is built into C++, we must make use of the Standard Library when we want a string-type which is be able to be manipulated and compared, using operators such as `+` (concatenation) and `==` (equality comparison). The `std::string` type supports all of the operations you would expect to be present, such as concatenation, indexing, sub-string extraction, comparisons and reporting the length. All of the memory management operations necessary are taken care of automatically at run-time; string objects are allowed to use heap memory and interestingly do not use any "special" features of the language not available to the application programmer.
+Whilst support for read-only string literals is built into C++, we must make use of the Standard Library when we want a string-type which is be able to be manipulated and compared, using operators such as `+` (concatenation) and `==` (equality comparison). The `std::string` type supports all of the operations you would expect to be present, such as concatenation, indexing, sub-string extraction, comparisons and reporting the length. It is also possible to directly access the raw string data, if desired, or pass a `std::string` to a (C-style) function expecting a `const char*`. All of the memory management operations necessary are taken care of automatically at run-time; string objects are allowed to use heap memory and interestingly do not use any "special" features of the language not available to the application programmer. (Writing your own string class is a commonly advised exercise in gaining proficiency in C++.)
 
 An empty string object can be created using `string` as the type specifier, either using uniform initialization syntax, or `auto`, or omitting the braces altogether where the type specifier is first:
 
@@ -12,7 +12,11 @@ string s2{};
 auto s3 = string{}; // s1, s2, s3 are empty (mutable) strings
 ```
 
-Other variants exist as well, but these shown are the most modern. When an empty `std::string` is compared against an empty string literal `""` using `==` the result is `true`.
+Other variants exist, but these shown are the most modern. When an empty `std::string` is compared against an empty string literal `""` using `==` the result is `true`.
+
+```cpp
+auto is_empty = (s1 == ""); // is_empty has value "true", also for s2 and s3
+```
 
 A `std::string` can be initialized or re-assigned from a string literal:
 
@@ -77,7 +81,7 @@ void string_to_uppercase(string &s) {
 }
 
 int main() {
-    cout << "Please enter some text in lower-, mixed- or upper-case:\n";
+    cout << "Please enter some text in lower, mixed or uppercase:\n";
     string input;
     getline(cin, input);
     string_to_uppercase(input);
@@ -89,13 +93,13 @@ Things to note about this program:
 
 * Both variables `s` and `c` are declared as references, thus modifiying them changes the variable they refer to, not a copy.
 
-* The type of `c` is, perhaps unsurprisingly, `char&`.
+* The type of `c` is deduced by the compiler as, `char&`.
 
 * The `getline()` function (explained further in Chapter 8) is used to get an arbitrarily long line of input from `cin` and store it in `input`. (Note: don't confuse this with `cin.getline()` which we met in Chapter 5.)
 
 **Experiment:**
 
-* Remove one of the `&`s in the function `string_to_uppercase()`. Does the program still compile? Does it produce the expected output when run? Now remove the other `&` instead and try the same thing. What does this tell you about the importance of reading code which uses reference semantics very carefully?
+* Remove one of the `&`s in the function `string_to_uppercase()`. Does the program still compile? Does it produce the expected output when run? Now remove the other `&` instead and try the same thing. What does this tell you about the importance of reading code which uses reference semantics, very carefully?
 
 * Modify `string_to_uppercase()` so that the uppercase string is *appended* to the input. Hint: this is a simple change that just requires some thought.
 
@@ -118,7 +122,7 @@ auto c2 = book.at(99);   // throws an exception, possibly terminating the progra
 
 * Now modify this program to use **checked** array access. What happens if you make a (deliberate) bounds-checking error?
 
-The member functions `front()` and `back()` return (modifiable) references to the first and last characters of a string; they can be used instead of `s[0]` and `s[s.length() - 1]`. Interestingly, **reading** `s[s.length()]` is not undefined behavior, but instead returns a value which is the default value of the underlying character type (`'\0'` for `char`).
+The member functions `front()` and `back()` return (writeable) references to the first and last characters of a string, resepctively; they can be used instead of `s[0]` and `s[s.length() - 1]`. Interestingly, **reading** `s[s.length()]` is not undefined behavior, but instead returns a value which is the default value of the underlying character type (`'\0'` for `char`).
 
 To add or remove individual characters or substrings, the `insert()` and `erase()` member functions can be used (don't try to write to `s[s.length()]`):
 
@@ -143,6 +147,7 @@ string wizard = "Gandalf the Gray";
 auto s1 = wizard.substr(0, 7);    // s1 is "Gandalf"
 auto s2 = wizard.substr(8, 3);    // s2 is "the"
 auto s3 = wizard.substr(12);      // s3 is "Gray"
+                                  // or wizard.substr(12, 4) or wizard.substr(12, string::npos)
 ```
 
 The return type of `substr()` is `std::string`, which is a **new** variable containing a **copy** of (part of) the contents of the original `std::string`.
@@ -159,21 +164,21 @@ wizard2.append(" the White"); // wizard2 becomes "Saruman the White"
 Sometimes it is necessary to convert between a `std::string` and other (often built-in) types, such as converting to and from an integer or floating-point number. The Standard Library function template `to_string` is overloaded to cope with different (built-in) types:
 
 ```cpp
-auto n1 = 1.23;
-auto n2 = 45;
+auto n1 = 1.23;           // n1 is type double
+auto n2 = 45;             // n2 is type int
 
 auto s1 = to_string(n1);  // s1 is "1.230000"
 auto s2 = to_string(n2);  // s2 is "45"
 ```
 
-Converting the other way, the group of functions `sto`*x*`()` allow the (exact) output integer or floating-point type from an input `std::string` (often usefully a sub-string). The full list is: `stoi()`, `stol()`, `stoul()`, `stoll()`, `stoull()`, `stof()`, `stod()` and `stold()`.
+Converting the other way, the group of functions `sto…()` allow conversion to an integer or floating-point type from an input `std::string` (often usefully a sub-string). The full list is: `stoi()`, `stol()`, `stoul()`, `stoll()`, `stoull()`, `stof()`, `stod()` and `stold()`.
 
 ```cpp
 auto n3 = stoi(s2);   // n3 is of type int
 auto n4 = stold(s1);  // n4 is of type long double
 ```
 
-For the conversion functions which return an integer type, the optional third parameter is the numerical base to be applied (this defaults to 10), while for all of these functions the optional second parameter is a pointer to `std::size_t` variable used to indicate the index into the `std::string` of the first unused character (this defaults to `nullptr`, that is no index is returned).
+For these `sto…()` conversion functions which return an integer type, the optional third parameter is the numerical base to be applied (this defaults to 10), while for all of them the optional second parameter is a pointer to `std::size_t` variable used to indicate the index into the `std::string` of the first unused character (this defaults to `nullptr`, that is no index is written to this pointer address).
 
 It is possible to declare `std::string` variables using syntax which is very similar to that for string literals, which uses the *literal suffix* `s`:
 
@@ -190,13 +195,13 @@ auto alphabet = ""s + "ABCDEF" + ' ' + "abcde" + 'f';
              // alphabet contains "ABCDEF abcdef" and is of type std::string
 ```
 
-Here `alphabet` has type `std::string`, and the concatenation is performed at run-time (use `constexpr` to make it happen at compile-time).
+Here `alphabet` has type `std::string`, and the concatenation is usually performed at run-time (use `constexpr` to make it happen at compile-time).
 
-Access to the underlying `char` representation of a `std::string` is provided by the member functions `c_str()` (an abbreviation of "C-String") and `data()`. The difference between the two is that `c_str()` **guarantees** to include a terminating zero-byte and is **not** writable, whereas `data()` **is** writable but with the caveat that there may be not be any terminating zero-byte (it depends on both the `std::string`'s contents and the library implementation). Thus `c_str()` returns a `const char *` that can be safely used as a parameter to C functions such as `puts()`, or with C++ stream output, whereas `data()` returns a `char *` which is not always safe to be used with any function which expects a zero-byte terminator. (As an example, use of `data()` combined with `size()` to create a `std::string_view` is always safe.)
+A `std::string` provides direct access to its underlying array-of-`char` representation through two member functions: `c_str()` and `data()`. The difference between the two is that `c_str()` returns a **read-only** (`const char *`) pointer to an NTMBS (see Chapter 1), while `data()` returns a **writable** (`char *`) pointer to the same (pre-C++11 did not guarantee the null terminator to be present for `data()`). Where you have the choice, use `c_str()` as it is available for `const std::string` objects (itself being a `const` member function).
 
 **Experiment:**
 
-* Modify `string_to_uppercase()` to use `data()` inside a regular for-loop to do its work. Hint: Continue to use a loop index, the syntax may surprise you.
+* Modify `string_to_uppercase()` to use `data()` inside a regular for-loop to do its work. Hint: continue to use a loop index, the syntax may surprise you.
 
 * Now modify this program to use pointer arithmetic instead of a loop index.
 
@@ -206,7 +211,7 @@ Access to the underlying `char` representation of a `std::string` is provided by
 
 There is a fourth string-like type (besides literal string, built-in array of `char` and `std::string`) called `std::string_view`, which provides a "half-way house" between a fully-fledged string type and raw array access. Typically it is implemented with only two fields (pointer and length); its main advantage over `std::string` is that it can be constructed and passed around more cheaply in many cases.
 
-The `std::string_view` type only provides a subset of the features provided by `std::string`, in particular it does **not** support either in-place modification or concatenation. It also does **not** "own" the resource it refers to, therefore care must be taken to ensure that a `std::string_view` object does not outlive the entity from which it was constructed (usually a `std::string` or `const char *`, construction from a string literal is always safe.). It is safe when used as a function parameter (where otherwise a `const std::string&` or `const char *` would be used), and sometimes safe as a return type (instead of `const char *`).
+The `std::string_view` type only provides a subset of the features provided by `std::string`, in particular it does **not** support either in-place modification or concatenation. It also does **not** "own" the resource it refers to, therefore care must be taken to ensure that a `std::string_view` object does not outlive the entity from which it was constructed (usually a `std::string` or `const char *`&mdash;construction from a string literal is always safe.). It is safe when used as a function parameter (as an alternative to `const std::string&` or `const char *`), and is sometimes safe as a return type (instead of `const char *`). Finally, it does not own or include a null terminator, unless the entity from which it is constructed has one; this behavior is useful in cases where a sliding textual "window" over a larger string entity is needed.
 
 ```cpp
 string_view v1{ "Elrond" }; // string_view constructed from const char *
@@ -270,7 +275,7 @@ A few things to note about this program:
 
 ## Vectors and iterators
 
-If you remember one thing about C++ container types, of which `std::vector` is one, it should be that elements are meant to be manipulated using *iterators*. (We have seen the `std::string` member functions `insert()` and `erase()` being used with indices, however even these can use iterators instead.) An iterator is a pointer-like object that when dereferenced, yields exactly one object from within a container; the `begin()` and `end()` family of functions should each be thought of as returning an iterator, rather than a pointer.
+A key concept of C++ is that the Standard Library container types, of which `std::vector` is one, is that elements are meant to be manipulated using *iterators*. (We have seen the `std::string` member functions `insert()` and `erase()` being used with indices, however these can use iterators instead.) An iterator is a *pointer-like object* that when dereferenced, yields exactly one object from within a container; thus the `begin()` and `end()` family of functions should each be thought of as returning an iterator, rather than a pointer.
 
 The following program populates a `std::vector` of integers from user input, and then outputs it in numerically sorted order.
 
@@ -309,7 +314,7 @@ A few things to note about this program:
 
 * The `push_back()` member function of `vector` is used to make `i` the new last element, this "grows" the container automatically as needed.
 
-* The *Standard Libary algorithm* `std::sort()` gets all of the information about the `vector` that it needs in order to operate from the two iterators provided as parameters. (It can be relied upon to be an efficient algorithm, probably performing better than any hand-written code.)
+* The Standard Libary *algorithm* `std::sort()` gets all of the information about the `vector` that it needs in order to operate from the two iterators provided as parameters. (It can be relied upon to be an efficient algorithm, probably performing better than hand-written code&mdash;there is no need or advantage of using C's `qsort()`.)
 
 * Instead of a traditional or range-for loop, a second algorithm `std::copy()` is used. As might be guessed this copies everything from the first iterator up to, but not including, the second iterator to its third parameter, which is actually an *output iterator*. There is no "magic" involved, all you need to understand is that a `std::output_iterator` *object* takes a single type of its output between triangular brackets (here it is `int`) and the output stream and optional delimiter are specified as parameters. (This is boilerplate code that can be reused in your own programs, possibly with different types and delimiters.)
 
@@ -321,13 +326,13 @@ A few things to note about this program:
 
 * Change to using a range-for loop instead of `std::copy()` to output the `vector`. Hint: use `const auto&`.
 
-* Use member functions `begin()` and `end()` in the call to `std::sort()`. Does the compile to the same thing? Which style do you prefer?
+* Use **member** functions `begin()` and `end()` in the call to `std::sort()`. Does the compile to the same thing? Which style do you prefer?
 
 * Rewrite the second `for`-loop using an index variable and subscript access. Do you still prefer this form?
 
-There are many member functions belonging to `std::vector` and the other standard containers, and even experienced C++ programmers don't remember them all. There are even more (over 100) function templates (algorithms) which operate with the standard containers through iterators; where there is a choice between both the member function should be used as this will be specialized for the container type. There is almost never a need to write a mini-algorithm which operates within a loop over the elements of a container, as would be needed in C or with built-in arrays; they have been implemented in the Standard Library ready for you to use.
+There are many member functions belonging to `std::vector` and the other standard containers, and even experienced C++ programmers don't remember them all. There are also many (over 100) function templates (algorithms) which operate with the standard containers through iterators; where there is a choice between using both, the member function should be used as this will be specialized for the container type (thus potentially more efficient). There is almost never a need to write a mini-algorithm which operates within a loop over the elements of a container, as would be needed in C; they have already been implemented in the Standard Library ready for you to use.
 
-When you reach for a container, `std::vector` is often the best fit, and should be your natural first choice. Should you decide that one of the other container types is needed, this would usually be a design decision made early in the development of your program. There is uniformity in the naming of the member functions, so all containers support `clear()`, for example. However as soon as you delve into the implementation details, such similarity appears superficial. It is important to have a basic understanding of the implementation of each container so that their individual advantages and limitations are understood, in order for the correct one to be chosen and used effectively.
+When you reach for a container, `std::vector` is often the best fit, and should be your natural first choice. Should you decide that one of the other container types is needed, this would usually be a design decision made early in the development of your program. There is uniformity in the naming of the member functions, so all containers support `clear()`, for example. However as soon as you delve into the implementation details, such similarity appears superficial. It is important to have a basic understanding of the implementation of each container such that their individual advantages and limitations are understood, in order for the correct one to be chosen and used effectively.
 
 As an example, consider the use of `std::find()` versus member function `find()` when using `std::string`, `std::vector` and `std::set`; this function finds the first occurence of its parameter in the specified container. The `std::set` container is similar to `std::vector` except that it maintains its elements in sorted order. The differences are:
 
@@ -407,13 +412,13 @@ Take time to study this program as it contains some important concepts:
 
 * The first part assigns a `std::string` from a string literal, and a `std::vector` and `std::set` from two different initializer lists. Note that `std::set` can only hold unique values, so the container begins with a size of four, not five as for the initializer list (because of the duplicated value `3`).
 
-* The interesting part of the program is the third part, itself split into three. The logic is the same, search for an element value with the correct form of `find()`, compare it against "not found", and if found then erase it. The form of `erase()` used for `std::string` needs a length for the second parameter, while for `std::vector` and `std::set` it takes an iterator as the single element to erase.
+* The interesting part of the program is the third part, itself split into three. The logic is the same, search for an element value with the correct form of `find()`, compare it against the "not found" type for the specific container, and if found then erase it. The form of `erase()` used for `std::string` needs a length for the second parameter, while for `std::vector` and `std::set` the form used takes an iterator as the single element to erase.
 
 **Experiment**
 
 * Sort the `std::vector` and use a binary search instead of a linear one. Hint: use `std::lower_bound()` not `std::binary_search()`.
 
-* Experiment with adding values to the containers, at the beginning, in the middle and at the end. Use a mixture of member function `push_back()` (where possible) and member function `insert()` or `std::insert()` where applicable.
+* Experiment with adding values to the containers, at the beginning, in the middle, and at the end. Use a mixture of member function `push_back()` (where possible) and member function `insert()` or `std::insert()` where applicable.
 
 ## Spans and arrays
 
@@ -421,7 +426,7 @@ It can be very inefficient to copy `std::vector`s by value, as copies of both th
 
 **Experiment**
 
-* Write a function called `populate_int()` which takes a `vector<int>` as its parameter and implements the logic of the `for`-loop in `07-vector.cpp`. Call this function from `main()` instead of using a `for`-loop .
+* Write a function called `populate_int()` which takes a `vector<int>` as its parameter and implements the logic of the `for`-loop in `07-vector.cpp`. Call this function from `main()` instead of using a `for`-loop.
 
 * Now use `double` instead of `int` in the program. How many code changes are needed?
 
@@ -459,13 +464,13 @@ int main() {
 
 A few things to note about this program:
 
-* A range-for loop with an initializer field prints out the values of the `std::span` parameter, outputting a separator in-between, but not after, the elements. The trick of reassigning the variable `sep` gets around the limitation of using `std::copy()`.
+* A range-for loop with an initializer field prints out the values of the `std::span` parameter, outputting a separator in-between, but not after, the elements. The trick of reassigning the variable `sep` gets around this limitation of using `std::copy()`.
 
-* The three array-like types are initialized in `main()`. The size of type `std::array` is fixed at compile-time (from its optional second template parameter) and allows it to be allocated on the stack, not using any heap memory. (Due to the fact that `begin()` and `end()` can be used with built-in arrays there are not many cases where `std::array` is useful.)
+* The three array-like types are initialized in `main()`. The size of type `std::array` is fixed at compile-time (from its optional second template parameter) and this allows it to be allocated on the stack, not using any heap memory (as for a built-in array). (Due to the fact that `begin()` and `end()` can be used with built-in arrays there are not very many cases where `std::array` is more useful.)
 
 * The commented-out call to `print_ints()` doesn't compile as there is no valid conversion from `std::initializer_list<int>` to `std::span<int>`. This is a possible use case for a temporary `std::array`, as in: `print_ints(array{ 9, 8, 7 ,6 });`
 
-Unlike `std::string_view`, `std::span` can modify its elements, although it does not "own" them. Also, a second type of `std::span` takes its size parameter after the type, which is also fixed at compile-time.
+Unlike `std::string_view`, `std::span` can modify its elements, even though it does not "own" them. Also, a second form of `std::span` takes its size parameter after the type, which is also fixed at compile-time.
 
 **Experiment**
 
@@ -473,13 +478,13 @@ Unlike `std::string_view`, `std::span` can modify its elements, although it does
 
 * Perform a sort within `print_ints()` before outputting.
 
-* Now output the containers in `main()` after calling `print_ints()`. Have the orders of these changed?
+* Now output the containers in `main()` after calling `print_ints()`, without calling it again. Have the elements of these changed order?
 
 ## Ordered and unordered sets
 
-A `std::set` holds its contents in sorted order at all times, thus it is called an *ordered container*. Occasionally this is desirable, however there are space and time costs to this convenience so before using this container type you should consider whether a `std::vector` which can be (manually) sorted when required is a better solution. Array access (using `[]`) is not supported for `std::set`; this may be a deciding factor as to its suitability. Ordered containers require that `operator<` (less-than) is defined when using them to hold user-defined types (other ordering criteria can be specified, if needed).
+A `std::set` holds its contents in sorted order at all times, thus it is called an *ordered container*. Occasionally this is desirable, however there are space and time costs to this convenience so before using this container type you should consider whether a `std::vector`, which can be (manually) sorted when required, is a better solution. Array access (using `[]`) is not supported for `std::set`; this may be a deciding factor as to its suitability. Ordered containers require that `operator<` (less-than) is defined when using them to hold user-defined types (other ordering criteria can be specified, if desired).
 
-A feature of `std::set` is that it cannot hold duplicate values; subsequently inserting a previously held value does not alter the container, while an initializer list containing duplicates is shortened (and sorted) immediately. (The type `std::multiset` does allow duplicate values.)
+A feature of `std::set` is that it cannot hold duplicate values; inserting a previously held value does not alter the container, while an initializer list containing duplicates is shortened (and sorted) immediately. (The type `std::multiset` does allow duplicate values.)
 
 The following program defines a `std::set` with value type `std::string`:
 
@@ -495,7 +500,7 @@ using namespace std;
 
 int main() {
     set<string> s{
-        "Rossum, Guido van",
+        "Stroustrup, Bjarne",
         "Yukihiro, Matsumoto",
         "Wall, Larry",
         "Eich, Brendan"
@@ -512,7 +517,7 @@ int main() {
 
 * Change the container type to `std::multiset`. Does the program compile and run? What happens if you (deliberately) enter a duplicate name?
 
-* The correct ordering depends on the rule of surname first with capitalized first letter. Remove this second restriction by storing all names in lower-case, capitalizing the first letter for output.
+* The correct ordering depends on the rule of surname first with capitalized first letter. Remove this second restriction by storing all names in lower-case, capitalizing the first letter for output. Test with name: "van Rossum, Guido".
 
 Lookup for `std::set` is faster than linear searching due to the fact that its elements are always sorted. There is also the container type `std::unordered_set` which can claim to have constant-time lookup in the best case due to utilization of a *hash function*. (To complete the quartet, there exists `std::unordered_multiset`.)
 
@@ -526,11 +531,11 @@ In fact, due to the way that the *unordered containers* are implemented, removal
 
 ## Lists and forward-lists
 
-Some operations can be inefficient with `std::vector` because of the way it is implemented by the library; operations such as `insert()` and `erase()` can involve the movement much of the data stored in memory. (In fact this is unavoidable, the Standard dictates that the elements of a `std::vector` are stored contiguously in memory.) Other operations such as `push_front()` are not implemented at all, for the same reason. (Using a `std::deque` instead would resolve this particular limitation.)
+Some operations can be inefficient with `std::vector` because of the way it is implemented by the library; operations such as `insert()` and `erase()` can involve the movement of much of the data stored in memory. (In fact this is unavoidable since the Standard dictates that the elements of a `std::vector` are stored contiguously in memory.) Other operations such as `push_front()` are not implemented at all, for the same reason. (Using a `std::deque`, as in "double-ended queue", instead would resolve this particular limitation.)
 
-The implementation of `std::list` is fairly straightforward; each element is stored in its own block of assigned memory, together with two pointers; one pointer to the previous element and one pointer to the next element. This does mean that element insertion and deletion can be much quicker than for `std::vector`, however more memory is used by this container in total (the size of two pointers times number of elements, approximately). Lists of "large" objects become more efficient than lists of "small" ones, and as for `std::vector` all elements must be of the same type and size. It follows that the implementation of `std::forward_list` is similar but with only one pointer in each block, pointing to the next element.
+The implementation of `std::list` is fairly straightforward; each element is stored in its own block of assigned memory, together with two pointers; one pointer to the previous element and one pointer to the next element. This does mean that element insertion and deletion can be much quicker than for `std::vector`, however more memory is used by this container in total (the difference is the size of two pointers times number of elements, approximately). Lists of "large" objects become more efficient than lists of "small" ones, and as for `std::vector` all elements must be of the same type and size. It follows that the implementation of `std::forward_list` is similar but with only one pointer in each block, pointing to the next element.
 
-Some operations that `std::vector` supports, such as indexing using subscript syntax (`[]`) and `std::sort()`, are not supported at all, either because performance would be unacceptably poor or because the algorithm requres a *random-access iterator*. In fact, `std::list` implements its own member function `sort()` which performs a *stable sort* in-place. The iterator type which works with `std::list` is called a *bi-directional iterator*, meaning that pointer arithmetic-style operations on iterators cannot work. The iterator type for `std::forward_list` is called a *forward iterator*.
+Some of the operations that `std::vector` supports, such as indexing using subscript syntax (`[]`) and `std::sort()`, are not supported at all, either because performance would be unacceptably poor or because the algorithm requres a *random-access iterator*. In fact, `std::list` implements its own member function `sort()` which performs a *stable sort* in-place. The iterator type which works with `std::list` is called a *bi-directional iterator*, meaning that pointer arithmetic-style operations on iterators cannot work. The iterator type for `std::forward_list` is called a *forward iterator*.
 
 The following program demonstrates both `std::forward_list` and `std::list` being used, although it is not intended to be an example of best practice:
 
@@ -585,11 +590,13 @@ A few new things about this program:
 
 * Since the input is to be sorted eventually, experiment with other ways of populating `fwd`. Hint: consider `push_front()`.
 
+* Now find a way to avoid the use of `fwd` altogether.
+
 ## Ordered and unordered maps
 
-All of the containers seen so far have stored a number of elements of a single type. There has been no other information stored with the element, except possibly for `std::vector` where the first element has index `0`, the second has index `1` and so on. This index can be thought of as the *key* as it allows direct access to a single *value*.
+All of the containers seen so far have stored a number of elements of a single type. There has been no other information stored with the element, except possibly for `std::vector` where the first element *implicitly* has index `0`, the second has index `1` and so on. This index can be thought of as the *key* as it allows direct access to a single *value*.
 
-This can be generalized so that the key can be of any type, not just a sequence of advancing integers. In C++ all maps operate with a type called `std::pair` which as might be guessed has two fields; these are called `first` and `second`. We could define `std::pair` as follows:
+This can be generalized so that the key can be of any type, not just a sequence of advancing integers. In C++ all maps operate with a type called `std::pair` which as might be guessed has two fields; these are called `first` and `second`. We could define `std::pair` as follows (see Chapter 10 for a discussion of the `template` and `typename` keywords):
 
 ```cpp
 template <typename Key, typename Value>
@@ -599,7 +606,7 @@ struct pair {
 };
 ```
 
-However we don't need to do this as the Standard Library provides this definition (or one very similar, the exact implementation details are not important). Maps operate on collections of *key/value pairs* which are provided by this type.
+However we don't need to do this as the Standard Library provides this definition in header `<utility>` (or one very similar, the exact implementation details are not important). Maps operate on collections of *key/value pairs* which are provided by this type.
 
 The first *associative container* we will look at is `std::map`. The following program uses a `std::map` to hold the per-weight prices of a list of fruits, which can be added to during a run of the program:
 
@@ -663,11 +670,11 @@ int main() {
 
 This is a longer program but does not contain much that is new. A few points to note:
 
-* The `std::map` called `products` is initialized from a nested initializer list, and the key/value types are specified within the angle brackets. The output of floating point numbers is fixed to two decimal places.
+* The `std::map` called `products` is initialized from a nested initializer list, and the key and value types must be specified within the angle brackets. The output of floating point numbers is fixed to two decimal places.
 
-* With user option `A`, member function `insert()` is called with a (temporary) `std::pair`. This is usually preferred over using array syntax, while `products[product] = price` would work in most cases it is not the most efficient.
+* With user option `A`, member function `insert()` is called with a (temporary) `std::pair`. This is usually preferred over using array subscript syntax, while `products[product] = price` would work in most cases it is not always the most efficient method.
 
-* With user option `C`, all of the products are printed out by a range-for loop which iterates over `products` and outputs the `first` and `second` fields of each element. Then member function `find()` is called to obtain an iterator. This is compared against `end(products)` (which if equal would indicate "not found"), a valid value allows the value as `iter->second` to be retrieved.
+* With user option `C`, all of the products are printed out by a range-for loop which iterates over `products` and outputs the `first` and `second` fields of each element. Then member function `find()` is called to obtain an iterator. This is compared against `end(products)` (which if equal would indicate "not found"), being other than this allows the **value** part as `iter->second` to be retrieved (the **key** would be available as `iter->first`).
 
 As explained above, use of array syntax is not used by this program when adding an entry, nor is it advisable in most cases for element lookup:
 
@@ -710,4 +717,4 @@ A brief Tutorial such as this is not the place to delve into these, and indeed t
 [^1]: https://en.cppreference.com
 [^2]: http://cppstdlib.com
 
-*All text and program code &copy;2019-2024 Richard Spencer, all rights reserved.*
+*All text and program code &copy;2019-2025 Richard Spencer, all rights reserved.*

@@ -2,15 +2,15 @@
 
 ## Enumerations
 
-Some variables belong to a small, defined set; that is they can have exactly one of a list of values. The `enum` type and its closely related `enum class` type each define a set of (integer) values which a variable is permitted to have.
+Some variables belong to a small, **closed** set; that is they can have exactly one of a list of values. The `enum` type and its closely related `enum class` type each define a set of (integer) values which a variable is permitted to have.
 
-Think of a complete pack of playing cards: each card has a suit and rank. Considering the rank first of all, this is how it can be represented and defined:
+Think of a complete pack of playing cards: each card has a suit and rank. Considering the rank first of all, here is how it can be represented and defined in C++:
 
 ```cpp
 enum Rank : unsigned short { ace = 1, two, three, four, five, six, seven, eight, nine, ten, jack, queen, king, none = 99 };
 ```
 
-The name of this type is `Rank`, by convention for a user-defined type this is in *SentenceCase*. Following the colon `:` is the *underlying type*; this **must** be a built-in integer type (`char` is also allowed) and defaults to `int` if not specified. Since we have specified `unsigned short` we can assign values from `0` to `65535` (most likely, however strictly speaking this is implementation dependent). Then, within curly braces are a list of comma-separated *enumerators*, each of which can optionally have values specified. We have set `ace = 1` instead of relying on the default value of zero for the first enumerator because it allows the internal value and representation to be the same. Subsequent enumerators take the next available value.
+The name of this type is `Rank`, by convention for a user-defined type this is in *SentenceCase*. Following the colon `:` is the *underlying type*; this **must** be a built-in integer type (`char` is also allowed) and defaults to `int` if not specified. Since we have specified `unsigned short` we can assign values from `0` to `65535` (most likely, however strictly speaking this is implementation dependent). Then, within curly braces are a list of comma-separated *enumerators*, each of which can optionally have values specified. We have set `ace = 1` instead of relying on the default value of zero for the first enumerator because it allows both the internal value and its conceptual representation to be the same; although this is not mandatory it is good programming style. Subsequent enumerators take the next sequentially available value.
 
 A variable of type `enum` (also known as *plain* enum), such as `Rank` above, can be initialized from any of the enumerators listed in its definition. However, care should be taken not to assign values not in its enumeration set; this includes default-initialization if zero is not one of the enumerators:
 
@@ -53,22 +53,22 @@ Of course, in the context of a pack of playing cards it is not practical to thin
 
 ```cpp
 struct PlayingCard {
-    Rank r;
-    Suit s;
+    Rank rank;
+    Suit suit;
 };
 ```
 
 This `struct` type is named `PlayingCard`, again using sentence case. The fields of the `struct` are listed between braces like variable definitions, type-then-name, separated by semi-colons; there is also a **mandatory** semi-colon after the closing brace. The order of the fields is not usually significant; we have put `Rank` first as it is a 16-bit value compared to `Suit` being 8-bit, which makes the `struct`'s logical memory layout more sensible. (There is probably no gap between the fields in memory layout in this case, but `PlayingCard` is probably padded out to 32-bits at the end.) Also, this layout matches the usual order of the description of a card, such as "Three of Clubs".
 
-Instances (variables) of type `PlayingCard` are examples of what are often called *objects* (as in *Object Oriented Progamming*, or *OOP*), and they can be defined and initialized in a similar way to containers using uniform initialization syntax. The code below demonstrates how to create the first card in the pack, and how to extract the object's fields back into separate variables:
+Instances (variables) of type `PlayingCard` are examples of what are often called *objects* (as in *Object Oriented Progamming*, or *OOP*), and they can be defined and initialized in a similar way to arrays and containers using uniform initialization syntax. The code below demonstrates how to create the first card in the pack, and how to extract the object's fields back into separate variables:
 
 ```cpp
 PlayingCard ace_of_spades{ ace, Suit::spades };
 
-auto the_rank1 = ace_of_spades.r;               // the_rank1 = ace, and is of type Rank
-auto the_suit1 = ace_of_spades.s;               // the_suit1 = Suit::spades, and is of type Suit
+auto the_rank1 = ace_of_spades.rank;            // the_rank1 = ace, and is of type Rank
+auto the_suit1 = ace_of_spades.suit;            // the_suit1 = Suit::spades, and is of type Suit
 
-auto [ the_rank2, the_suit2 ] = ace_of_spades;  // the_rank2 = ace, the_suit2 = Suit::spades
+auto [ the_rank2, the_suit2 ] = ace_of_spades;  // the_rank2 = ace, the_suit2 = Suit::spades, types as previously
 ```
 
 The variables `the_rank1` and `the_suit1` are initialized from the individual fields of `ace_of_spades` separately using *dot-notation*, while `the_rank2` and `the_suit2` are initialized using *aggregate initialization* syntax.
@@ -79,7 +79,7 @@ The variables `the_rank1` and `the_suit1` are initialized from the individual fi
 
 * What error message do you get if you swap `ace` and `Suit::spades` over in the definition of `ace_of_spades`. Would this error be easy to catch if plain `int` values were used instead of typed enumerators?
 
-It may be desirable to create `struct`s with multiple fields of the same type. An example of this is a simple two-dimensional `Point` class with fields called `x` and `y`, both being signed integers:
+It may be desirable to create `struct`s with multiple fields of the same type. An example of this is a simple two-dimensional `Point` class with fields (or data members) called `x` and `y`, both being signed integers:
 
 ```cpp
 struct Point {
@@ -107,13 +107,13 @@ It's a valid question, and at the machine level produces (most likely) similar c
 
 * Modify this program to manipulate these fields in some way (such as multiplying them by two) and output them.
 
-* Write a function called `mirror_point()` which reflects its input (of type `Point`) in both the x- and y-axes. Experiment with passing by value and `const`-reference (and returning the modified `Point`), and by reference and by pointer (two different `void` functions). Hint: for the last variant pass an address of `Point` and access the fields with `p->x` and `p->y`, and see Chapter 4: [Parameters by value](https://learnmoderncpp.com/functions#topic-2) and [Parameters by reference](https://learnmoderncpp.com/functions#topic-3) for a refresher. Compare all four versions of this function for ease of comprehension and maintainability.
+* Write a function called `mirror_point()` which reflects its input (of type `Point`) in both the x- and y-axes. Experiment with passing by value and `const`-reference (and returning the modified `Point`), and by reference and by pointer (two different `void` functions). Hint: for the last variant pass an address of `Point` and access the fields with `p->x` and `p->y`, and see the topics in Chapter 4: "Parameters by value" and "Parameters by reference" for a refresher. Compare all four versions of this function for ease of comprehension and maintainability.
 
 ## Inheritance vs composition
 
 We have talked about composite types being made up of other types, and in fact types can be *composed* (nested) indefinitely, although many programmers would struggle to comprehend more than a few levels. The other way to create new types with characteristics of previously defined types is through *inheritance*, which is a key concept of OOP.
 
-The following program defines an `enum class` called `Color` (feel free to add more color enumerators) and uses the same `Point` class to create a new `Pixel` class, which has both a location and a color being composed of both `Point` and `Color` fields.
+The following program defines an `enum class` called `Color` (feel free to add more color enumerators) and uses the same `Point` class to create a new `Pixel` class, which has both a location and a color, by being composed of both `Point` and `Color` fields.
 
 ```cpp
 // 06-pixel1.cpp : Color and position Pixel type through composition
@@ -173,7 +173,7 @@ Most, if not all, of the syntax should be familiar, however a few things to note
 
 * The variable `p2` is set to `Color::blue` explicitly at initialization, with the co-ordinates `-1,2` using nested initializer syntax.
 
-* The member variables `x` and `y` are members of `Point`, `pt` is a member of `Pixel`, so the full names of `p2`'s two co-ordinates are `p2.pt.x` and `p2.pt.y`. This ahows how the member operator `.` can be chained in this way (it works for member functions, too), and operations remain fully type-safe.
+* The member variables `x` and `y` are members of `Point`, `pt` is a member of `Pixel`, so the full names of `p2`'s two co-ordinates are `p2.pt.x` and `p2.pt.y`. This shows how the member operator `.` can be chained in this way (it works for member functions, too), and operations remain fully type-safe.
 
 **Experiment:**
 
@@ -181,9 +181,9 @@ Most, if not all, of the syntax should be familiar, however a few things to note
 
 * Can you call `get_pixel()` from `main()` with a third `Pixel`, without using a named variable? Hint: try to use initializer syntax in the function call.
 
-* Change the default `Color` assigned to `p1` to be `<no color>`. Hint: this is a simple change.
+* Change the default `Color` assigned to `p1` to be `<no color>`. Hint: this is a simple change, but is not in `main()`.
 
-The next program accomplishes exactly the same as the previous one, producing the same output, and most likely very similar code of comparable efficiency. However it use *inheritance* instead of composition, which is indicated by a slightly different definition of `Pixel`:
+The next program accomplishes exactly the same as the previous one, producing the same output, and most likely very similar code of comparable efficiency. It use *inheritance* instead of composition, however, which is indicated by a slightly different definition of `Pixel` and different use of dot-notation in `main()`:
 
 ```cpp
 // 06-pixel2.cpp : Color and position Pixel type through inheritance
@@ -292,7 +292,7 @@ A few things to note about this program:
 
 * The member variables `x` and `y` are in scope for all of the member functions, so there is no need to fully qualify them as `this->x` and `this->y`.
 
-* The member function returns both `x` and `y` as a `std::pair`. The `auto` return type is used (it's actually `std::pair<int,int>`) and is declared `const` between the (empty) parameter list and the function body. The use of `const` in this context means the member function promises not to modify any member variables (its own state). If you remember one thing about member functions, it should be to declare them `const` whenever they do not modify the object.
+* The member function returns both `x` and `y` as a `std::pair`. The `auto` return type is used (it's actually `std::pair<int,int>`) and is declared `const` between the (empty) parameter list and the function body. The use of `const` in this context means the member function promises not to modify any member variables (in other words, the object's own state). The important concept of `const` correctness for member functions is to declare them `const` whenever they do not modify the object, thus enabling for objects which are themselves constants (such as `const Point`).
 
 * The *access specifier* `private:` is used before the member variables `x` and `y` which means that code outside the scope of `Point` (such as in `main()`) cannot use them; they must use the getter and setters.
 
@@ -312,11 +312,11 @@ A few things to note about this program:
 
 * Try to modify `x` within `getXY()`. What happens? Now try to return a modified `x` such as `x+1` instead. What happens now? Try both of these having removed the `const` qualifier.
 
-* Change the name of `x` to `super_x` within `Point`, remebering to change all of the member functions which use `x` too. Does the code compile without any changes to `main()`? What does this tell you about another advantage of separating implementation from interface?
+* Change the name of `x` to `super_x` at all occurencies within `Point`, remebering to change all of the member functions which use `x` too. Does the code compile without any changes to `main()`? What does this tell you about another advantage of separating implementation from interface?
 
 ## Static members
 
-In the context of a class definition, `static` member variables (sometimes called *class variables*) are similar to global variables, in that there is only one *instance*. They are said to be *per-class* as opposed to *per-object*; that is, regardless of how many objects of a `struct` (or `class`) there are. Also they are referred to outside of the `struct` definition with a double colon operator (`::`), not dot-notation.
+In the context of a class definition, `static` member variables (sometimes called *class variables*) are similar to global variables, in that there is only one *instance*. They are said to be *per-class* as opposed to *per-object*; regardless of how many objects of a `struct` (or `class`) there are, there can be only one instance of any `static` member. Also they are referred to outside of the `struct` definition with a double colon operator (`::`), not dot-notation.
 
 The following program extends the `Point` class with two `static` member constants. The member functions `setX()` and `setY()` have been modified, try to guess what they now do from the code:
 
@@ -374,15 +374,15 @@ int main() {
 
 A few things to note about this program:
 
-* The static member variables `screenX` and `screenY` are declared both `static` and `const` and are assigned values within the definition of `Point`.
+* The static member variables `screenX` and `screenY` are declared both `static` and `const` and are assigned values within the definition of `Point`. Storage is automatically assigned for them due to this being true (non-`const` would need to use `inline static` in order to provide this).
 
-* These variables can be accessed directly from within `main()` as they are defined before the `private:` access specifier. As they are **read-only** it is acceptable for them to be accessed directly.
+* These variables can be accessed directly from within `main()` as they are defined before the `private:` access specifier. As they are **read-only** it is acceptable for them to be accessed directly while preserving encapsulation.
 
 * The default values of `x` and `y` (zero) do not need to be changed as they fall within the permitted values.
 
 * The class *invariants* `0 <= x <= screenX` and `0 <= y <= screenY` are not easily able to be broken when `Point` is written with setters which validate their input.
 
-The goal of encapsulation is still achieved with `screenX` and `screenY` being directly accessible from within `main()` because they are constants.  If `screenX` and `screenY` could be modified directly, this would no longer be the case, and a setter/getter pair (or similar) should be created. (A similar rule is allowing global *constants*, as opposed to *variables*, without restriction as neither data-races nor accidental reassignment can occur with constants.)
+The goal of encapsulation is still achieved with `screenX` and `screenY` being directly accessible from within `main()` because they are constants.  If `screenX` and `screenY` could be modified directly, this would no longer be the case, and a setter/getter pair (or similar) should be created. (A similar rule relaxation is allowing global *constants*, as opposed to *variables*, without restriction as neither data-races nor accidental/erroneous reassignment can occur with constants.)
 
 **Experiment:**
 
@@ -396,9 +396,9 @@ The goal of encapsulation is still achieved with `screenX` and `screenY` being d
 
 ## Operator overloading
 
-There are many operators in C++ and most of these can be adapted (or *overloaded*) to work with user-defined types. (Operators for built-in types are not able to be redefined.) Like many other features of the language their availability and flexibility should be approached with some degree of restraint.
+There are many operators in C++ and most of these can be adapted (or *overloaded*) to work with user-defined types. (Operators for built-in types are not able to be redefined.) Like many other features of the language, their availability and flexibility should be approached with some degree of restraint.
 
-Operator oveloading works in a similar way to function overloading, so some familiarity is assumed with this concept. C++ resolves operator calls to user-defined types, to function calls, so that `r = a X b` is resolved to `r = operator X (a, b)`. (This is a slight simplification; where `a` is a user-defined type, the member function `r = a.operator X (b)` is used in preference, if available.)
+Operator oveloading works in a similar way to function overloading, so some familiarity with this concept is assumed. C++ resolves operator calls to user-defined types to function calls, so that `r = a X b` is resolved to `r = operator X (a, b)`. (This is a slight simplification; where `a` is a user-defined type, the member function `r = a.operator X (b)` is used in preference, if available.)
 
 The following program demonstrates the `Point` type, simplified back to its original form, with global `operator+` defined for it:
 
@@ -428,15 +428,15 @@ int main() {
 
 A few things to note about this program:
 
-* The return type of the `operator+` we define is returned by value; it is a new variable. The return value is declared `const` in order to **prevent** accidental operations on a temporary, such as: `(p1 + p2).x = -99;`
+* The return type of the `operator+` we define is returned by value; it is a new variable. The return value is declared `const` in order to **prevent** accidental operations on a temporary, such as: `(p1 + p2).x = -99;` (It also **allows** invocation of `const` member functions, as in: `(p1 + p2).getXY();` assuming `getXY()` exists as a `const` member function.)
 
-* The parameters of this function are passed in by `const` reference. The names `lhs` and `rhs` are very common (for the left-hand-side and right-hand-side to the operator at the *call site* in `main()`).
+* The parameters of this function are passed in by `const` reference. The names `lhs` and `rhs` are very common (for the left-hand-side and right-hand-side to the operator at the *call site* respectively).
 
-* The function `operator+` needs to access the member variables of the parameters passed in.
+* The function `operator+` needs to access the member variables of the parameters passed in, thus member data must be public or have public getters (also, see discussion of friend functions in Chapter 9).
 
 * The new values `result.x` and `result.y` are computed independently, as might be expected.
 
-* The statement `p3 = p1 + p2;` invokes a call to `operator+` automatically.
+* The statement `p3 = p1 + p2;` invokes the user-defined `operator+` automatically.
 
 **Experiment:**
 
@@ -444,7 +444,7 @@ A few things to note about this program:
 
 * Write an `operator-` and call it from `main()`.
 
-It is usual to write `operator`s as global (or *free*, or *non-member*) functions when they do not need to access `private:` parts of the types which they operate on. This is not a problem for member function `operator`s as they implicitly have access to all parts of both themselves and the variable they operate on.
+It is usual to write `operator`s as global (or *free*, or *non-member*) functions when they do not need to access `private:` parts of the types which they operate on. This is not a problem for **member** `operator`s as they implicitly have access to all parts of both themselves and the variable they operate on.
 
 The simplified result of these conventions is demonstrated in the following program:
 
@@ -483,9 +483,9 @@ A few things to note about this program:
 
 * The member function `operator+=` takes **one** parameter named `rhs` and modifies its own member variables. It returns a **reference** to a `Point`, this being itself. One of the rare uses of the `this` pointer, dereferenced here with `*`, is shown here without further explanation.
 
-* The global `operator+` makes a **copy** of `lhs` and then calls (member) `operator+=` on this with parameter `rhs`. (Both of the `rhs`'s are the same variable as they are passed by reference.)
+* The global `operator+` makes a **copy** of `lhs` and then calls (member) `operator+=` on this (with parameter `rhs`).
 
-* Global `operator+` does **not** directly access the member variables of either of its parameters.
+* Global `operator+` does **not** directly access the member variables of either of its parameters, this is better C++ style.
 
 * The variable `result` is then returned by `const` value, as before.
 
@@ -497,4 +497,4 @@ A few things to note about this program:
 
 * Add a `static` function to calculate the diagonal distance between two `Point`s and return it as a `double`. Consider how to implement `operator/` to calculate this value, and whether this would be a suitable use of OO.
 
-*All text and program code &copy;2019-2024 Richard Spencer, all rights reserved.*
+*All text and program code &copy;2019-2025 Richard Spencer, all rights reserved.*

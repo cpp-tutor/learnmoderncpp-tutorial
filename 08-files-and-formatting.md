@@ -2,7 +2,7 @@
 
 ## Formatting values and variables for output
 
-We have seen how values and variables can be put to output streams using `<<`, and how `print()` and `println()` can be used to output subsequent parameters using curly braces in the format string. For further control over the way these are output, such as field width, accuracy etc. we need to specify this using stream manipulators (when outputting to streams) or extra information in the *format string* (when using `print()`/`println()`). Manipulators are covered later in this Chapter, what follows is a discussion of how to use *format specifiers* with `print()`, `println()` and `format()`/`format_to()`.
+We have seen how values and variables can be put to output streams using `<<`, and how `print()` and `println()` can be used to output subsequent parameters using curly braces in the format string. For further control over the way these are output, such as field width, accuracy etc. we can specify this using stream manipulators (when outputting to streams) or extra information in the *format string* (when using `print()`/`println()`). Manipulators are covered later in this Chapter, what follows is a discussion of how to use *format specifiers* with `print()`, `println()` and `format()`/`format_to()`.
 
 The following program demonstrates use of format specifiers for some common types:
 
@@ -21,7 +21,7 @@ int main() {
 }
 ```
 
-This program outputs the text `Formatted` followed by sufficient spaces to pad up to a width of 20 characters, then a colon present in the format string, then the value `20000` right-aligned to a width of 8 characters, then the comma and space present in the format string, and finally the value 3.3333333333 at a "precision" of 11 figures (plus decimal point) padded to a width of 12 characters (no padding is necessary for this particular value.
+This program outputs the text `Formatted` followed by sufficient spaces to pad up to a width of 20 characters, then a colon present in the format string, then the value `20000` right-aligned to a width of 8 characters, then the comma and space present in the format string, and finally the value 3.3333333333 at a "precision" of 11 figures (plus decimal point) padded to a width of 12 characters (only padding, as opposed to truncation, is possible).
 
 **Experiment**:
 
@@ -31,7 +31,7 @@ This program outputs the text `Formatted` followed by sufficient spaces to pad u
 
 * What happens if you repeat one of `s`, `d`, or `i` in the parameter list? Or take one away?
 
-The format string, and its associated format specifier(s), are evaluated at compile-time for maximum performance. It must therefore be a string literal, not a string-type variable except for one that is `constexpr`. The values of the subsequent parameters referenced by the format specifiers can (and probably will) change during the run of the program.
+The format string, and its associated format specifier(s), are evaluated at compile-time for maximum performance. It must therefore be a string literal, not a string-type variable (unless it is `constexpr`). The values of the subsequent parameters referenced by the format specifier(S) can (and probably will) change during the run of the program.
 
 ## Format specifiers
 
@@ -48,17 +48,17 @@ As well as describing the field width and precision for all of the built-in type
 | L              | Use locale-specific setting                         | {L}     | 12,345, 1.234,56, "faux" |
 | Type           | One of: b, B, d, o, x, X, a, A, e, E, f, F, g, G, ? | {:8.7a} | 1.aaaaaabp+1             |
 
-It is also possible to write custom formatters which operate on arbitrary format specifiers and user-defined classes. An alternative method would be to create a public `toString()` method in the class and simply invoke this as a parameter after the format string.
+It is also possible to write custom formatters which operate on arbitrary format specifiers and user-defined classes. An alternative method would be to create a public `toString()` method in the class and simply invoke this on a parameter of this type (after the format string, which would use plain `{}`).
 
 The format specifiers listed above work with `print()` and `println()` as well as other functions from the `<format>` header (which include wide-character variants). Here is a complete list:
 
-| Function      | Description                                | Parameters                     | Return value              |
-|---------------|--------------------------------------------|--------------------------------|---------------------------|
-| `print()`       | Output to `stdout`, `FILE*` or `std::ostream`    | [dest, ] fmt, ...              | None                      |
-| `println()`     | As for `print()` with trailing newline       | [dest, ] fmt, ...              | None                      |
-| `format()`      | Create a string from (wide-) format string | [locale, ] fmt, ...            | `std::string`, `std::wstring` |
-| `format_to()`   | Write to a (wide-) output iterator         | iter, [locale, ] fmt, ...      | `out` member is `std::iterator`             |
-| `format_to_n()` | As for `format_to()` with size limit    | iter, max, [locale, ] fmt, ... | `out` member is `std::iterator`             |
+| Function      | Description                                     | Parameters                     | Return value                    |
+|---------------|-------------------------------------------------|--------------------------------|---------------------------------|
+| `print()`       | Output to `stdout`, `FILE*` or `std::ostream` | [dest, ] fmt, ...              | None                            |
+| `println()`     | As for `print()` with trailing newline        | [dest, ] fmt, ...              | None                            |
+| `format()`      | Create a string from (wide) format string     | [locale, ] fmt, ...            | `std::string`, `std::wstring`   |
+| `format_to()`   | Write to a (wide) output iterator             | iter, [locale, ] fmt, ...      | `out` member is `std::iterator` |
+| `format_to_n()` | As for `format_to()` with size limit          | iter, max, [locale, ] fmt, ... | `out` member is `std::iterator` |
 
 In choosing between the above functions, the aim would be to choose the most performant for the task. The following program outputs different format strings and parameters utilizing a variety of these functions:
 
@@ -100,13 +100,13 @@ A few things to note about this program:
 
 * The use of `print()` is straightforward and simply outputs `Hello, World!` on a single line, using the variant that prints to a `std::ostream`, in this case `cout`.
 
-* The call to `println()` reverses the order of its subsequent parameters and outputs them textually: `true or false`. You should be aware that this prints to the C standard output (`stdout`) as mixing stream and C output can sometimes cause issues.
+* The call to `println()` reverses the order of its subsequent parameters and outputs them textually: `true or false`. You should be aware that this prints to the C standard output (`stdout`); mixing C++ stream and C output can sometimes cause buffering issues.
 
-* The uses of `format()`, first with a 8-bit and second with a wide-character format string, create a temporary (wide-) string and then put this to the (wide-) character output stream.
+* The uses of `format()`, firstly with a 8-bit, and secondly with a wide-character format string, create a temporary (wide-)string and then put this to the (wide-)character output stream.
 
 * The function `format_to()` is called with `ostream_iterator<char>(cout)` which is boilerplate for creating a suitable output iterator from a stream object.
 
-* The use for `format_to_n()` is more involved as it uses a fixed size `std::array` to hold the wide-character output string. The first parameter is the (writable) iterator pointing to the start of the array, and the second is the maximum number of characters to write. The return value has an `out` data member which is the iterator pointing to the next character in the array, which needs to be set to NUL in order to allow putting `data()` to `wcout`.
+* The use for `format_to_n()` is more involved as it uses a fixed size `std::array` to hold the wide-character output string. The first parameter is the (writable) iterator pointing to the start of the array, and the second is the maximum number of characters to write. The return value has an `out` data member which is the iterator pointing to the next character in the array, which needs to be set to zero in order to allow putting (`std::array`'s, not `std::string`'s) `data()` to `wcout`.
 
 **Experiment:**
 
@@ -152,9 +152,9 @@ A few things to note about this program:
 
 * An explicit call to close the input file is not needed, this happens automaticalls whien `infile` goes out of scope.
 
-* The only parts of this class we use is the member function `get()`, which confusingly returns an `int`, not a `char` as you might expect, and `ifstream::traits_type::eof()`. The `int` returned by `get()` can be any of the valid range of `char` (usually 0 to 255, or -128 to 127 if `char` is signed) plus a special marker value outside this range to indicate that the *end-of-file* has been reached and no more characters can be read. (If the double-double-colon syntax confuses you don't worry, this boilerplate can be used without a detailed knowledge of the makeup of the stream classes.)
+* The only parts of this class we use is the member function `get()`, which confusingly returns an `int`, not a `char` as you might expect, and `ifstream::traits_type::eof()`. The `int` returned by `get()` can be any of the valid range of `char` (usually 0 to 255, or -128 to 127 if `char` is signed) plus a special marker value outside this range to indicate that the *end-of-file* has been reached and no more characters can be read. (If the double-double-colon syntax confuses you don't worry, this boilerplate can be used without a detailed knowledge of the makeup of the stream classes. Using it is better style than relying on C's `EOF` macro from `<cstdio>`.)
 
-* The `while`-loop body uses a cast to convert the variable `c` from an `int` to a `char` in order that is output as a character and not as a number.
+* The `while`-loop body uses a cast to convert the variable `c` from an `int` to a `char` in order to ensure that is output as a character and not as a number.
 
 **Experiment:**
 
@@ -202,15 +202,15 @@ A few differences to note about this program:
 
 * Remove the stream manipulator and one of the `>>`'s. What do you notice when the input file contains spaces, tabs etc?
 
-* Add the standalone statement line `infile >> noskipws;` before the `while`-loop. What do you notice now? (The entity `noskipws` is actually a *manipulator* which modifies the stream it is put to.)
+* Add the standalone statement line `infile >> noskipws;` before the `while`-loop, and use plain `infile >> c;` within it. What do you notice now? (The entity `noskipws` is actually a *manipulator* which modifies the stream it is put to.)
 
 * Rewrite the loop as a `for`-loop. Can you again remove the need for any statements in the body?
 
 ## Files as streams
 
-The member functions `get()` and `put()` are fine for simple character access to C++ streams but are not easily extensible. (Think of the complexity involved in reading a `double` or `std::string` using only these member functions.) When reading input files, the stream extraction operator is overloaded for all of the built-in types, as well as `std::string`. Similarly, the stream insertion operator is overloaded for files being written to, and works identically to the use of `cout` and `cerr` we are familiar with. We will see that you can write your own custom input and output overloads fairly easily, too.
+The member functions `get()` and `put()` are adequate for simple character access to C++ streams but are not easily extensible. (Think of the complexity involved in reading a `std::string` or a`double` using only these member functions.) When reading input files, the stream extraction operator is overloaded for all of the built-in types, as well as `std::string`. Similarly, the stream insertion operator is overloaded for files being written to, and works identically to the use of `cout` and `cerr` we are familiar with. We will see that you can write your own custom input and output overloads fairly easily, too.
 
-Saving the state of a program is sometimes called *serialization*, while loading it back is called *deserialization*. Of course, there are no guarantees that the same platform is being used to load the previously serialized state back in, so considerations such as *endian-ness* (big versus little) and *address width* (32 versus 64 bit) can come into play. A way round this issue is to use plain text representation (solely), and in our example programs we will be using text files exclusively.
+Saving the state of a program (possibly in binary format) is sometimes called *serialization*, while loading it back is called *deserialization*. Of course, there are no guarantees that the same platform is being used to load the previously serialized state back in, so considerations such as *endian-ness* (big versus little) and *address width* (32 versus 64 bit) can come into play. A way round this issue is to use plain text representation (solely), and in our example programs we will be using text files exclusively.
 
 The following program is our calculator program from previously, modified to read calculations to be performed from a text file. These are read one by one, and the results are output. When all of the input file has been read, the program exits. The functionality which has been seen before is contained in the `calc()` function, with the addition of support for exponent:
 
@@ -311,7 +311,7 @@ You may be tempted to use `noskipws` to help you enter a line of text containing
 
 So far we have seen byte (8-bit character) raw input as well as formatted input. However, programs (especially interactive ones) often get their input line-by-line. Lines of input can often be evaluated for errors and processed more reliably than relying on the stream extraction operator and repeatedly checking against `fail()` and `bad()`. In the case of a line of input being found to be invalid, the program can prompt the user to try again.
 
-The following program uses the `getline()` member function to obtain a line of input from the console. This function takes two parameters: the address of a C-style array, and its size in bytes. Care must be taken to provide both a valid array address and correct length. The line of text **can** include spaces and is stored in the array **without** a newline and **with** a trailing zero-byte character.
+The following program uses the `getline()` **member** function to obtain a line of input from the console. This function takes two parameters: the address of a C-style array, and its size in bytes. Care must be taken to provide both a valid array address and correct length. The line of text **can** include spaces and is stored in the array **without** a newline and **with** a trailing zero-byte character.
 
 ```cpp
 // 08-line1.cpp : obtain a line of input from the user and display it
@@ -337,7 +337,7 @@ int main() {
 
 As can be found from experimentation, any characters that do not fit into the C-style array are left in the input buffer and are left unprocessed; also the *fail-bit* is set in the input stream's flags, meaning any further calls to `getline()` will return an empty string. The stream fail-bit for `cin` can be unset with `cin.clear()`, after which the unprocessed characters can be read with further call(s) to `getline()`. Optionally, the `ignore()` member function can be used to skip one or more input characters.
 
-There is a non-member function which we met in Chapter 7, perhaps confusingly also named `getline()`, which reads directly from an input stream object into a `std::string`. There is no restriction to the length of the input which can be stored in the `std::string`, and the input ends with a newline (which is not stored). The following program demonstrates the use of this function, with minimal changes from the previous one:
+There is also a **non-member** function which we met in Chapter 7, perhaps confusingly also named `getline()`, which reads directly from an input stream object into a `std::string`. There is no restriction to the length of the input which can be stored in the `std::string`, and the input ends with a newline (which is not stored). The following program demonstrates the use of this function, with minimal changes from the previous one:
 
 ```cpp
 // 08-line2.cpp : obtain a line of input from the user, store it in a string variable and display it
@@ -497,7 +497,7 @@ A few things to note about this program:
 
 So far we have encountered `noskipws` which is a *stream manipulator* that works on input streams. The exact details of how this, and other, manipulators work is unimportant for the purposes of using them, however in general they are put to the stream object with either `<<` or `>>`. *Stream flags* can also be explicitly set or cleared using the member functions `setf()` and `unsetf()`, and *stream parameters* can be set using named member functions such as `width()` and `precision()`.
 
-Getting formatted output to "look right" is quite tricky and relies to a great extent on trial-and-error combined with (tedious) manual checking of program's output. For some performance-critical code, using C++ streams and manipulators may not be practical or desirable. Also, providing localization (*l10n*) to the user's language and other settings can be difficult when using interleaved manipulators and messages. For these reasons, considering instead use of the `print()` and `format()` family is recommended.
+Getting formatted output to "look right" is quite tricky and relies to a great extent on trial-and-error combined with (tedious) manual checking of program's output. For some performance-critical code, using C++ streams and manipulators may not be practical or desirable. Also, providing localization (*l10n*) to the user's language and other settings can be difficult when using interleaved manipulators and messages. For these reasons, considering use of the `print()` and `format()` family in preference is recommended.
 
 The following program produces a simulated cash-till receipt formatted to a width of 20 characters. This program is longer than most of the ones we've seen, and uses `struct` and `std::vector` introduced in previous Chapters. All of the text formatting functionality is in the `main()` program, so try and run the program and compare its output with the multiple uses of `cout` in the code (note that any product descriptions inputted may not contain spaces):
 
@@ -628,7 +628,7 @@ There are quite a lot of stream formatting flags and parameters available, most 
 
 ## User-defined types and I/O
 
-It is possible, and sometimes desirable, to define how user-defined types are formatted when put to output streams with `<<`. This is done by overloading the global `operator<<` (this, despite appearances, is the **name** of the function for which you must write an overload.) The syntax is ugly, unlike in some other programming languages where you merely provide a `tostring()` method, or similar.
+It is possible, and sometimes desirable, to define how user-defined types are formatted when put to output streams with `<<`. This is done by overloading the global `operator<<`, which, despite appearances, is actually the **name** of the function for which you must write an overload. Sadly, the syntax is ugly, unlike in some other programming languages where you merely provide a `tostring()` method, or similar.
 
 The following program reintroduces the `Point` type and defines an *overloaded* stream output function (overloaded becuase the function already exists with a different second parameter for other built-in and user types):
 
@@ -724,4 +724,4 @@ int main() {
 
 * Modify this program to read `Pixel`s.
 
-*All text and program code &copy;2019-2024 Richard Spencer, all rights reserved.*
+*All text and program code &copy;2019-2025 Richard Spencer, all rights reserved.*

@@ -2,7 +2,7 @@
 
 ## Scopes
 
-We have become familiar with the `main()` function, which is automatically called (or *entered*) when the program starts. Variables defined within `main()` have been called local variables because they are local to the scope of `main()`. Importantly they are **not** visible within any functions called by `main()`, even though they retain their state between such calls. The following program defines three variables and also three functions (one of which is `main()`); these three variables have the same name, but different types and values. The values of each of these variables are only accessible within the functions they are defined in, that is: the variables are only *visible* within their own defining function's *scope*.
+We have become familiar with the `main()` function, which is automatically called (or *entered*) when the program starts. Variables defined within `main()` have been called local variables because they are local to the scope of `main()`. Importantly, they are **not** visible within any functions called by `main()`, even though they retain their state between such calls. The following program defines three variables and also three functions (one of which is `main()`); these three variables have the same name, but different types and values. The values of each of these variables are only accessible within the functions they are defined in, that is: the variables are only *visible* within their own defining function's *scope*.
 
 ```cpp
 // 04-scope.cpp : demonstrate function scope rules
@@ -61,7 +61,7 @@ Local variables with the same name (but not necessarily the same type) as one in
 
 ## Return value
 
-Functions are declared or defined with a type known to the compiler before the function name, the keyword `auto`, or the keyword `void` if there is none. This type can be a user-defined type as we shall discover later, or perhaps more commonly one of the built-in types such as `int`, `double` and so on. The value thus returned is known as the *return value*; its type is the *return type* of the function.  In case of `auto`, the return type is deduced from the entity (entities) after the `return` statement(s); if there is more than one they must return values of the same type. The `return` keyword is implicit at the end of a `void` function; it can also be explicitly used (for example in an `if` clause) to exit from the function early.
+Functions are declared or defined with a type known to the compiler before the function name, the keyword `auto`, or the keyword `void` if there is none. This type can be a user-defined type as we shall discover later, or perhaps more commonly one of the built-in types such as `int`, `double` and so on. The value thus returned is known as the *return value*; its type is the *return type* of the function.  In case of `auto`, the return type is deduced from the entity (entities) after the `return` statement(s); if there is more than one they must return values of the same type. The `return` keyword is implicit at the end of a `void` function; it can also be explicitly used without a value (for example in an `if` clause) to exit from the function early.
 
 The `main()` function is always defined to return an `int` (it can also be `void` in C but this is not legal C++). Uniquely to `main()`, a `return 0;` statement is implicit at the function's closing brace. This causes a return value of zero (which indicates successful execution) to be returned to the calling environment or process; this value is sometimes called the *return code* of a program. Other values are used to indicate different error conditions encountered; a return code of either zero or non-zero is allowed at any point within `main()`, including at the end.
 
@@ -187,7 +187,7 @@ The rule for declarations is that an object can be declared multiple times if al
 
 A function prototype (or *forward declaration*) is the minimum syntax that needs to have been "seen" before the function can be called. The syntax is simple, the return type, function name and types from the parameter list (the variable names are actually optional, but are often included) each with an optional default value, followed by a semi-colon. This declaration must match *exactly* with the function definition (apart from the presence of default values) for the code to compile and link correctly. The forward declaration of the most recent variant of `abs_value()` is simply:
 
-```
+```cpp
 void abs_value(int& v); // Function declaration only, not a definition
 ```
 
@@ -203,7 +203,7 @@ void abs_value(int& v); // Function declaration only, not a definition
 
 ## Default arguments
 
-Providing the wrong number of arguments in a function call always results in a compile-time error. (You may also get errors if the number of parameters in a function definition, or their types, don't match those in a previous function declaration. Unless the name, number of parameters, and their types match **exactly** they will be assumed to be different functions.) C++ provides a way for any or all of the parameters in a function call to be optional, and if not present in the argument list are substituted with default values provided in the function declaration only. (Providing them in the function **definition** is not sufficient or even allowed, for technical reasons, unless defined **before** the *call site* with no declaration used).
+Providing the wrong number of arguments in a function call always results in a compile-time error. (You may also get errors if the number of parameters in a function definition, or their types, don't match those in a previous function dedeclaration. Unless the number of parameters, and their types match **exactly** they will be assumed to be different functions; the names used are unimportant and can be different, or even omitted altogether, in function declarations.) C++ provides a way for any or all of the parameters in a function call to be optional, and if not present in the argument list are substituted with default values provided in the function declaration only. (Providing them in the function **definition** is not sufficient or even allowed, for technical reasons, unless defined **before** the *call site* with no declaration used).
 
 The following program uses *head recursion* to print out a number in any base up to 16 (defaulting to base 10):
 
@@ -243,7 +243,7 @@ This is the most complex program we have seen so far, although it does not conta
 
 * The function **declaration** for `print_base_n()` contains `= 10`. This is the *default value* for the second argument, which is substituted at the appropriate point in the parameter list, if necessary. For example, a function call `print_base_n(1021)` is substituted by `print_base_n(1021, 10)`; this substitution takes place at compile-time. 
 
-* The *recursive* function `print_base_n()`, so called because it conditionally calls itself, checks whether or not we are dealing with the **most** significant digit, calling itself **without** the **least** significant digit otherwise (and also with the second parameter it received). In Modern C++, recursive functions can be used without a prototype having already been seen.
+* The *recursive* function `print_base_n()`, so called because it conditionally calls itself, checks whether or not we are dealing with the **most** significant digit, calling itself **without** the **least** significant digit otherwise (and also with the second parameter it received). In Modern C++, recursive functions can be used without a prototype (declaration) having already been seen.
 
 * The `cout` line outputs a single character which is an index into a string literal of the **least** significant digit (square brackets `[` and `]` are the array index operators, and we are indexing a string literal as if it were an array, which is perfectly legal C++).
 
@@ -253,7 +253,7 @@ If you're struggling to follow the control flow through the recursion then imagi
 
 * Remove the variable names `num` and `base` from the declaration of `print_base_n()`. Does the program still compile? What happens if you choose other names instead?
 
-* Make sure the program works correctly by checking with binary, octal and hexadecimal **literals**, and bases 2, 8 and 16 **at run time** respectively.
+* Make sure the program works correctly by checking with binary, octal and hexadecimal **literals**, and bases 2, 8 and 16 **at run time** respectively. (Use of `static_assert()` is not possible because of the use of side-effect producing `cout`.)
 
 * Modify the program again, so that numbers printed out in up to base 64 are supported.
 
@@ -294,7 +294,7 @@ f(): recieved int: 2
 g(): recieved double: 2.5
 ```
 
-Notice that the call `g(1)` promotes the `int` argument to `double` silently, although this is not apparent when printing the number (it doesn't print as `1.0`, but could be made to with stream formatting manipulators, see Chapter 8). Also, notice that the call `f(2.5)` narrows the `double` argument to `int`, so the fractional part is lost.
+Notice that the call `g(1)` promotes the `int` argument to `double` silently, although this is not apparent when printing the number (it doesn't print as `1.0`, but could be made to with stream formatting manipulators, see Chapter 8). Also, notice that the call `f(2.5)` silently narrows the `double` argument to `int`, so the fractional part is lost.
 
 It is possible to write code that disallows narrowing casts by using universal references and perfect forwarding but demonstrating this is beyond the scope of this Tutorial. You should be aware that in general functions calls may silently produce narrowing effects, however some implicit conversions (such as pointer to integer or floating-point number) are not allowed.
 
@@ -380,7 +380,7 @@ Static local variables are slightly deprecated in C++ because they are not *thre
 
 Variables declared `thread_local` within a function have a new copy of the variable created upon launching a new thread, which is independent from others within the calling thread or any other thread. Since the way in C++ to launch a new thread is to specify a function to be called, this behavior is useful in multi-threaded programs. Further discussion of *parallelism* is beyond the scope of this Tutorial. (Variables can also be declared both `static` and `thread_local`.)
 
-Functions can be declared `static` by prefixing the return type in the function declaration and definition with the keyword `static`. As with global variables, this reduces the visibility of the function to the translation unit it is defined within. More useful in most cases are `inline` functions, described later.
+Functions can be declared `static` by prefixing the return type in the function declaration and definition with the keyword `static`. As with global variables, this reduces the visibility of the function to the translation unit it is defined within. More useful in most cases are `inline` functions, described later in this Chapter.
 
 ## Structured bindings
 
@@ -419,13 +419,13 @@ There are three main new things to notice about this program.
 
 **Experiment**
 
-* Make `get_numbers()` return three variables, the third being `unsigned`. Hint: you will need to use `return tuple{ d, i, u };` or similar, use `#include <tuple>`.
+* Make `get_numbers()` return three variables, the third being `unsigned`. Hint: you will need to use `return tuple{ d, i, u };` or similar. Hint: use `#include <tuple>`.
 
 * Rewrite `get_numbers()` to accept and modify two reference parameters, and return results to `main()` in this way.
 
 ## Inline functions
 
-Functions can be declared as inline functions by using the keyword `inline` before the return type in the function definition. The main aim of declaring a function `inline` is to remove the time overhead of a function call; the function body's code is replicated for each function call *in place* at the call site(s). Functions declared with `inline` must be present (and identical) in each translation unit that uses them, hence they often appear in header files; this is a special relaxation of the ODR. Overuse of inline functions can lead to *code-bloat*, so they are best reserved for very short functions. The following program demonstrates use of the `inline` keyword:
+Functions can be declared as inline functions by using the keyword `inline` before the return type in the function definition. The main aim of declaring a function `inline` is to remove the time overhead of a function call; the function body's code is allowed to be replicated for each function call *in place* at the call site(s). Functions declared with `inline` must be present (and identical) in each translation unit that uses them, hence they often appear in header files; this is a special relaxation of the ODR. Overuse of inline functions can lead to *code-bloat*, so they are best reserved for very short functions. The following program demonstrates use of the `inline` keyword:
 
 ```cpp
 // 04-inline.cpp : use of an inline function
@@ -562,4 +562,4 @@ int main() {
 
 * Remove the `noexcept` keyword. Does the program compile? What is the output when run?
 
-*All text and program code &copy;2019-2024 Richard Spencer, all rights reserved.*
+*All text and program code &copy;2019-2025 Richard Spencer, all rights reserved.*

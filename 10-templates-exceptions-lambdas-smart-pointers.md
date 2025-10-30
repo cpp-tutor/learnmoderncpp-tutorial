@@ -91,6 +91,7 @@ T minimum(const T& a, const T& b) {
 auto m1 = minimum(3, 2.5);        // Error! minimum<int> or minimum<double>?
 auto m2 = minimum(-2, 1);         // m2 is an int with value -2
 auto m3 = minimum(-5.5, -6.5);    // m3 is a double with value -6.5
+auto m4 = minimum<double>(3.0, 4) // m4 is a double with value 3
 ```
 
 Notice that we do not have to specify a type for `T` explicitly unless the deduction from the supplied arguments would be ambiguous (which is the case if the types of the two function arguments are different).
@@ -131,7 +132,7 @@ auto o4 = Opt<size_t>{}; // T = size_t, valid = false
 
 Some things to note about this program:
 
-* A default type for `T` is required as we make use of a defaulted default-constructor; `char` was chosen as the smallest type (`void` may be in theory preferrable, but cannot be used as the compiler would encounter the construct `void value` when instatiating the class and produce an error).
+* A default type for `T` is required as we make use of a defaulted default-constructor; `char` was chosen as the smallest type (`void` may be in theory preferrable, but cannot be used as the compiler would encounter the construct `void value` when instantiating the class and produce an error).
 
 * The other constructor matches `T` from the type of `value`, storing this in the member variable `value`, and also sets `valid` to `true`.
 
@@ -159,11 +160,11 @@ Stringy sy4{ 'V' };          // initialize from char
 Stringy sy5{ 5 };            // Error! Attempt to narrow from int to char
 ```
 
-Notice that the constructor (only) is defined with both `template` and `explicit`, meaning a new contructor is (attempted to be) generated when called with different types, and takes an r-value reference `T&&`. A function taking an r-value reference promises not to modify it; it can also be safely used with temporaries (such as `"Hello"s + " World"`) and is efficient as the temporary is not copied. (An optimization to use `std::move` when called with a `std::string` (only) r-value is a possiblilty here, however this would entail writing a second `explicit` constructor.)
+Notice that the constructor (only) is defined with both `template` and `explicit`, meaning a new constructor is (attempted to be) generated when called with different types, and takes an r-value reference `T&&`. A function taking an r-value reference promises not to modify it; it can also be safely used with temporaries (such as `"Hello"s + " World"`) and is efficient as the temporary is not copied. (An optimization to use `std::move` when called with a `std::string` (only) r-value is a possiblilty here, however this would entail writing a second `explicit` constructor.)
 
 ## Standard exceptions, try, throw and catch
 
-Exceptions are a means of altering program flow (at run-time) and *propagating* error conditions from a callee (sub-)function to its caller function (potentially as far back as `main()`, thus bypassing the usual function return mechanism. Program flow is interrupted at the point where an exception is *thrown*, and resumes at the point the exception is *caught*, which is always within the scope of a caller function (again, possibly `main()`, the beginning of the function call stack). Any code designed to handle an exception being thrown is contained within a *try-block*; this is a block of code enclosed in curly braces immediately after the `try` keyword. This try-block **is** allowed to make function/method calls, implicitly enclosing these within the try-block scope. (Any exceptions thrown from functions declared `noexcept`, or thrown from outside of a try-block's scope will terminate the program.)
+Exceptions are a means of altering program flow (at run-time) and *propagating* error conditions from a callee (sub-)function to its caller function (potentially as far back as `main()`, thus bypassing the usual function return mechanism). Program flow is interrupted at the point where an exception is *thrown*, and resumes at the point the exception is *caught*, which is always within the scope of a caller function (again, possibly `main()`, the beginning of the function call stack). Any code designed to handle an exception being thrown is contained within a *try-block*; this is a block of code enclosed in curly braces immediately after the `try` keyword. This try-block **is** allowed to make function/method calls, implicitly enclosing these within the try-block scope. (Any exceptions thrown from functions declared `noexcept`, or thrown from outside of a try-block's scope will terminate the program.)
 
 An exception is thrown by using the `throw` keyword, followed by the object to be thrown. (If no object is specified then `std::terminate` is called, as for `noexcept` functions.) Usually, you will want to throw an instance of the `std::exception` hierarchy, although **any** user-defined or built-in type can be thrown.
 
@@ -292,7 +293,7 @@ A few new things to note about this program:
 
 * It works by throwing a `std::runtime_error` (which is derived from `std::exception`), throwing a plain `std::exception`, throwing an `int` or returning an `int`.
 
-* There is no need for `break` statements within the `switch` as no `case:` conditions can fall through (except for `default:`, which never needs `break`).
+* There is no need for `break` statements within the `switch` as no `case:` conditions can fall through (except for `default:`, which never needs `break` as it should be the final clause).
 
 * The order of the catch-blocks is significant, with ellipsis last and (derived class) `std::runtime_error` first.
 
@@ -717,7 +718,7 @@ A few things to note about this program:
 
 * Then, the sub-scope exits, destroying `p2`, however the object it points to says alive becuase `p1` points to it.
 
-* Finally, `main()` exits, destroying `p1` and `"p2"`. Thus `"p1"` and `"p2"` are destroyed in the **same** order in which they were initialized, unlike for `std::unique_ptr` where it would always be in reverse order.
+* Finally, `main()` exits, destroying `p1` and `p2`. Thus `"p1"` and `"p2"` are destroyed in the **same** order in which they were initialized, unlike for `std::unique_ptr` where it would always be in reverse order.
 
 Any `std::shared_ptr` object can be passed by **value** to a function, implying a copy of the `std::shared_ptr` and a sharing of ownership. Also a container of `std::shared_ptr`s can share ownership with named `std::shared_ptr`s, or even another container of `std::shared_ptr`s.
 
@@ -882,4 +883,4 @@ This is one of the larger programs we have seen, and covers much of the contents
 
 * Change `Pupil` and `Class` to be `class`es instead of `struct`s, with `private:` data members. Hint: you will need to write some `public:` getters.
 
-*All text and program code &copy;2019-2024 Richard Spencer, all rights reserved.*
+*All text and program code &copy;2019-2025 Richard Spencer, all rights reserved.*
