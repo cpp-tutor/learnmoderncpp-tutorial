@@ -1,3 +1,13 @@
 ## Jupyter Notebooks
 
-The complete Tutorial is available as a set of Jupyter Notebooks listed above. Please note that they are intended for use with JupyterLab or [Google Colab](https://colab.google)&mdash;it is possible to preview them on GitHub but the interactive features will not be present. (Save and upload after viewing raw, or copy the address to paste by clicking on the "chain".) Also, the formatting of some parts does not render correctly at first, use Ctrl-Enter after clicking in a non-displaying "text" block to correct this, or press "play" after clicking within the block. Finally, note that the notebooks are intended for use with the `cpp23` kernel which allows code to be executed (possibly after modification), which is available from Python's pip package "jupyter-cpp-kernel".
+The complete Tutorial is available as a set of Jupyter Notebooks listed above. Please note that they are intended for use with JupyterLab&mdash;it is possible to preview them on GitHub but the interactive features will not be present.
+
+Installation of JupyterLab under Debian Linux is as follows:
+
+```bash
+sudo apt update
+sudo apt install jupyter jupyterlab       # Note: many large dependencies
+sudo pip install --break-system-packages jupyter-cpp-kernel
+cd /path/to/notebooks
+jupyter lab                               # Note: copy weblink token from console and open in browser
+```
