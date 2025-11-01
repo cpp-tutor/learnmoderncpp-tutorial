@@ -8,6 +8,7 @@ Installation of JupyterLab under Debian Linux is as follows:
 sudo apt update
 sudo apt install jupyter jupyterlab       # Note: many large dependencies
 sudo pip install --break-system-packages jupyter-cpp-kernel
+sudo apt install build-essential g++      # Note: minimum to compile C++
 cd /path/to/notebooks
 jupyter lab                               # Note: copy weblink token from console and open in browser
 ```
