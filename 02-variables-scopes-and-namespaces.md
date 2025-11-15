@@ -172,7 +172,7 @@ auto k{ 1.0 }; // k has type double (using uniform initialization syntax)
 auto q;        // Error: will not compile
 ```
 
-Program can be (re-)written without any use of `auto`, however you will often encounter it in modern code so you need to be able to recognize and understand its meaning. It is especially useful where the type in question is overly verbose, such as when using types related to generic classes. Notice from the example shown here the use of uniform initialization syntax with `auto`-assignment for the variable `k`; this usage can be expected to become more common.
+Programs can be (re-)written without any use of `auto`, however preferring `auto` in Modern C++ is motivated primarily by correctness, performance, maintainability, and robustness, rather than just typing convenience. It is especially useful where the type in question is overly verbose, such as when using types related to generic classes, and also helps avoid accidental narrowing conversions or commitment to implementation-specific types. Notice from the example shown here the use of uniform initialization syntax with `auto`-assignment for the variable `k`; this usage can be expected to become more common.
 
 ## Bool and byte
 
