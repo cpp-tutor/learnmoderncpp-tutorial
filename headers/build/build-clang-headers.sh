@@ -8,7 +8,7 @@ for PROGRAM in ../*.cpp ; do
   BASE="$(basename $PROGRAM)"
   echo "$BASE..."
   failed=""
-  clang++ -std=c++20 -o ${BASE%.cpp} $PROGRAM >/dev/null 2>&1 || failed="y"
+  clang++ -std=c++23 -o ${BASE%.cpp} $PROGRAM >/dev/null 2>&1 || failed="y"
   if [ -n "$failed" ] ; then
     echo "Failed to compile $BASE"
     failures=$((failures+1))
