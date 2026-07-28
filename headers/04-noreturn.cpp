@@ -1,5 +1,6 @@
 // 04-noreturn.cpp : program which does not return from main()
 
+#include <exception>
 #include <iostream>
 using namespace std;
 
