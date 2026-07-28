@@ -509,6 +509,7 @@ It is possible to write a function which never returns, for example using an inf
 ```cpp
 // 04-noreturn.cpp : program which does not return from main()
 
+#include <exception>
 #include <iostream>
 using namespace std;
 
