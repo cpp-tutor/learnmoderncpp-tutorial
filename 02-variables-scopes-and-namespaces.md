@@ -470,7 +470,7 @@ Of the above, only `b`, `e` and `h` are re-assignable.
 
 ## Constexpr variables
 
-Another way of qualifying a definition is with the `constexpr` keyword. This is a stronger form of `const` which explicity causes evaluation of the initial (and only) value of the variable **at compile-time**. This keyword has uses in *metaprogramming*, which is essentially causing code to be generated and run at compile-time. Note that use of floating-point values **is** permitted; this is not the case in traditional C++ Template Metaprogramming (TMP) which has been around since C++98.
+Another way of qualifying a definition is with the `constexpr` keyword. This is a stronger form of `const` which explicitly causes evaluation of the initial (and only) value of the variable **at compile-time**. This keyword has uses in *metaprogramming*, which is essentially causing code to be generated and run at compile-time. Note that use of floating-point values **is** permitted; this is not the case in traditional C++ Template Metaprogramming (TMP) which has been around since C++98.
 
 In fact, `constexpr` expressions can be complex with recent compilers, as long as all parts of the expression are themselves `constexpr`. The following program defines two constants, one of which is `constexpr`. Only the `constexpr` entity can be tested against `static_assert()`, which is a boolean truth test checked at compile-time. Don't worry if the inequality syntax is unfamiliar as this is covered in the next Chapter; the test `PI > 3.141 && PI < 3.143` evaluates the mathematical inequality `3.141 < PI < 3.143` in a way that is valid C++:
 
