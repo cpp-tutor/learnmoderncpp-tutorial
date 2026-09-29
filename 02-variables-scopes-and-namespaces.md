@@ -131,7 +131,7 @@ It is important not to confuse a single value in curly braces with an initialize
 
 * Fix the code so that it compiles with `float c` (read on if not sure, and think "float literal").
 
-* Now change `{1}` to `{1LL}`. Does the code still compile? Try to fix this.
+* Now change `{1}` to `{(1LL << 53) + 1}` (this number is 2<sup>53</sup>+1). Does the code still compile? Try to fix this. (Explanation: Floating-point numbers are limited by their mantissa for accuracy and exponent for range. An integer number which does not fit within the 53-bit mantissa of a `double` will be truncated, and this produces a rounding error when using uniform initialization syntax.)
 
 ## Numeric types and type inference
 
