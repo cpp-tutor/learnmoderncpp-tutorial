@@ -462,7 +462,7 @@ The `swap()` function swaps over two `int`s *in-place* by using reference parame
 
 * Now try moving the `swap()` function to below `main()`, adding a function declaration before `main()`. Can the function be made `inline` again?
 
-* Modify the program `04-abs2.cpp` so that `abs_value()` is an `inline` function. (This change is trivial to make.) Does it compile as expected? Does it still run correctly?
+* Modify the program `04-absolute2.cpp` so that `abs_value()` is an `inline` function. (This change is trivial to make.) Does it compile as expected? Does it still run correctly?
 
 ## Constexpr functions
 
