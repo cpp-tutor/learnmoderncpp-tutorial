@@ -183,7 +183,7 @@ Most, if not all, of the syntax should be familiar, however a few things to note
 
 * Change the default `Color` assigned to `p1` to be `<no color>`. Hint: this is a simple change, but is not in `main()`.
 
-The next program accomplishes exactly the same as the previous one, producing the same output, and most likely very similar code of comparable efficiency. It use *inheritance* instead of composition, however, which is indicated by a slightly different definition of `Pixel` and different use of dot-notation in `main()`:
+The next program accomplishes exactly the same as the previous one, producing the same output, and most likely very similar code of comparable efficiency. It uses *inheritance* instead of composition, however, which is indicated by a slightly different definition of `Pixel` and different use of dot-notation in `main()`:
 
 ```cpp
 // 06-pixel2.cpp : Color and position Pixel type through inheritance
