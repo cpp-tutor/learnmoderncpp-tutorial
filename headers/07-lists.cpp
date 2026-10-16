@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <iterator>
 #include <forward_list>
 #include <list>
 using namespace std;

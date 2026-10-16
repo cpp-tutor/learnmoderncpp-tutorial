@@ -348,6 +348,7 @@ For `std::string`s if the search criterion is not found, special value `std::str
 // 07-find.cpp : find and erase a single element
 
 #include <iostream>
+#include <functional>
 #include <algorithm>
 #include <string>
 #include <vector>
@@ -544,6 +545,7 @@ The following program demonstrates both `std::forward_list` and `std::list` bein
 
 #include <iostream>
 #include <string>
+#include <iterator>
 #include <forward_list>
 #include <list>
 using namespace std;

@@ -1,6 +1,7 @@
 // 07-find.cpp : find and erase a single element
 
 #include <iostream>
+#include <functional>
 #include <algorithm>
 #include <string>
 #include <vector>
